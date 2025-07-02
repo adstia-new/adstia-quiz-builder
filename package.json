@@ -8,6 +8,8 @@
   ],
   "scripts": {
     "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "build:watch": "webpack --mode development --watch",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
