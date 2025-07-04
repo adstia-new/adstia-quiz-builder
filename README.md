@@ -12,12 +12,16 @@ npm install adstia-quiz-builder
 
 ```jsx
 import React from 'react';
-import HelloWorld from 'adstia-quiz-builder';
+import { QuizBuilder } from 'adstia-quiz-builder';
+
+const quizJson = [
+  // ...your quiz data here (see below for format)
+];
 
 function App() {
   return (
     <div>
-      <HelloWorld />
+      <QuizBuilder json={{ quizJson }} />
     </div>
   );
 }
@@ -25,9 +29,41 @@ function App() {
 export default App;
 ```
 
+## Quiz Data Format Example
+
+```js
+const quizJson = [
+  {
+    quizCardId: "1",
+    question: "What is your zip code?",
+    nodes: [
+      {
+        nodeType: "zipcode",
+        nodeName: "WEBSITE_ZIP",
+        inputLabel: "Zip Code",
+        inputType: "text",
+        placeholder: "Enter zipcode",
+        inputName: "zipcode",
+        validation: {
+          required: true,
+          pattern: "^\\d{5}$",
+          errorMessage: "Invalid Zip Code",
+          minLength: 5,
+          maxLength: 5
+        }
+      }
+    ],
+    next: "2"
+  },
+  // ...more quiz cards
+];
+```
+
 ## Features
 
-- Interactive quiz components
+- Interactive quiz components (input, zipcode, options, dropdown, etc.)
+- Real-time validation and error handling
+- Next button disables automatically on error or required fields
 - Easy to integrate with existing React applications
 - Customizable and extensible
 
@@ -37,6 +73,14 @@ To build the package:
 
 ```bash
 npm run build
+```
+
+To develop locally and test in another app:
+
+```bash
+npm link
+# In your test app:
+npm link adstia-quiz-builder
 ```
 
 ## License
