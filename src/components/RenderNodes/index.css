@@ -44,3 +44,7 @@
 .render-nodes__button--next:focus {
   background-color: #2563eb;
 }
+
+.render-nodes__button:disabled {
+  opacity: 0.8;
+}

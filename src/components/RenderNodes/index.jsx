@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import InputNode from "../QuizNodes/InputNode";
 import OptionNode from "../QuizNodes/OptionNode";
 import SelectNode from "../QuizNodes/SelectNode";
@@ -6,7 +6,8 @@ import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
 
 const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
-  //   console.log({ quizNodes });
+  const [nextDisabled, setNextDisabled] = useState(false);
+
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
   );
@@ -14,8 +15,6 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
   const currentNodeType = findCurrentSlideNodes.nodes[0].nodeType;
   const showNextPreviousButtons =
     currentNodeType === "options" || currentNodeType === "dropdown";
-  //   const currentNodeType =
-  console.log({findCurrentSlideNodes});
 
   const handleNextButtonClick = () => {
     setCurrentSlide(findNextSlideId);
@@ -26,10 +25,16 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
       <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
       {findCurrentSlideNodes.nodes.map((quizElement, index) => {
         if (quizElement.nodeType === "input") {
-          return <InputNode key={index} data={quizElement} />;
+          return <InputNode key={index} data={quizElement} setNextDisabled={setNextDisabled} />;
         }
         if (quizElement.nodeType === "zipcode") {
-          return <ZipcodeNode key={index} data={quizElement} />;
+          return (
+            <ZipcodeNode
+              key={index}
+              data={quizElement}
+              setNextDisabled={setNextDisabled}
+            />
+          );
         }
         if (quizElement.nodeType === "options") {
           return <OptionNode key={index} data={quizElement} setCurrentSlide={setCurrentSlide} />;
@@ -42,7 +47,13 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
       {!showNextPreviousButtons && (
         <>
           <button className="render-nodes__button render-nodes__button--previous">Previous</button>
-          <button className="render-nodes__button render-nodes__button--next" onClick={handleNextButtonClick}>Next</button>
+          <button
+            className="render-nodes__button render-nodes__button--next"
+            onClick={handleNextButtonClick}
+            disabled={nextDisabled}
+          >
+            Next
+          </button>
         </>
       )}
     </div>

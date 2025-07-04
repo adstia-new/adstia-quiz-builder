@@ -1,11 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './ZipcodeNode.css'
 
-const ZipcodeNode = ({data}) => {
+const ZipcodeNode = ({data, setNextDisabled}) => {
   const { inputLabel, inputName, placeholder, inputType, validation } = data;
   const { required, pattern, minLength, maxLength, errorMessage } = validation || {};
   const [error, setError] = useState('');
   const [value, setValue] = useState('');
+
+  // Update Next button state whenever error or value changes
+  useEffect(() => {
+    if (error || (required && !value.trim())) {
+      setNextDisabled(true);
+    } else {
+      setNextDisabled(false);
+    }
+  }, [error, value, required, setNextDisabled]);
 
   const validateInput = (inputValue) => {
     if (required && !inputValue.trim()) {

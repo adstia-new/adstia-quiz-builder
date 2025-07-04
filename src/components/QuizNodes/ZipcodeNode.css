@@ -10,3 +10,24 @@
   display: block;
   width: 100%;
 }
+
+.zipcode-node__input--error {
+  border-color: #e53935;
+  background: #fff5f5;
+}
+
+.zipcode-node__input--error:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.12);
+}
+
+.zipcode-node__error {
+  color: #e53935;
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: 500;
+  background: #fff5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}

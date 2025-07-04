@@ -30,7 +30,7 @@ const QuizBuilder = ({ json, quizData, setQuizData }) => {
         currentSlide={currentSlide}
         setCurrentSlide={setCurrentSlide}
       />
-      <button className="quiz-builder__submit button" type="submit">Submit</button>
+      {/* <button className="quiz-builder__submit button" type="submit">Submit</button> */}
     </form>
   );
 };
