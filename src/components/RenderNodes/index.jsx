@@ -4,6 +4,7 @@ import OptionNode from "../QuizNodes/OptionNode";
 import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
+import DobNode from "../QuizNodes/DobNode";
 
 const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
   const [nextDisabled, setNextDisabled] = useState(false);
@@ -25,7 +26,13 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
       <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
       {findCurrentSlideNodes.nodes.map((quizElement, index) => {
         if (quizElement.nodeType === "input") {
-          return <InputNode key={index} data={quizElement} setNextDisabled={setNextDisabled} />;
+          return (
+            <InputNode
+              key={index}
+              data={quizElement}
+              setNextDisabled={setNextDisabled}
+            />
+          );
         }
         if (quizElement.nodeType === "zipcode") {
           return (
@@ -36,17 +43,34 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
             />
           );
         }
+        if (quizElement.nodeType === "dob") {
+          return (
+            <DobNode
+              key={index}
+              data={quizElement}
+              setNextDisabled={setNextDisabled}
+            />
+          );
+        }
         if (quizElement.nodeType === "options") {
-          return <OptionNode key={index} data={quizElement} setCurrentSlide={setCurrentSlide} />;
+          return (
+            <OptionNode
+              key={index}
+              data={quizElement}
+              setCurrentSlide={setCurrentSlide}
+            />
+          );
         }
         if (quizElement.nodeType === "dropdown") {
           return <SelectNode key={index} data={quizElement} />;
         }
-        return <p>Hello</p>;
+        return <p key={index}>Hello</p>;
       })}
       {!showNextPreviousButtons && (
         <>
-          <button className="render-nodes__button render-nodes__button--previous">Previous</button>
+          <button className="render-nodes__button render-nodes__button--previous">
+            Previous
+          </button>
           <button
             className="render-nodes__button render-nodes__button--next"
             onClick={handleNextButtonClick}
