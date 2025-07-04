@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import RenderNodes from "../RenderNodes";
+import "./style.css";
 
-const QuizBuilder = ({ json }) => {
+const QuizBuilder = ({ json, quizData, setQuizData }) => {
   const [currentSlide, setCurrentSlide] = useState(1);
 
   const handleFormSubmission = (e) => {
