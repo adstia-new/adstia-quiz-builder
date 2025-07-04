@@ -3,6 +3,7 @@ import InputNode from "../QuizNodes/InputNode";
 import OptionNode from "../QuizNodes/OptionNode";
 import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
+import "./index.css";
 
 const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
   //   console.log({ quizNodes });
@@ -22,7 +23,7 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
 
   return (
     <div>
-      <p>{findCurrentSlideNodes.question}</p>
+      <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
       {findCurrentSlideNodes.nodes.map((quizElement, index) => {
         if (quizElement.nodeType === "input") {
           return <InputNode key={index} data={quizElement} />;
@@ -40,8 +41,8 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
       })}
       {!showNextPreviousButtons && (
         <>
-          <button>Previous</button>
-          <button onClick={handleNextButtonClick}>Next</button>
+          <button className="render-nodes__button render-nodes__button--previous">Previous</button>
+          <button className="render-nodes__button render-nodes__button--next" onClick={handleNextButtonClick}>Next</button>
         </>
       )}
     </div>

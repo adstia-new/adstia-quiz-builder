@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import RenderNodes from "../RenderNodes";
-import "./style.css";
+import "./index.css";
 
 const QuizBuilder = ({ json, quizData, setQuizData }) => {
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -24,13 +24,13 @@ const QuizBuilder = ({ json, quizData, setQuizData }) => {
   };
 
   return (
-    <form onSubmit={handleFormSubmission}>
+    <form className="quiz-builder__form" onSubmit={handleFormSubmission}>
       <RenderNodes
         quizNodes={json.quizJson}
         currentSlide={currentSlide}
         setCurrentSlide={setCurrentSlide}
       />
-      <button type="submit">Submit</button>
+      <button className="quiz-builder__submit button" type="submit">Submit</button>
     </form>
   );
 };

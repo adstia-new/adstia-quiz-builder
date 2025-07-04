@@ -1,0 +1,12 @@
+.zipcode-node__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.zipcode-node__input {
+  display: block;
+  width: 100%;
+}
