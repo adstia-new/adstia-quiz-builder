@@ -6,7 +6,7 @@ import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
 import DobNode from "../QuizNodes/DobNode";
 
-const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
+const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide, formData, setFormData }) => {
   const [nextDisabled, setNextDisabled] = useState(false);
 
   const findCurrentSlideNodes = quizNodes.find(
@@ -22,8 +22,9 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
   };
 
   return (
-    <div>
+    <div className="render-nodes">
       <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
+      <p className="render-nodes__subtext">{findCurrentSlideNodes.subText}</p>
       {findCurrentSlideNodes.nodes.map((quizElement, index) => {
         if (quizElement.nodeType === "input") {
           return (
@@ -40,6 +41,7 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
+              setFormData={setFormData}
             />
           );
         }
@@ -49,6 +51,7 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
+              setFormData={setFormData}
             />
           );
         }
@@ -58,6 +61,7 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
               key={index}
               data={quizElement}
               setCurrentSlide={setCurrentSlide}
+              setFormData={setFormData}
             />
           );
         }
@@ -80,6 +84,9 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide }) => {
           </button>
         </>
       )}
+      <button className="quiz-builder__submit button" type="submit">
+        Submit
+      </button>
     </div>
   );
 };

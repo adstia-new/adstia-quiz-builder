@@ -4,23 +4,24 @@ import "./index.css";
 
 const QuizBuilder = ({ json, quizData, setQuizData }) => {
   const [currentSlide, setCurrentSlide] = useState(1);
+  const [formData, setFormData] = useState({});
 
   const handleFormSubmission = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const values = {};
-    for (let [key, value] of formData.entries()) {
-      if (values[key]) {
-        if (Array.isArray(values[key])) {
-          values[key].push(value);
-        } else {
-          values[key] = [values[key], value];
-        }
-      } else {
-        values[key] = value;
-      }
-    }
-    console.log("Form values:", values);
+    // const formData = new FormData(e.target);
+    // const values = {};
+    // for (let [key, value] of formData.entries()) {
+    //   if (values[key]) {
+    //     if (Array.isArray(values[key])) {
+    //       values[key].push(value);
+    //     } else {
+    //       values[key] = [values[key], value];
+    //     }
+    //   } else {
+    //     values[key] = value;
+    //   }
+    // }
+    console.log("Form values:", formData);
   };
 
   return (
@@ -29,8 +30,9 @@ const QuizBuilder = ({ json, quizData, setQuizData }) => {
         quizNodes={json.quizJson}
         currentSlide={currentSlide}
         setCurrentSlide={setCurrentSlide}
+        formData={formData}
+        setFormData={setFormData}
       />
-      {/* <button className="quiz-builder__submit button" type="submit">Submit</button> */}
     </form>
   );
 };

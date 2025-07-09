@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import './ZipcodeNode.css'
+import React, { useState, useEffect } from "react";
+import "./ZipcodeNode.css";
 
-const ZipcodeNode = ({data, setNextDisabled}) => {
+const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
   const { inputLabel, inputName, placeholder, inputType, validation } = data;
-  const { required, pattern, minLength, maxLength, errorMessage } = validation || {};
-  const [error, setError] = useState('');
-  const [value, setValue] = useState('');
+  const { required, pattern, minLength, maxLength, errorMessage } =
+    validation || {};
+  const [error, setError] = useState("");
+  const [value, setValue] = useState("");
 
   // Update Next button state whenever error or value changes
   useEffect(() => {
@@ -18,40 +19,43 @@ const ZipcodeNode = ({data, setNextDisabled}) => {
 
   const validateInput = (inputValue) => {
     if (required && !inputValue.trim()) {
-      setError('This field is required');
+      setError("This field is required");
       return false;
     }
-    
+
     if (pattern && inputValue) {
       const regex = new RegExp(pattern);
       if (!regex.test(inputValue)) {
-        setError(errorMessage || 'Invalid format');
+        setError(errorMessage || "Invalid format");
         return false;
       }
     }
-    
+
     if (minLength && inputValue.length < minLength) {
       setError(`Minimum ${minLength} characters required`);
       return false;
     }
-    
+
     if (maxLength && inputValue.length > maxLength) {
       setError(`Maximum ${maxLength} characters allowed`);
       return false;
     }
-    
-    setError('');
+
+    setError("");
     return true;
   };
 
   const handleBlur = (e) => {
     validateInput(e.target.value);
+    setFormData((prev) => {
+      return { ...prev, [data.nodeName]: e.target.value };
+    });
   };
 
   const handleChange = (e) => {
     setValue(e.target.value);
     if (error) {
-      setError('');
+      setError("");
     }
   };
 
@@ -66,14 +70,16 @@ const ZipcodeNode = ({data, setNextDisabled}) => {
         type={inputType || "text"}
         name={inputName}
         placeholder={placeholder}
-        className={`zipcode-node__input input ${error ? 'zipcode-node__input--error' : ''}`}
+        className={`zipcode-node__input input ${
+          error ? "zipcode-node__input--error" : ""
+        }`}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
       />
       {error && <span className="zipcode-node__error">{error}</span>}
     </div>
-  )
-}
+  );
+};
 
-export default ZipcodeNode
+export default ZipcodeNode;

@@ -10,8 +10,7 @@
   font-size: 15px;
   font-weight: 500;
   border-radius: 6px;
-  background: #f8fafc;
-  color: #222;
+  color: white;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
   outline: none;
@@ -22,15 +21,21 @@
   width: 100%;
 }
 
-.option-node__button:hover,
-.option-node__button:focus {
-  background: #e0e7ef;
-  border-color: #1976d2;
-  color: #1976d2;
+.option-node__button.positive{
+  background-color: #28A745;
 }
 
-.option-node__button:active {
-  background: #1976d2;
-  color: #fff;
-  border-color: #1976d2;
+.option-node__button.negative{
+  background-color: #DC3444;
+}
+
+.option-node__button:hover,
+.option-node__button:focus {
+  &.positive{
+    background-color: #10832b;
+  }
+  
+  &.negative{
+    background-color: #b20e1f;
+  }
 }

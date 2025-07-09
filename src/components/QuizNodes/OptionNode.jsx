@@ -1,8 +1,12 @@
 import React from "react";
 import "./OptionNode.css";
 
-const OptionNode = ({ data, setCurrentSlide }) => {
-  const handleOptionButtonClick = (clickedOptionData) => {
+const OptionNode = ({ data, setCurrentSlide, setFormData }) => {
+  console.log(data);
+  const handleOptionButtonClick = (clickedOptionData, value) => {
+    setFormData((prev) => {
+      return { ...prev, [data.nodeName]: value };
+    });
     setCurrentSlide(clickedOptionData.next);
   };
   return (
@@ -12,8 +16,8 @@ const OptionNode = ({ data, setCurrentSlide }) => {
           <div
             key={index}
             value={option.value}
-            className={`option-node__button ${option.value}`}
-            onClick={() => handleOptionButtonClick(option)}
+            className={`option-node__button ${option.value} ${option.type}`}
+            onClick={() => handleOptionButtonClick(option, option.value)}
           >
             {option.label}
           </div>
