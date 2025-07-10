@@ -2,7 +2,6 @@ import React from "react";
 import "./OptionNode.css";
 
 const OptionNode = ({ data, setCurrentSlide, setFormData }) => {
-  console.log(data);
   const handleOptionButtonClick = (clickedOptionData, value) => {
     setFormData((prev) => {
       return { ...prev, [data.nodeName]: value };

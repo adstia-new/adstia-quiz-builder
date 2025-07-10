@@ -1,0 +1,99 @@
+import React, { useState, useEffect } from "react";
+import "./PhoneNode.css";
+
+const formatPhone = (value) => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, "");
+  if (digits.length === 0) return "";
+  if (digits.length <= 3) return `+1 (${digits}`;
+  if (digits.length <= 6) return `+1 (${digits.slice(0, 3)})-${digits.slice(3)}`;
+  return `+1 (${digits.slice(0, 3)})-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+};
+
+const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
+  const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
+  const { required, errorMessage } = validation || {};
+  const [value, setValue] = useState("");
+  const [error, setError] = useState("");
+  const [consentChecked] = useState(true);
+
+  useEffect(() => {
+    // Phone must be valid and consent checked if tcpaConsent exists
+    if (
+      error ||
+      (required && !value.trim()) ||
+      (tcpaConsent && !consentChecked)
+    ) {
+      setNextDisabled(true);
+    } else {
+      setNextDisabled(false);
+    }
+  }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
+
+  const validatePhone = (val) => {
+    const digits = val.replace(/\D/g, "");
+    if (required && !digits) {
+      return "This field is required";
+    }
+    // US phone: 10 digits
+    if (digits.length !== 10) {
+      return errorMessage || "Invalid Phone Number";
+    }
+    return "";
+  };
+
+  const handleChange = (e) => {
+    const raw = e.target.value;
+    // Allow user to clear the field
+    if (raw === "") {
+      setValue("");
+      if (error) setError("");
+      return;
+    }
+    const formatted = formatPhone(raw);
+    setValue(formatted);
+    if (error) setError("");
+  };
+
+  const handleBlur = (e) => {
+    const val = e.target.value;
+    const err = validatePhone(val);
+    setError(err);
+    setFormData && setFormData((prev) => ({ ...prev, [nodeName]: val.replace(/\D/g, "") }));
+  };
+
+  return (
+    <div className="phone-node">
+      <label className="phone-node__label" htmlFor={nodeName}>
+        {inputLabel} {required && <span className="phone-node__required">*</span>}
+      </label>
+      <input
+        id={nodeName}
+        type="tel"
+        name={nodeName}
+        placeholder={placeholder}
+        className={`phone-node__input input ${error ? "phone-node__input--error" : ""}`}
+        value={value}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        maxLength={17} // +1 (xxx)-xxx-xxxx
+        autoComplete="tel"
+      />
+      {error && <span className="phone-node__error">{error}</span>}
+      {tcpaConsent && (
+        <div className="phone-node__tcpa">
+          <label className="phone-node__tcpa-label">
+            <input
+              type="checkbox"
+              checked={true}
+              className="phone-node__tcpa-checkbox"
+            />
+            <span className="phone-node__tcpa-text">{tcpaConsent.text}</span>
+          </label>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PhoneNode;

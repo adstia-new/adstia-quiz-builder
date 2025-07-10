@@ -1,0 +1,46 @@
+.email-node {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.email-node__label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.email-node__required {
+  color: #e53935;
+  margin-left: 0.2em;
+}
+
+.email-node__input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.email-node__input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px #1976d220;
+}
+
+.email-node__input--error {
+  border-color: #e53935;
+  background: #fff0f0;
+}
+
+.email-node__error {
+  color: #e53935;
+  font-size: 0.92rem;
+  margin-top: 0.25rem;
+  min-height: 1.1em;
+}

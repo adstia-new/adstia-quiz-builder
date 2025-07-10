@@ -5,6 +5,8 @@ import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
 import DobNode from "../QuizNodes/DobNode";
+import EmailNode from "../QuizNodes/EmailNode";
+import PhoneNode from "../QuizNodes/PhoneNode";
 
 const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide, formData, setFormData }) => {
   const [nextDisabled, setNextDisabled] = useState(false);
@@ -32,6 +34,26 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide, formData, setFo
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
+            />
+          );
+        }
+        if (quizElement.nodeType === "email") {
+          return (
+            <EmailNode
+              key={index}
+              data={quizElement}
+              setNextDisabled={setNextDisabled}
+              setFormData={setFormData}
+            />
+          );
+        }
+        if (quizElement.nodeType === "phone") {
+          return (
+            <PhoneNode
+              key={index}
+              data={quizElement}
+              setNextDisabled={setNextDisabled}
+              setFormData={setFormData}
             />
           );
         }

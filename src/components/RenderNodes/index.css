@@ -1,3 +1,11 @@
+.render-nodes{
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+}
+
 .render-nodes__question {
   font-size: 24px;
   font-weight: 600;
