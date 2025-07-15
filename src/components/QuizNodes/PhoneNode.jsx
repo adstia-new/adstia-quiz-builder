@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import "./PhoneNode.css";
 
 const formatPhone = (value) => {
-  // Remove all non-digit characters
-  const digits = value.replace(/\D/g, "");
-  if (digits.length === 0) return "";
+  let digits = value.replace(/\D/g, "");
+  digits = digits.replace(/^1+/, "");
+  digits = digits.slice(0, 10);
+  if (digits.length === 0) return "+1 ";
   if (digits.length <= 3) return `+1 (${digits}`;
-  if (digits.length <= 6) return `+1 (${digits.slice(0, 3)})-${digits.slice(3)}`;
-  return `+1 (${digits.slice(0, 3)})-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+  if (digits.length <= 6) return `+1 (${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
 const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
@@ -36,7 +37,7 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
       return "This field is required";
     }
     // US phone: 10 digits
-    if (digits.length !== 10) {
+    if (digits.length !== 11) {
       return errorMessage || "Invalid Phone Number";
     }
     return "";
@@ -59,20 +60,24 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
     const val = e.target.value;
     const err = validatePhone(val);
     setError(err);
-    setFormData && setFormData((prev) => ({ ...prev, [nodeName]: val.replace(/\D/g, "") }));
+    setFormData &&
+      setFormData((prev) => ({ ...prev, [nodeName]: val.replace(/\D/g, "") }));
   };
 
   return (
     <div className="phone-node">
       <label className="phone-node__label" htmlFor={nodeName}>
-        {inputLabel} {required && <span className="phone-node__required">*</span>}
+        {inputLabel}
+        {required && <span className="phone-node__required">*</span>}
       </label>
       <input
         id={nodeName}
         type="tel"
         name={nodeName}
         placeholder={placeholder}
-        className={`phone-node__input input ${error ? "phone-node__input--error" : ""}`}
+        className={`phone-node__input input ${
+          error ? "phone-node__input--error" : ""
+        }`}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
