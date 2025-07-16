@@ -61,7 +61,6 @@
 
 @media (max-width: 600px) {
     .dob-node__fields {
-        flex-direction: column;
         gap: 0.5rem;
     }
 

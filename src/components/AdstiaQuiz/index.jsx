@@ -8,6 +8,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   const handleFormSubmission = (e) => {
     e.preventDefault();
+    console.log('form submitted!');
     setQuizData(formData);
   };
 

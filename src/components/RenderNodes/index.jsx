@@ -130,7 +130,7 @@ const RenderNodes = ({
         return <p key={index}>Hello</p>;
       })}
       {nextSlideType !== "end" && !showNextPreviousButtons && (
-        <>
+        <div className="render-nodes__nav">
           <button className="render-nodes__button render-nodes__button--previous">
             Previous
           </button>
@@ -141,7 +141,7 @@ const RenderNodes = ({
           >
             Next
           </button>
-        </>
+        </div>
       )}
       {nextSlideType === "end" && !showNextPreviousButtons && (
         <button

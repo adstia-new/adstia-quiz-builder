@@ -24,6 +24,13 @@
   text-align: center;
 }
 
+.render-nodes__nav {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 32px;
+}
+
 .render-nodes__button {
   padding: 10px 24px;
   margin: 8px 8px 0 0;
