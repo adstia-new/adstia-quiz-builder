@@ -8,19 +8,56 @@ import DobNode from "../QuizNodes/DobNode";
 import EmailNode from "../QuizNodes/EmailNode";
 import PhoneNode from "../QuizNodes/PhoneNode";
 
-const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide, formData, setFormData }) => {
+const RenderNodes = ({
+  quizNodes,
+  currentSlide,
+  setCurrentSlide,
+  formData,
+  setFormData,
+}) => {
   const [nextDisabled, setNextDisabled] = useState(false);
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
   );
   const findNextSlideId = findCurrentSlideNodes?.next;
+  const nextSlideType =
+    quizNodes.find((element) => element.quizCardId === String(findNextSlideId))
+      ?.quizCardType || null;
   const currentNodeType = findCurrentSlideNodes.nodes[0].nodeType;
   const showNextPreviousButtons =
     currentNodeType === "options" || currentNodeType === "dropdown";
 
   const handleNextButtonClick = () => {
     setCurrentSlide(findNextSlideId);
+  };
+
+  const performRedirect = (endNode) => {
+    if (endNode.openInNewTab && endNode.redirectUrl) {
+      window.open(endNode.redirectUrl, "_blank");
+    }
+    if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
+      window.location.href = endNode.redirectCurrentTabUrl;
+    } else if (endNode.redirectUrl && !endNode.openInNewTab) {
+      window.location.href = endNode.redirectUrl;
+    }
+  };
+
+  const handleSubmitButtonClick = () => {
+    const nextSlideData =
+      quizNodes.find(
+        (element) => element.quizCardId === String(findNextSlideId)
+      ) || {};
+    const endNode = nextSlideData.nodes?.[0];
+    if (endNode) {
+      if (endNode.redirectDelay) {
+        setTimeout(() => {
+          performRedirect(endNode);
+        }, endNode.redirectDelay);
+      } else {
+        performRedirect(endNode);
+      }
+    }
   };
 
   return (
@@ -92,7 +129,7 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide, formData, setFo
         }
         return <p key={index}>Hello</p>;
       })}
-      {!showNextPreviousButtons && (
+      {nextSlideType !== "end" && !showNextPreviousButtons && (
         <>
           <button className="render-nodes__button render-nodes__button--previous">
             Previous
@@ -106,9 +143,15 @@ const RenderNodes = ({ quizNodes, currentSlide, setCurrentSlide, formData, setFo
           </button>
         </>
       )}
-      <button className="quiz-builder__submit button" type="submit">
-        Submit
-      </button>
+      {nextSlideType === "end" && !showNextPreviousButtons && (
+        <button
+          className="quiz-builder__submit button"
+          type="submit"
+          onClick={handleSubmitButtonClick}
+        >
+          Submit
+        </button>
+      )}
     </div>
   );
 };
