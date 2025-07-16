@@ -138,6 +138,7 @@ const RenderNodes = ({
             className="render-nodes__button render-nodes__button--next"
             onClick={handleNextButtonClick}
             disabled={nextDisabled}
+            type="button"
           >
             Next
           </button>
