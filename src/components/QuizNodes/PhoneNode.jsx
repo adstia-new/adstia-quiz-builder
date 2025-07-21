@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./PhoneNode.css";
+import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 
 const formatPhone = (value) => {
   let digits = value.replace(/\D/g, "");
@@ -7,7 +8,8 @@ const formatPhone = (value) => {
   digits = digits.slice(0, 10);
   if (digits.length === 0) return "+1 ";
   if (digits.length <= 3) return `+1 (${digits}`;
-  if (digits.length <= 6) return `+1 (${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  if (digits.length <= 6)
+    return `+1 (${digits.slice(0, 3)}) ${digits.slice(3)}`;
   return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
@@ -19,7 +21,6 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
   const [consentChecked] = useState(true);
 
   useEffect(() => {
-    // Phone must be valid and consent checked if tcpaConsent exists
     if (
       error ||
       (required && !value.trim()) ||
@@ -62,6 +63,12 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
     setError(err);
     setFormData &&
       setFormData((prev) => ({ ...prev, [nodeName]: val.replace(/\D/g, "") }));
+    const prev =
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    localStorage.setItem(
+      LOCAL_STORAGE_QUIZ_VALUES,
+      JSON.stringify({ ...prev, [nodeName]: val.replace(/\D/g, "") })
+    );
   };
 
   return (

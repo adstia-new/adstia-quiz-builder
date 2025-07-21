@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ZipcodeNode.css";
+import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 
 const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
   const { inputLabel, inputName, placeholder, inputType, validation } = data;
@@ -50,6 +51,12 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
     setFormData((prev) => {
       return { ...prev, [data.nodeName]: e.target.value };
     });
+    const prev =
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    localStorage.setItem(
+      LOCAL_STORAGE_QUIZ_VALUES,
+      JSON.stringify({ ...prev, [data.nodeName]: e.target.value })
+    );
   };
 
   const handleChange = (e) => {

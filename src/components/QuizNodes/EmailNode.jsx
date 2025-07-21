@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./EmailNode.css";
+import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 
 const EmailNode = ({ data, setNextDisabled, setFormData }) => {
   const { inputLabel, nodeName, placeholder, validation } = data;
@@ -37,19 +38,28 @@ const EmailNode = ({ data, setNextDisabled, setFormData }) => {
     const err = validateEmail(val);
     setError(err);
     setFormData && setFormData((prev) => ({ ...prev, [nodeName]: val }));
+    const prev =
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    localStorage.setItem(
+      LOCAL_STORAGE_QUIZ_VALUES,
+      JSON.stringify({ ...prev, [nodeName]: val })
+    );
   };
 
   return (
     <div className="email-node">
       <label className="email-node__label" htmlFor={nodeName}>
-        {inputLabel} {required && <span className="email-node__required">*</span>}
+        {inputLabel}{" "}
+        {required && <span className="email-node__required">*</span>}
       </label>
       <input
         id={nodeName}
         type="email"
         name={nodeName}
         placeholder={placeholder}
-        className={`email-node__input input ${error ? "email-node__input--error" : ""}`}
+        className={`email-node__input input ${
+          error ? "email-node__input--error" : ""
+        }`}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}

@@ -7,12 +7,13 @@ import "./index.css";
 import DobNode from "../QuizNodes/DobNode";
 import EmailNode from "../QuizNodes/EmailNode";
 import PhoneNode from "../QuizNodes/PhoneNode";
+import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
 
 const RenderNodes = ({
   quizNodes,
+  quizConfig,
   currentSlide,
   setCurrentSlide,
-  formData,
   setFormData,
 }) => {
   const [nextDisabled, setNextDisabled] = useState(false);
@@ -20,26 +21,50 @@ const RenderNodes = ({
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
   );
+  const isStartingNode =
+    findCurrentSlideNodes.quizCardType === QUIZ_NODE_TYPES.START;
   const findNextSlideId = findCurrentSlideNodes?.next;
   const nextSlideType =
     quizNodes.find((element) => element.quizCardId === String(findNextSlideId))
       ?.quizCardType || null;
   const currentNodeType = findCurrentSlideNodes.nodes[0].nodeType;
   const showNextPreviousButtons =
-    currentNodeType === "options" || currentNodeType === "dropdown";
+    currentNodeType === QUIZ_NODE_TYPES.OPTIONS;
 
-  const handleNextButtonClick = () => {
-    setCurrentSlide(findNextSlideId);
+  const getSlideHistory = () => {
+    try {
+      return (
+        JSON.parse(sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY)) || []
+      );
+    } catch {
+      return [];
+    }
   };
 
-  const performRedirect = (endNode) => {
-    if (endNode.openInNewTab && endNode.redirectUrl) {
-      window.open(endNode.redirectUrl, "_blank");
-    }
-    if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
-      window.location.href = endNode.redirectCurrentTabUrl;
-    } else if (endNode.redirectUrl && !endNode.openInNewTab) {
-      window.location.href = endNode.redirectUrl;
+  const setSlideHistory = (history) => {
+    sessionStorage.setItem(LOCAL_STORAGE_QUIZ_HISTORY, JSON.stringify(history));
+  };
+
+  const setCurrentSlideWithHistory = (slideId) => {
+    const history = getSlideHistory();
+    history.push(String(currentSlide));
+    setSlideHistory(history);
+    setCurrentSlide(String(slideId));
+  };
+
+  const handleNextButtonClick = () => {
+    const history = getSlideHistory();
+    history.push(String(currentSlide));
+    setSlideHistory(history);
+    setCurrentSlide(String(findNextSlideId));
+  };
+
+  const handlePreviousButtonClick = () => {
+    const history = getSlideHistory();
+    if (history.length > 0) {
+      const lastSlide = history.pop();
+      setSlideHistory(history);
+      setCurrentSlide(String(lastSlide));
     }
   };
 
@@ -50,12 +75,15 @@ const RenderNodes = ({
       ) || {};
     const endNode = nextSlideData.nodes?.[0];
     if (endNode) {
-      if (endNode.redirectDelay) {
-        setTimeout(() => {
-          performRedirect(endNode);
-        }, endNode.redirectDelay);
-      } else {
-        performRedirect(endNode);
+      // Open new tab immediately if needed
+      if (endNode.openInNewTab && endNode.redirectUrl) {
+        window.open(endNode.redirectUrl, "_blank");
+      }
+      // Redirect current tab
+      if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
+        window.location.href = endNode.redirectCurrentTabUrl;
+      } else if (endNode.redirectUrl && !endNode.openInNewTab) {
+        window.location.href = endNode.redirectUrl;
       }
     }
   };
@@ -65,7 +93,7 @@ const RenderNodes = ({
       <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
       <p className="render-nodes__subtext">{findCurrentSlideNodes.subText}</p>
       {findCurrentSlideNodes.nodes.map((quizElement, index) => {
-        if (quizElement.nodeType === "input") {
+        if (quizElement.nodeType === QUIZ_NODE_TYPES.INPUT) {
           return (
             <InputNode
               key={index}
@@ -74,7 +102,7 @@ const RenderNodes = ({
             />
           );
         }
-        if (quizElement.nodeType === "email") {
+        if (quizElement.nodeType === QUIZ_NODE_TYPES.EMAIL) {
           return (
             <EmailNode
               key={index}
@@ -84,7 +112,7 @@ const RenderNodes = ({
             />
           );
         }
-        if (quizElement.nodeType === "phone") {
+        if (quizElement.nodeType === QUIZ_NODE_TYPES.PHONE) {
           return (
             <PhoneNode
               key={index}
@@ -94,7 +122,7 @@ const RenderNodes = ({
             />
           );
         }
-        if (quizElement.nodeType === "zipcode") {
+        if (quizElement.nodeType === QUIZ_NODE_TYPES.ZIPCODE) {
           return (
             <ZipcodeNode
               key={index}
@@ -104,7 +132,7 @@ const RenderNodes = ({
             />
           );
         }
-        if (quizElement.nodeType === "dob") {
+        if (quizElement.nodeType === QUIZ_NODE_TYPES.DOB) {
           return (
             <DobNode
               key={index}
@@ -114,44 +142,67 @@ const RenderNodes = ({
             />
           );
         }
-        if (quizElement.nodeType === "options") {
+        if (quizElement.nodeType === QUIZ_NODE_TYPES.OPTIONS) {
           return (
             <OptionNode
               key={index}
               data={quizElement}
-              setCurrentSlide={setCurrentSlide}
+              setCurrentSlide={setCurrentSlideWithHistory}
               setFormData={setFormData}
             />
           );
         }
-        if (quizElement.nodeType === "dropdown") {
-          return <SelectNode key={index} data={quizElement} />;
+        if (quizElement.nodeType === QUIZ_NODE_TYPES.DROPDOWN) {
+          return (
+            <SelectNode
+              key={index}
+              data={quizElement}
+              setCurrentSlide={setCurrentSlideWithHistory}
+            />
+          );
         }
-        return <p key={index}>Hello</p>;
+        return <p key={index}></p>;
       })}
-      {nextSlideType !== "end" && !showNextPreviousButtons && (
+      {nextSlideType !== QUIZ_NODE_TYPES.END && !showNextPreviousButtons && (
         <div className="render-nodes__nav">
-          <button className="render-nodes__button render-nodes__button--previous">
-            Previous
-          </button>
+          {!isStartingNode && (
+            <button
+              className="render-nodes__button render-nodes__button--previous"
+              type="button"
+              onClick={handlePreviousButtonClick}
+            >
+              {quizConfig.previousButtonText}
+            </button>
+          )}
           <button
             className="render-nodes__button render-nodes__button--next"
             onClick={handleNextButtonClick}
             disabled={nextDisabled}
             type="button"
           >
-            Next
+            {quizConfig.nextButtonText}
           </button>
         </div>
       )}
       {nextSlideType === "end" && !showNextPreviousButtons && (
-        <button
-          className="quiz-builder__submit button"
-          type="submit"
-          onClick={handleSubmitButtonClick}
-        >
-          Submit
-        </button>
+        <div className="render-nodes__nav">
+          {!isStartingNode && (
+            <button
+              className="render-nodes__button render-nodes__button--previous"
+              type="button"
+              onClick={handlePreviousButtonClick}
+            >
+              {quizConfig.previousButtonText}
+            </button>
+          )}
+          <button
+            className="quiz-builder__submit button"
+            type="submit"
+            onClick={handleSubmitButtonClick}
+          >
+            {quizConfig.submitButtonText}
+          </button>
+        </div>
       )}
     </div>
   );

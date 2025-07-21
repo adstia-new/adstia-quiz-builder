@@ -3,7 +3,8 @@ import RenderNodes from "../RenderNodes";
 import "./index.css";
 
 const QuizBuilder = ({ json, setQuizData }) => {
-  const [currentSlide, setCurrentSlide] = useState(1);
+  const startingNode = json.quizJson.find((element) => element.quizCardType === "start").quizCardId;
+  const [currentSlide, setCurrentSlide] = useState(startingNode);
   const [formData, setFormData] = useState({});
 
   const handleFormSubmission = (e) => {
@@ -16,9 +17,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
     <form className="quiz-builder__form" onSubmit={handleFormSubmission}>
       <RenderNodes
         quizNodes={json.quizJson}
+        quizConfig={json.config}
         currentSlide={currentSlide}
         setCurrentSlide={setCurrentSlide}
-        formData={formData}
         setFormData={setFormData}
       />
     </form>

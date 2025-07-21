@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./DobNode.css";
+import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 
 const DobNode = ({ data, setNextDisabled, setFormData }) => {
   const fields = data.fields || [];
@@ -51,7 +52,6 @@ const DobNode = ({ data, setNextDisabled, setFormData }) => {
     const value = e.target.value;
     setValues((prev) => ({ ...prev, [field.fieldName]: value }));
     setErrors((prev) => ({ ...prev, [field.fieldName]: "" }));
-    // Autofocus next input if maxLength reached
     const maxLength = field.validation?.maxLength;
     if (maxLength && value.length === maxLength) {
       if (inputRefs.current[idx + 1]) {
@@ -65,6 +65,12 @@ const DobNode = ({ data, setNextDisabled, setFormData }) => {
     setFormData((prev) => {
       return { ...prev, [field.fieldName]: e.target.value };
     });
+    const prev =
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    localStorage.setItem(
+      LOCAL_STORAGE_QUIZ_VALUES,
+      JSON.stringify({ ...prev, [field.fieldName]: value })
+    );
     const error = validate(field, value);
     setErrors((prev) => ({ ...prev, [field.fieldName]: error }));
   };

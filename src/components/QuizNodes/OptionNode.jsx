@@ -1,11 +1,18 @@
 import React from "react";
 import "./OptionNode.css";
+import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 
 const OptionNode = ({ data, setCurrentSlide, setFormData }) => {
   const handleOptionButtonClick = (clickedOptionData, value) => {
     setFormData((prev) => {
       return { ...prev, [data.nodeName]: value };
     });
+    const prev =
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    localStorage.setItem(
+      LOCAL_STORAGE_QUIZ_VALUES,
+      JSON.stringify({ ...prev, [data.nodeName]: value })
+    );
     setCurrentSlide(clickedOptionData.next);
   };
   return (
