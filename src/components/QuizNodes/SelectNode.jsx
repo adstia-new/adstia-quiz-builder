@@ -9,6 +9,12 @@ const SelectNode = ({ data }) => {
 
   useEffect(() => {
     if (data.defaultOption) {
+      const prev =
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      localStorage.setItem(
+        LOCAL_STORAGE_QUIZ_VALUES,
+        JSON.stringify({ ...prev, [data.nodeName]: data.defaultOption })
+      );
       setSelectedOption(data.defaultOption);
     }
   }, []);
