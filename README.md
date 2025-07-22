@@ -42,7 +42,8 @@ Your quiz JSON should follow this structure:
     nextButtonText: "Next",
     previousButtonText: "Previous",
     submitButtonText: "Check My Eligibility",
-    prefillValues: true
+    prefillValues: true,
+    leadId: "YOUR_LEAD_ID_WITHOUT_DOMAIN_NAME"
   },
   quizJson: [
     {
