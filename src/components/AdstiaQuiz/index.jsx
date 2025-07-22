@@ -1,9 +1,10 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
+import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
+import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
+import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
-import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
-import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
-import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
 
 export const QuizConfigContext = createContext();
 
@@ -34,6 +35,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
     if (json.config && json.config.pabblyUrl) {
       await sendDataToPabbly(json.config.pabblyUrl);
     }
+
+    // Handle end node redirect logic
+    handleEndNodeRedirect(json.quizJson, currentSlide);
   };
 
   return (
