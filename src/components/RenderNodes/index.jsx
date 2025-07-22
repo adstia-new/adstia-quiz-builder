@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import InputNode from "../QuizNodes/InputNode";
 import OptionNode from "../QuizNodes/OptionNode";
 import SelectNode from "../QuizNodes/SelectNode";
@@ -8,14 +8,15 @@ import DobNode from "../QuizNodes/DobNode";
 import EmailNode from "../QuizNodes/EmailNode";
 import PhoneNode from "../QuizNodes/PhoneNode";
 import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
+import { QuizConfigContext } from "../AdstiaQuiz";
 
 const RenderNodes = ({
   quizNodes,
-  quizConfig,
   currentSlide,
   setCurrentSlide,
   setFormData,
 }) => {
+  const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
 
   const findCurrentSlideNodes = quizNodes.find(

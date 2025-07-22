@@ -1,12 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./EmailNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { QuizConfigContext } from "../AdstiaQuiz";
 
 const EmailNode = ({ data, setNextDisabled, setFormData }) => {
+  const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation } = data;
   const { required, errorMessage } = validation || {};
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+
+  // Prefill value from localStorage if enabled in quizConfig
+  useEffect(() => {
+    if (quizConfig.prefillValues) {
+      const stored =
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      if (stored[nodeName]) {
+        setValue(stored[nodeName]);
+      }
+    }
+  }, [quizConfig.prefillValues, nodeName]);
 
   useEffect(() => {
     if (error || (required && !value.trim())) {

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, createContext } from "react";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
+
+export const QuizConfigContext = createContext();
 
 const QuizBuilder = ({ json, setQuizData }) => {
   const startingNode = json.quizJson.find((element) => element.quizCardType === "start").quizCardId;
@@ -14,15 +16,16 @@ const QuizBuilder = ({ json, setQuizData }) => {
   };
 
   return (
-    <form className="quiz-builder__form" onSubmit={handleFormSubmission}>
-      <RenderNodes
-        quizNodes={json.quizJson}
-        quizConfig={json.config}
-        currentSlide={currentSlide}
-        setCurrentSlide={setCurrentSlide}
-        setFormData={setFormData}
-      />
-    </form>
+    <QuizConfigContext.Provider value={json.config}>
+      <form className="quiz-builder__form" onSubmit={handleFormSubmission}>
+        <RenderNodes
+          quizNodes={json.quizJson}
+          currentSlide={currentSlide}
+          setCurrentSlide={setCurrentSlide}
+          setFormData={setFormData}
+        />
+      </form>
+    </QuizConfigContext.Provider>
   );
 };
 

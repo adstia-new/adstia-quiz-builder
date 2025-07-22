@@ -1,13 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./ZipcodeNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { QuizConfigContext } from "../AdstiaQuiz";
 
 const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
+  const quizConfig = useContext(QuizConfigContext);
+  console.log(quizConfig.prefillValues);
   const { inputLabel, inputName, placeholder, inputType, validation } = data;
   const { required, pattern, minLength, maxLength, errorMessage } =
     validation || {};
   const [error, setError] = useState("");
   const [value, setValue] = useState("");
+
+  // Prefill value from localStorage if enabled in quizConfig
+  useEffect(() => {
+    if (quizConfig.prefillValues) {
+      const stored =
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      if (stored[data.nodeName]) {
+        setValue(stored[data.nodeName]);
+      }
+    }
+  }, [quizConfig.prefillValues, data.nodeName]);
 
   // Update Next button state whenever error or value changes
   useEffect(() => {
@@ -60,7 +74,8 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
   };
 
   const handleChange = (e) => {
-    setValue(e.target.value);
+    let numericValue = e.target.value.replace(/\D/g, "");
+    setValue(numericValue);
     if (error) {
       setError("");
     }
@@ -74,9 +89,12 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
       </label>
       <input
         id={inputName}
-        type={inputType || "text"}
+        type="text"
         name={inputName}
         placeholder={placeholder}
+        inputMode="numeric"
+        pattern="[0-9]*"
+        maxLength={maxLength}
         className={`zipcode-node__input input ${
           error ? "zipcode-node__input--error" : ""
         }`}

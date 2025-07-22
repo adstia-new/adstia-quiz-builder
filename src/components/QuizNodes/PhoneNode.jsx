@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./PhoneNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { QuizConfigContext } from "../AdstiaQuiz";
 
 const formatPhone = (value) => {
   let digits = value.replace(/\D/g, "");
@@ -14,11 +15,22 @@ const formatPhone = (value) => {
 };
 
 const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
+  const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
   const { required, errorMessage } = validation || {};
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [consentChecked] = useState(true);
+
+  // Prefill value from localStorage if enabled in quizConfig
+  useEffect(() => {
+    if (quizConfig.prefillValues) {
+      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      if (stored[nodeName]) {
+        setValue(formatPhone(stored[nodeName]));
+      }
+    }
+  }, [quizConfig.prefillValues, nodeName]);
 
   useEffect(() => {
     if (
@@ -37,7 +49,6 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
     if (required && !digits) {
       return "This field is required";
     }
-    // US phone: 10 digits
     if (digits.length !== 11) {
       return errorMessage || "Invalid Phone Number";
     }

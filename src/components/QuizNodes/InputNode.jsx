@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { QuizConfigContext } from "../AdstiaQuiz";
 
 const InputNode = ({ data, setNextDisabled, setFormData }) => {
+  const quizConfig = useContext(QuizConfigContext);
   const {
     inputLabel,
     inputName,
@@ -13,6 +15,16 @@ const InputNode = ({ data, setNextDisabled, setFormData }) => {
   const { minLength, maxLength, required, errorMessage } = validation || {};
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+
+  // Prefill value from localStorage if enabled in quizConfig
+  useEffect(() => {
+    if (quizConfig?.prefillValues) {
+      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      if (stored[nodeName]) {
+        setValue(stored[nodeName]);
+      }
+    }
+  }, [quizConfig?.prefillValues, nodeName]);
 
   useEffect(() => {
     if (setNextDisabled) {
