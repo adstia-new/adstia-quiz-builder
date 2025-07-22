@@ -1,7 +1,9 @@
 import React, { useState, createContext, useEffect } from "react";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
-import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
+import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
+import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
 
 export const QuizConfigContext = createContext();
 
@@ -14,41 +16,24 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   useEffect(() => {
     // Save query params to localStorage on mount
-    const params = new URLSearchParams(window.location.search);
-    const queryObj = {};
-    for (const [key, value] of params.entries()) {
-      queryObj[key] = value;
-    }
-    if (Object.keys(queryObj).length > 0) {
-      const prev =
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
-      localStorage.setItem(
-        LOCAL_STORAGE_QUIZ_VALUES,
-        JSON.stringify({ ...prev, ...queryObj })
-      );
-    }
+    saveQueryParamsToLocalStorage();
 
     // Add LeadiD script to head only if leadId is present in config
+    let cleanup = () => {};
     if (json.config && json.config.leadId) {
-      const script = document.createElement("script");
-      script.id = "LeadiDscript_campaign";
-      script.type = "text/javascript";
-      script.async = true;
-      script.crossOrigin = "anonymous";
-      script.src = `//create.lidstatic.com/campaign/${json.config.leadId}.js`;
-      document.head.appendChild(script);
-      return () => {
-        if (script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
-      };
+      cleanup = appendLeadIdScript(json.config.leadId);
     }
+    return cleanup;
   }, [json.config]);
 
-  const handleFormSubmission = (e) => {
+  const handleFormSubmission = async (e) => {
     e.preventDefault();
-    console.log("form submitted!");
     setQuizData(formData);
+
+    // Send localStorage data to pabblyUrl if present
+    if (json.config && json.config.pabblyUrl) {
+      await sendDataToPabbly(json.config.pabblyUrl);
+    }
   };
 
   return (
