@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import "./ZipcodeNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
+import { saveLocationWithZipcode } from "../../utils/saveLocationWithZipcode";
 
 const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
   const quizConfig = useContext(QuizConfigContext);
@@ -21,6 +22,10 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
         setFormData((prev) => {
           return { ...prev, [data.nodeName]: stored[data.nodeName] };
         });
+
+        (async () => {
+          await saveLocationWithZipcode(stored[data.nodeName]);
+        })();
       }
     }
   }, [quizConfig.prefillValues, data.nodeName]);
@@ -62,16 +67,20 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
     return true;
   };
 
-  const handleBlur = (e) => {
-    validateInput(e.target.value);
+  const handleBlur = async (e) => {
+    const val = e.target.value;
+    validateInput(val);
     setFormData((prev) => {
-      return { ...prev, [data.nodeName]: e.target.value };
+      return { ...prev, [data.nodeName]: val };
     });
+
+    await saveLocationWithZipcode(val);
+
     const prev =
       JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
-      JSON.stringify({ ...prev, [data.nodeName]: e.target.value })
+      JSON.stringify({ ...prev, [data.nodeName]: val })
     );
   };
 
