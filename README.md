@@ -17,14 +17,10 @@ import QuizJson from "./quizJson.json";
 
 function QuizPage() {
   const [quizData, setQuizData] = useState(null);
-  console.log("Quiz Data:", quizData);
 
   return (
     <div className="App">
-      <QuizBuilder
-        setQuizData={setQuizData}
-        json={QuizJson}
-      />
+      <QuizBuilder setQuizData={setQuizData} json={QuizJson} />
     </div>
   );
 }
@@ -101,6 +97,7 @@ Your quiz JSON should follow this structure:
 ```
 
 ### Key Properties
+
 - `quizName`: Name of the quiz
 - `totalSteps`: Total number of steps/cards
 - `config`: Quiz configuration (button texts, prefill, etc.)

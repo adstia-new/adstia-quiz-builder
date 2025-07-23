@@ -29,8 +29,7 @@ const RenderNodes = ({
     quizNodes.find((element) => element.quizCardId === String(findNextSlideId))
       ?.quizCardType || null;
   const currentNodeType = findCurrentSlideNodes.nodes[0].nodeType;
-  const showNextPreviousButtons =
-    currentNodeType === QUIZ_NODE_TYPES.OPTIONS;
+  const showNextPreviousButtons = currentNodeType === QUIZ_NODE_TYPES.OPTIONS;
 
   const getSlideHistory = () => {
     try {
@@ -80,6 +79,7 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
+              setFormData={setFormData}
             />
           );
         }
@@ -176,10 +176,7 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button
-            className="quiz-builder__submit button"
-            type="submit"
-          >
+          <button className="quiz-builder__submit button" type="submit">
             {quizConfig.submitButtonText}
           </button>
         </div>

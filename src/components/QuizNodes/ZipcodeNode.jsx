@@ -5,7 +5,6 @@ import { QuizConfigContext } from "../AdstiaQuiz";
 
 const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
   const quizConfig = useContext(QuizConfigContext);
-  console.log(quizConfig.prefillValues);
   const { inputLabel, inputName, placeholder, inputType, validation } = data;
   const { required, pattern, minLength, maxLength, errorMessage } =
     validation || {};
@@ -19,6 +18,9 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       if (stored[data.nodeName]) {
         setValue(stored[data.nodeName]);
+        setFormData((prev) => {
+          return { ...prev, [data.nodeName]: stored[data.nodeName] };
+        });
       }
     }
   }, [quizConfig.prefillValues, data.nodeName]);

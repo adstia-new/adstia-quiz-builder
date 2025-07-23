@@ -15,8 +15,11 @@ const EmailNode = ({ data, setNextDisabled, setFormData }) => {
     if (quizConfig.prefillValues) {
       const stored =
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+
       if (stored[nodeName]) {
         setValue(stored[nodeName]);
+        setFormData &&
+          setFormData((prev) => ({ ...prev, [nodeName]: stored[nodeName] }));
       }
     }
   }, [quizConfig.prefillValues, nodeName]);
