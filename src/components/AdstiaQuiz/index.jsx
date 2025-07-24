@@ -5,6 +5,7 @@ import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLoca
 import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
+import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
 
 export const QuizConfigContext = createContext();
 
@@ -34,6 +35,10 @@ const QuizBuilder = ({ json, setQuizData }) => {
     // Send localStorage data to pabblyUrl if present
     if (json.config && json.config.pabblyUrl) {
       await sendDataToPabbly(json.config.pabblyUrl);
+    }
+
+    if (json.config && json.config.leadsUrl) {
+      await saveLeadsDataToDb(json.config.leadsUrl);
     }
 
     // Handle end node redirect logic

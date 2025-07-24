@@ -1,6 +1,7 @@
 import React from "react";
 import "./OptionNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 
 const OptionNode = ({ data, setCurrentSlide, setFormData }) => {
   const handleOptionButtonClick = (clickedOptionData, value) => {
@@ -14,6 +15,9 @@ const OptionNode = ({ data, setCurrentSlide, setFormData }) => {
       JSON.stringify({ ...prev, [data.nodeName]: value })
     );
     setCurrentSlide(clickedOptionData.next);
+
+    // Push quiz data to GTM
+    pushLocalDataToDataLayer();
   };
   return (
     <div className="option-node">

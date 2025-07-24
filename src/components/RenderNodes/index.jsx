@@ -1,14 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
+import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
+import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
+import { QuizConfigContext } from "../AdstiaQuiz";
+import DobNode from "../QuizNodes/DobNode";
+import EmailNode from "../QuizNodes/EmailNode";
 import InputNode from "../QuizNodes/InputNode";
 import OptionNode from "../QuizNodes/OptionNode";
+import PhoneNode from "../QuizNodes/PhoneNode";
 import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
-import DobNode from "../QuizNodes/DobNode";
-import EmailNode from "../QuizNodes/EmailNode";
-import PhoneNode from "../QuizNodes/PhoneNode";
-import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
-import { QuizConfigContext } from "../AdstiaQuiz";
 
 const RenderNodes = ({
   quizNodes,
@@ -57,6 +58,9 @@ const RenderNodes = ({
     history.push(String(currentSlide));
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
+
+    // Push quiz data to GTM
+    pushLocalDataToDataLayer();
   };
 
   const handlePreviousButtonClick = () => {

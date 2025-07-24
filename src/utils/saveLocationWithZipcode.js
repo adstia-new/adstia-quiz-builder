@@ -15,7 +15,6 @@ export async function saveLocationWithZipcode(zipcode) {
       websiteCity: zipcodeResponse?.places[0]?.placeName,
       longitude: zipcodeResponse?.places[0]?.longitude,
       latitude: zipcodeResponse?.places[0]?.latitude,
-      _id: zipcodeResponse?.places[0]?._id,
     };
 
     const storedQuizData = JSON.parse(
