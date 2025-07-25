@@ -5,6 +5,10 @@ import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLoca
 import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
+import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
+import { sendDataToJitsuEvent } from "../../utils/saveToJitsuEventUrl";
+import { getCurrentSlug, getDomainName } from "../../utils/windowUtils";
+import { getESTISOString } from "../../utils/dateTimeUtils";
 
 export const QuizConfigContext = createContext();
 
@@ -14,6 +18,8 @@ const QuizBuilder = ({ json, setQuizData }) => {
   ).quizCardId;
   const [currentSlide, setCurrentSlide] = useState(startingNode);
   const [formData, setFormData] = useState({});
+  const [jitsuEventData, setJitsuEventData] = useState([]);
+  const [sendQuizEventData, setSendQuizEventData] = useState(false);
 
   useEffect(() => {
     // Save query params to localStorage on mount
@@ -27,6 +33,33 @@ const QuizBuilder = ({ json, setQuizData }) => {
     return cleanup;
   }, [json.config]);
 
+  const sendJitsuEvent = () => {
+    const domainName = getDomainName();
+    const slug = getCurrentSlug();
+    const dateTime = getESTISOString();
+    const previousStep =
+      jitsuEventData.length > 0 && jitsuEventData[0].previousStep
+        ? jitsuEventData[0].previousStep
+        : "-";
+
+    if (jitsuEventData.length > 0) {
+      jitsuEventData.forEach((eventData) => {
+        const { nodeName, ...data } = eventData;
+
+        sendDataToJitsuEvent(
+          json.config.jitsuEventUrl,
+          JSON.stringify({
+            ...data,
+            domain: domainName,
+            slug,
+            dateTime,
+            previousStep,
+          })
+        );
+      });
+    }
+  };
+
   const handleFormSubmission = async (e) => {
     e.preventDefault();
     setQuizData(formData);
@@ -36,9 +69,44 @@ const QuizBuilder = ({ json, setQuizData }) => {
       await sendDataToPabbly(json.config.pabblyUrl);
     }
 
+    if (json.config && json.config.leadsUrl) {
+      await saveLeadsDataToDb(json.config.leadsUrl);
+    }
+
+    sendJitsuEvent();
+
     // Handle end node redirect logic
     handleEndNodeRedirect(json.quizJson, currentSlide);
   };
+
+  useEffect(() => {
+    if (sendQuizEventData && json.config && json.config.jitsuEventUrl) {
+      sendJitsuEvent();
+
+      const currentSlideNodes = json?.quizJson?.find(
+        (element) => element.quizCardId === String(currentSlide)
+      );
+
+      setJitsuEventData((prev) => {
+        let newEventData = [];
+        const previousStep =
+          prev && prev.length > 0 && prev[0]?.currentStep
+            ? prev[0].currentStep
+            : "-";
+
+        currentSlideNodes.nodes.forEach((node) => {
+          newEventData.push({
+            previousStep,
+            nodeName: node?.nodeName,
+          });
+        });
+
+        return newEventData;
+      });
+
+      setSendQuizEventData(false);
+    }
+  }, [jitsuEventData, sendQuizEventData]);
 
   return (
     <QuizConfigContext.Provider value={json.config}>
@@ -48,6 +116,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
           currentSlide={currentSlide}
           setCurrentSlide={setCurrentSlide}
           setFormData={setFormData}
+          setJitsuEventData={setJitsuEventData}
+          sendQuizEventData={sendQuizEventData}
+          setSendQuizEventData={setSendQuizEventData}
         />
         {json.config && json.config.leadId && (
           <input

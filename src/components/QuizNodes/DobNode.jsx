@@ -14,7 +14,8 @@ const DobNode = ({ data, setNextDisabled, setFormData }) => {
     });
     // Prefill from localStorage if enabled
     if (quizConfig.prefillValues) {
-      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      const stored =
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       fields.forEach((f) => {
         if (stored[f.fieldName]) {
           initial[f.fieldName] = stored[f.fieldName];

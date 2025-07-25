@@ -1,16 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ZipcodeNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_NODE_TYPES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
+import { saveLocationWithZipcode } from "../../utils/saveLocationWithZipcode";
 
-const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
+const ZipcodeNode = ({
+  data,
+  setNextDisabled,
+  setFormData,
+  setJitsuEventData,
+}) => {
   const quizConfig = useContext(QuizConfigContext);
-  console.log(quizConfig.prefillValues);
   const { inputLabel, inputName, placeholder, inputType, validation } = data;
   const { required, pattern, minLength, maxLength, errorMessage } =
     validation || {};
   const [error, setError] = useState("");
   const [value, setValue] = useState("");
+  const nodeName = "zipcode";
 
   // Prefill value from localStorage if enabled in quizConfig
   useEffect(() => {
@@ -19,6 +25,28 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       if (stored[data.nodeName]) {
         setValue(stored[data.nodeName]);
+        setFormData((prev) => {
+          return { ...prev, [data.nodeName]: stored[data.nodeName] };
+        });
+
+        setJitsuEventData((prev) => {
+          const newEventData = prev.map((eventData) => {
+            if (eventData?.nodeName === nodeName) {
+              return {
+                ...eventData,
+                answer: stored[nodeName],
+              };
+            }
+
+            return eventData;
+          });
+
+          return newEventData;
+        });
+
+        (async () => {
+          await saveLocationWithZipcode(stored[data.nodeName]);
+        })();
       }
     }
   }, [quizConfig.prefillValues, data.nodeName]);
@@ -60,17 +88,36 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData }) => {
     return true;
   };
 
-  const handleBlur = (e) => {
-    validateInput(e.target.value);
+  const handleBlur = async (e) => {
+    const val = e.target.value;
+    validateInput(val);
     setFormData((prev) => {
-      return { ...prev, [data.nodeName]: e.target.value };
+      return { ...prev, [data.nodeName]: val };
     });
+
+    await saveLocationWithZipcode(val);
+
     const prev =
       JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
-      JSON.stringify({ ...prev, [data.nodeName]: e.target.value })
+      JSON.stringify({ ...prev, [data.nodeName]: val })
     );
+
+    setJitsuEventData((prev) => {
+      const newEventData = prev.map((eventData) => {
+        if (eventData?.nodeName === nodeName) {
+          return {
+            ...eventData,
+            answer: val,
+          };
+        }
+
+        return eventData;
+      });
+
+      return newEventData;
+    });
   };
 
   const handleChange = (e) => {
