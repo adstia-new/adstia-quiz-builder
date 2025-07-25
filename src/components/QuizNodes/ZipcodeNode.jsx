@@ -103,26 +103,22 @@ const ZipcodeNode = ({
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [data.nodeName]: val })
     );
-
-    setJitsuEventData((prev) => {
-      const newEventData = prev.map((eventData) => {
-        if (eventData?.nodeName === nodeName) {
-          return {
-            ...eventData,
-            answer: val,
-          };
-        }
-
-        return eventData;
-      });
-
-      return newEventData;
-    });
   };
 
   const handleChange = (e) => {
     let numericValue = e.target.value.replace(/\D/g, "");
     setValue(numericValue);
+    
+    setJitsuEventData((prev) => {
+      const newEventData = prev.map((eventData) => {
+        return {
+          ...eventData,
+          answer: numericValue,
+        };
+      });
+
+      return newEventData;
+    });
     if (error) {
       setError("");
     }
