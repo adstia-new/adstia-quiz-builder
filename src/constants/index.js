@@ -12,3 +12,8 @@ export const QUIZ_NODE_TYPES = {
   ZIPCODE: "zipcode",
   END: "end",
 };
+
+export const JITSU_EVENT = {
+  PAGE_VIEW: "page-view",
+  QUIZ_DATA: "quiz-data"
+}
