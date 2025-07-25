@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import { QuizConfigContext } from "../AdstiaQuiz";
@@ -16,6 +16,9 @@ const RenderNodes = ({
   currentSlide,
   setCurrentSlide,
   setFormData,
+  setJitsuEventData,
+  sendQuizEventData,
+  setSendQuizEventData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
@@ -61,6 +64,8 @@ const RenderNodes = ({
 
     // Push quiz data to GTM
     pushLocalDataToDataLayer();
+
+    setSendQuizEventData(true);
   };
 
   const handlePreviousButtonClick = () => {
@@ -71,6 +76,43 @@ const RenderNodes = ({
       setCurrentSlide(String(lastSlide));
     }
   };
+
+  const handleOptionClick = () => {
+    const nodeName = findCurrentSlideNodes.nodes[0].nodeName;
+
+    setJitsuEventData((prev) => {
+      let newEventData = prev[0];
+
+      newEventData = {
+        ...newEventData,
+        currentStep: currentSlide,
+        questionKey: `${currentSlide}_${prev.nodeName || nodeName}`,
+      };
+
+      return [newEventData];
+    });
+    setSendQuizEventData(true);
+  };
+
+  useEffect(() => {
+    if (!sendQuizEventData) {
+      setJitsuEventData((prev) => {
+        let newEventData = [...prev];
+        if (prev.length > 0) {
+          newEventData = prev.map((eventData) => {
+            return {
+              ...eventData,
+              currentStep: currentSlide,
+              questionKey: `${currentSlide}_${eventData.nodeName}`,
+              nextStep: findNextSlideId,
+            };
+          });
+        }
+
+        return newEventData;
+      });
+    }
+  }, [sendQuizEventData]);
 
   return (
     <div className="render-nodes">
@@ -84,6 +126,7 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -94,6 +137,7 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -104,6 +148,7 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -114,6 +159,7 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -134,6 +180,8 @@ const RenderNodes = ({
               data={quizElement}
               setCurrentSlide={setCurrentSlideWithHistory}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
+              handleOptionClick={handleOptionClick}
             />
           );
         }

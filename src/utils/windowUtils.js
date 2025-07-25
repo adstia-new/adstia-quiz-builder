@@ -10,6 +10,12 @@ export const getCurrentURL = () => {
   return location.href;
 };
 
+export const getCurrentSlug = () => {
+  const location = window.location;
+
+  return location.pathname;
+};
+
 export const getScreenResolutionStr = () => {
   const width = window.innerWidth;
   const height = window.innerHeight;
