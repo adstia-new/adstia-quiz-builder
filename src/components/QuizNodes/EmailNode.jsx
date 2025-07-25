@@ -3,7 +3,12 @@ import "./EmailNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
 
-const EmailNode = ({ data, setNextDisabled, setFormData }) => {
+const EmailNode = ({
+  data,
+  setNextDisabled,
+  setFormData,
+  setJitsuEventData,
+}) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation } = data;
   const { required, errorMessage } = validation || {};
@@ -15,8 +20,26 @@ const EmailNode = ({ data, setNextDisabled, setFormData }) => {
     if (quizConfig.prefillValues) {
       const stored =
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+
       if (stored[nodeName]) {
         setValue(stored[nodeName]);
+        setFormData &&
+          setFormData((prev) => ({ ...prev, [nodeName]: stored[nodeName] }));
+
+        setJitsuEventData((prev) => {
+          const newEventData = prev.map((eventData) => {
+            if (eventData.nodeName === nodeName) {
+              return {
+                ...eventData,
+                answer: stored[data.nodeName],
+              };
+            }
+
+            return eventData;
+          });
+
+          return newEventData;
+        });
       }
     }
   }, [quizConfig.prefillValues, nodeName]);
@@ -57,6 +80,21 @@ const EmailNode = ({ data, setNextDisabled, setFormData }) => {
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [nodeName]: val })
     );
+
+    setJitsuEventData((prev) => {
+      const newEventData = prev.map((eventData) => {
+        if (eventData.nodeName === nodeName) {
+          return {
+            ...eventData,
+            answer: val,
+          };
+        }
+
+        return eventData;
+      });
+
+      return newEventData;
+    });
   };
 
   return (

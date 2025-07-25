@@ -1,8 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
 
-const InputNode = ({ data, setNextDisabled, setFormData }) => {
+const InputNode = ({
+  data,
+  setNextDisabled,
+  setFormData,
+  setJitsuEventData,
+}) => {
   const quizConfig = useContext(QuizConfigContext);
   const {
     inputLabel,
@@ -19,9 +24,27 @@ const InputNode = ({ data, setNextDisabled, setFormData }) => {
   // Prefill value from localStorage if enabled in quizConfig
   useEffect(() => {
     if (quizConfig?.prefillValues) {
-      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      const stored =
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       if (stored[nodeName]) {
         setValue(stored[nodeName]);
+        setFormData &&
+          setFormData((prev) => ({ ...prev, [nodeName]: stored[nodeName] }));
+
+        setJitsuEventData((prev) => {
+          const newEventData = prev.map((eventData) => {
+            if (eventData?.nodeName === nodeName) {
+              return {
+                ...eventData,
+                answer: stored[nodeName],
+              };
+            }
+
+            return eventData;
+          });
+
+          return newEventData;
+        });
       }
     }
   }, [quizConfig?.prefillValues, nodeName]);
@@ -65,6 +88,21 @@ const InputNode = ({ data, setNextDisabled, setFormData }) => {
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [nodeName]: val })
     );
+
+    setJitsuEventData((prev) => {
+      const newEventData = prev.map((eventData) => {
+        if (eventData.nodeName === nodeName) {
+          return {
+            ...eventData,
+            answer: val,
+          };
+        }
+
+        return eventData;
+      });
+
+      return newEventData;
+    });
   };
 
   return (

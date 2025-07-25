@@ -14,7 +14,12 @@ const formatPhone = (value) => {
   return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
-const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
+const PhoneNode = ({
+  data,
+  setNextDisabled,
+  setFormData,
+  setJitsuEventData,
+}) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
   const { required, errorMessage } = validation || {};
@@ -25,9 +30,30 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
   // Prefill value from localStorage if enabled in quizConfig
   useEffect(() => {
     if (quizConfig.prefillValues) {
-      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      const stored =
+        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       if (stored[nodeName]) {
         setValue(formatPhone(stored[nodeName]));
+        setFormData &&
+          setFormData((prev) => ({
+            ...prev,
+            [nodeName]: stored[nodeName].replace(/\D/g, ""),
+          }));
+
+        setJitsuEventData((prev) => {
+          const newEventData = prev.map((eventData) => {
+            if (eventData?.nodeName === nodeName) {
+              return {
+                ...eventData,
+                answer: stored[nodeName],
+              };
+            }
+
+            return eventData;
+          });
+
+          return newEventData;
+        });
       }
     }
   }, [quizConfig.prefillValues, nodeName]);
@@ -80,6 +106,21 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [nodeName]: val.replace(/\D/g, "") })
     );
+
+    setJitsuEventData((prev) => {
+      const newEventData = prev.map((eventData) => {
+        if (eventData.nodeName === nodeName) {
+          return {
+            ...eventData,
+            answer: val,
+          };
+        }
+
+        return eventData;
+      });
+
+      return newEventData;
+    });
   };
 
   return (
@@ -110,6 +151,7 @@ const PhoneNode = ({ data, setNextDisabled, setFormData }) => {
               type="checkbox"
               checked={true}
               className="phone-node__tcpa-checkbox"
+              onChange={() => {}}
             />
             <span className="phone-node__tcpa-text">{tcpaConsent.text}</span>
           </label>

@@ -1,20 +1,24 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
+import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
+import { QuizConfigContext } from "../AdstiaQuiz";
+import DobNode from "../QuizNodes/DobNode";
+import EmailNode from "../QuizNodes/EmailNode";
 import InputNode from "../QuizNodes/InputNode";
 import OptionNode from "../QuizNodes/OptionNode";
+import PhoneNode from "../QuizNodes/PhoneNode";
 import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
-import DobNode from "../QuizNodes/DobNode";
-import EmailNode from "../QuizNodes/EmailNode";
-import PhoneNode from "../QuizNodes/PhoneNode";
-import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
-import { QuizConfigContext } from "../AdstiaQuiz";
 
 const RenderNodes = ({
   quizNodes,
   currentSlide,
   setCurrentSlide,
   setFormData,
+  setJitsuEventData,
+  sendQuizEventData,
+  setSendQuizEventData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
@@ -29,8 +33,7 @@ const RenderNodes = ({
     quizNodes.find((element) => element.quizCardId === String(findNextSlideId))
       ?.quizCardType || null;
   const currentNodeType = findCurrentSlideNodes.nodes[0].nodeType;
-  const showNextPreviousButtons =
-    currentNodeType === QUIZ_NODE_TYPES.OPTIONS;
+  const showNextPreviousButtons = currentNodeType === QUIZ_NODE_TYPES.OPTIONS;
 
   const getSlideHistory = () => {
     try {
@@ -58,6 +61,11 @@ const RenderNodes = ({
     history.push(String(currentSlide));
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
+
+    // Push quiz data to GTM
+    pushLocalDataToDataLayer();
+
+    setSendQuizEventData(true);
   };
 
   const handlePreviousButtonClick = () => {
@@ -68,6 +76,43 @@ const RenderNodes = ({
       setCurrentSlide(String(lastSlide));
     }
   };
+
+  const handleOptionClick = () => {
+    const nodeName = findCurrentSlideNodes.nodes[0].nodeName;
+
+    setJitsuEventData((prev) => {
+      let newEventData = prev[0];
+
+      newEventData = {
+        ...newEventData,
+        currentStep: currentSlide,
+        questionKey: `${currentSlide}_${prev.nodeName || nodeName}`,
+      };
+
+      return [newEventData];
+    });
+    setSendQuizEventData(true);
+  };
+
+  useEffect(() => {
+    if (!sendQuizEventData) {
+      setJitsuEventData((prev) => {
+        let newEventData = [...prev];
+        if (prev.length > 0) {
+          newEventData = prev.map((eventData) => {
+            return {
+              ...eventData,
+              currentStep: currentSlide,
+              questionKey: `${currentSlide}_${eventData.nodeName}`,
+              nextStep: findNextSlideId,
+            };
+          });
+        }
+
+        return newEventData;
+      });
+    }
+  }, [sendQuizEventData]);
 
   return (
     <div className="render-nodes">
@@ -80,6 +125,8 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
+              setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -90,6 +137,7 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -100,6 +148,7 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -110,6 +159,7 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
@@ -130,6 +180,8 @@ const RenderNodes = ({
               data={quizElement}
               setCurrentSlide={setCurrentSlideWithHistory}
               setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
+              handleOptionClick={handleOptionClick}
             />
           );
         }
@@ -176,10 +228,7 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button
-            className="quiz-builder__submit button"
-            type="submit"
-          >
+          <button className="quiz-builder__submit button" type="submit">
             {quizConfig.submitButtonText}
           </button>
         </div>
