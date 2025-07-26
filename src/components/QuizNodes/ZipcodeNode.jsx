@@ -11,22 +11,30 @@ const ZipcodeNode = ({
   setJitsuEventData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
-  const { inputLabel, inputName, placeholder, inputType, validation } = data;
+  const {
+    inputLabel,
+    inputName,
+    placeholder,
+    nodeName,
+    inputType,
+    validation,
+  } = data;
   const { required, pattern, minLength, maxLength, errorMessage } =
     validation || {};
   const [error, setError] = useState("");
   const [value, setValue] = useState("");
-  const nodeName = "zipcode";
+
+  console.log("zipcode datga", data);
 
   // Prefill value from localStorage if enabled in quizConfig
   useEffect(() => {
     if (quizConfig.prefillValues) {
       const stored =
         JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
-      if (stored[data.nodeName]) {
-        setValue(stored[data.nodeName]);
+      if (stored[nodeName]) {
+        setValue(stored[nodeName]);
         setFormData((prev) => {
-          return { ...prev, [data.nodeName]: stored[data.nodeName] };
+          return { ...prev, [nodeName]: stored[nodeName] };
         });
 
         setJitsuEventData((prev) => {
@@ -45,11 +53,11 @@ const ZipcodeNode = ({
         });
 
         (async () => {
-          await saveLocationWithZipcode(stored[data.nodeName]);
+          await saveLocationWithZipcode(stored[nodeName]);
         })();
       }
     }
-  }, [quizConfig.prefillValues, data.nodeName]);
+  }, [quizConfig.prefillValues, nodeName]);
 
   // Update Next button state whenever error or value changes
   useEffect(() => {
@@ -92,7 +100,7 @@ const ZipcodeNode = ({
     const val = e.target.value;
     validateInput(val);
     setFormData((prev) => {
-      return { ...prev, [data.nodeName]: val };
+      return { ...prev, [nodeName]: val };
     });
 
     await saveLocationWithZipcode(val);
@@ -101,20 +109,22 @@ const ZipcodeNode = ({
       JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
-      JSON.stringify({ ...prev, [data.nodeName]: val })
+      JSON.stringify({ ...prev, [nodeName]: val })
     );
   };
 
   const handleChange = (e) => {
     let numericValue = e.target.value.replace(/\D/g, "");
     setValue(numericValue);
-    
+
     setJitsuEventData((prev) => {
       const newEventData = prev.map((eventData) => {
-        return {
-          ...eventData,
-          answer: numericValue,
-        };
+        if (eventData.nodeName === nodeName) {
+          return {
+            ...eventData,
+            answer: numericValue,
+          };
+        }
       });
 
       return newEventData;
