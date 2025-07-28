@@ -82,7 +82,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   useEffect(() => {
     if (sendQuizEventData && json.config && json.config.jitsuEventUrl) {
-      sendJitsuEvent();
+      sendJitsuEvent(json.config.jitsuEventUrl, jitsuEventData);
 
       const currentSlideNodes = json?.quizJson?.find(
         (element) => element.quizCardId === String(currentSlide)
