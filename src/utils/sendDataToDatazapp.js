@@ -80,4 +80,3 @@ export const sendDataToDatazapp = async (fname, lname, email, phoneNumber) => {
     console.error("Error sending data to Datazapp:", error);
   }
 };
-

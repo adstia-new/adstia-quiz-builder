@@ -35,7 +35,6 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
     localStorage.setItem("user_id", user_id);
   }
 
-  console.log("jitsu user_id", user_id);
   try {
     window?.jitsu?.identify(user_id, data);
   } catch (err) {

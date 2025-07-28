@@ -8,7 +8,8 @@ export function saveQueryParamsToLocalStorage() {
     queryObj[key] = value;
   }
   if (Object.keys(queryObj).length > 0) {
-    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    const prev =
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, ...queryObj })
