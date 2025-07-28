@@ -7,7 +7,7 @@ export async function saveLocationWithZipcode(zipcode) {
     const zipcodeResponse = await fetchZipcode.json();
 
     const formattedResponse = {
-      zipcode: zipcodeResponse?.postCode,
+      websiteZip: zipcodeResponse?.postCode,
       websiteCountry: zipcodeResponse?.country,
       websiteState: zipcodeResponse?.places[0]?.state,
       stateCode: zipcodeResponse?.places[0]?.stateAbbreviation,
