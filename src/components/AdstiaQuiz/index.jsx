@@ -74,6 +74,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
       session_id: sessionStorage.getItem("session_id") || "",
     });
 
+    // Push quiz data to GTM
+    pushLocalDataToDataLayer();
+
     // Handle end node redirect logic
     setTimeout(() => {
       handleEndNodeRedirect(json.quizJson, currentSlide);
