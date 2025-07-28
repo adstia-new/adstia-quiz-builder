@@ -62,10 +62,9 @@ const RenderNodes = ({
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
 
+    setSendQuizEventData(true);
     // Push quiz data to GTM
     pushLocalDataToDataLayer();
-
-    setSendQuizEventData(true);
   };
 
   const handlePreviousButtonClick = () => {

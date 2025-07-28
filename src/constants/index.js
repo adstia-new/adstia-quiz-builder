@@ -1,5 +1,6 @@
 export const LOCAL_STORAGE_QUIZ_VALUES = "quizValues";
 export const LOCAL_STORAGE_QUIZ_HISTORY = "quizHistory";
+export const SESSION_STORAGE_DATAZAPP_KEY = "datazAppData";
 export const ZIPCODE_API_URL = "https://server.adstiacms.com/api/zipcode/us";
 export const QUIZ_NODE_TYPES = {
   START: "start",
@@ -16,5 +17,10 @@ export const QUIZ_NODE_TYPES = {
 export const JITSU_EVENT = {
   PAGE_VIEW: "page_view",
   QUIZ_DATA: "quiz_data",
-  LEAD_SUBMIT: "lead_submit"
-}
+  LEAD_SUBMIT: "lead_submit",
+};
+
+export const DATAZAPP_CONFIG = {
+  API_KEY: "UMKMDTIECH",
+  BASE_URL: "https://secureapi.datazapp.com/Appendv2",
+};

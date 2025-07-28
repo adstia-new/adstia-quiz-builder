@@ -4,9 +4,10 @@ export function handleEndNodeRedirect(quizJson, currentSlide) {
     (element) => element.quizCardId === String(currentSlide)
   );
   const findNextSlideId = currentNode?.next;
-  const nextSlideData = quizJson.find(
-    (element) => element.quizCardId === String(findNextSlideId)
-  ) || {};
+  const nextSlideData =
+    quizJson.find(
+      (element) => element.quizCardId === String(findNextSlideId)
+    ) || {};
   const endNode = nextSlideData.nodes?.[0];
   if (endNode) {
     // Open new tab immediately if needed

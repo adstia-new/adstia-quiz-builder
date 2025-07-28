@@ -5,11 +5,25 @@ import {
   getScreenResolutionStr,
 } from "./windowUtils";
 
-const saveLeadsDataToDb = async (leadsUrl) => {
+const saveLeadsDataToDb = async (leadsUrl, datazAppData) => {
   try {
     const screenResolution = getScreenResolutionStr();
     const domainName = getDomainName();
     const finalUrl = getCurrentURL();
+
+    let payload = {
+      ...JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"),
+      domainName,
+      finalUrl,
+      screenResolution,
+    };
+
+    if (datazAppData) {
+      payload = {
+        ...payload,
+        ...datazAppData,
+      };
+    }
 
     const saveLeadsData = await fetch(leadsUrl, {
       method: "POST",
@@ -17,14 +31,7 @@ const saveLeadsDataToDb = async (leadsUrl) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        data: {
-          ...JSON.parse(
-            localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
-          ),
-          domainName,
-          finalUrl,
-          screenResolution,
-        },
+        data: payload,
       }),
     });
 
