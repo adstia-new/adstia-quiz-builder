@@ -1,4 +1,5 @@
 import { DATAZAPP_CONFIG } from "../constants";
+import { formatDatazAppResponse } from "./formatDatazAppResponse";
 
 export const sendDataToDatazapp = async (fname, lname, email, phoneNumber) => {
   const { API_KEY, BASE_URL } = DATAZAPP_CONFIG;
@@ -74,7 +75,7 @@ export const sendDataToDatazapp = async (fname, lname, email, phoneNumber) => {
 
     const data = await response.json();
     if (data?.ResponseDetail?.Data?.length > 0)
-      return data?.ResponseDetail?.Data[0];
+      return formatDatazAppResponse(data?.ResponseDetail?.Data[0]);
   } catch (error) {
     console.error("Error sending data to Datazapp:", error);
   }
