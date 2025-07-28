@@ -45,7 +45,7 @@ const PhoneNode = ({
             if (eventData?.nodeName === nodeName) {
               return {
                 ...eventData,
-                answer: stored[nodeName],
+                answer: stored[nodeName].replace(/\D/g, ""),
               };
             }
 
