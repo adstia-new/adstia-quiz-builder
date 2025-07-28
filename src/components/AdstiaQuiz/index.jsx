@@ -1,20 +1,18 @@
 import React, { createContext, useEffect, useState } from "react";
+import { JITSU_EVENT } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
 import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
-import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
-import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
-import RenderNodes from "../RenderNodes";
-import "./index.css";
 import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
+import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
 import {
-  sendDataToJitsuEvent,
   sendDataToJitsuIdentifyEvent,
   sendJitsuEvent,
 } from "../../utils/saveToJitsuEventUrl";
-import { getCurrentSlug, getDomainName } from "../../utils/windowUtils";
-import { getESTISOString } from "../../utils/dateTimeUtils";
-import { JITSU_EVENT } from "../../constants";
 import { sendDataToDatazapp } from "../../utils/sendDataToDatazapp";
+import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
+import RenderNodes from "../RenderNodes";
+import "./index.css";
+import { pushDataToRingbaTags } from "../../utils/pushDataToRingbaTags";
 
 export const QuizConfigContext = createContext();
 
@@ -61,7 +59,15 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
     sendDataToJitsuIdentifyEvent(datazAppData);
 
-    sendJitsuEvent();
+    pushDataToRingbaTags({
+      ...formData,
+      ...datazAppData,
+      user_id: localStorage.getItem("user_id") || "",
+      session_id: sessionStorage.getItem("session_id") || "",
+    });
+
+    if (json.config.jitsuEventUrl)
+      sendJitsuEvent(json.config.jitsuEventUrl, jitsuEventData);
 
     window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
       user_id: localStorage.getItem("user_id") || "",

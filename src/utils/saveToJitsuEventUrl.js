@@ -1,4 +1,6 @@
 import { JITSU_EVENT, LOCAL_STORAGE_QUIZ_VALUES } from "../constants";
+import { getESTISOString } from "./dateTimeUtils";
+import { getCurrentSlug, getDomainName } from "./windowUtils";
 
 export async function sendDataToJitsuEvent(url, data) {
   const EVENT_DATA = JSON.parse(data);
@@ -41,21 +43,21 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
   }
 };
 
-export const sendJitsuEvent = () => {
+export const sendJitsuEvent = (jitsuEventUrl, jitsuEventData) => {
   const domainName = getDomainName();
   const slug = getCurrentSlug();
   const dateTime = getESTISOString();
   const previousStep =
-    jitsuEventData.length > 0 && jitsuEventData[0].previousStep
+    jitsuEventData?.length > 0 && jitsuEventData[0].previousStep
       ? jitsuEventData[0].previousStep
       : "-";
 
-  if (jitsuEventData.length > 0) {
+  if (jitsuEventData?.length > 0) {
     jitsuEventData.forEach((eventData) => {
       const { nodeName, ...data } = eventData;
 
       sendDataToJitsuEvent(
-        json.config.jitsuEventUrl,
+        jitsuEventUrl,
         JSON.stringify({
           ...data,
           domain: domainName,

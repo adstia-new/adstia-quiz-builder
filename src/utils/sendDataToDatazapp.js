@@ -81,4 +81,3 @@ export const sendDataToDatazapp = async (fname, lname, email, phoneNumber) => {
   }
 };
 
-//https://track.nationwidesubsidy.com/2929965d-3bc1-4127-9be4-9574d4a46408
