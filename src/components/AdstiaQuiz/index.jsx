@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { JITSU_EVENT } from "../../constants";
+import { JITSU_EVENT, SESSION_STORAGE_DATAZAPP_KEY } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
 import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
 import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
@@ -12,7 +12,7 @@ import { sendDataToDatazapp } from "../../utils/sendDataToDatazapp";
 import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
-import { pushDataToRingbaTags } from "../../utils/pushDataToRingbaTags";
+import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 
 export const QuizConfigContext = createContext();
 
@@ -46,6 +46,10 @@ const QuizBuilder = ({ json, setQuizData }) => {
     const { fname, lname, email, phoneNumber } = formData;
     if (fname && lname && email && phoneNumber) {
       datazAppData = await sendDataToDatazapp(fname, lname, email, phoneNumber);
+      sessionStorage.setItem(
+        SESSION_STORAGE_DATAZAPP_KEY,
+        JSON.stringify(datazAppData)
+      );
     }
 
     // Send localStorage data to pabblyUrl if present
@@ -58,13 +62,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
     }
 
     sendDataToJitsuIdentifyEvent(datazAppData);
-
-    pushDataToRingbaTags({
-      ...formData,
-      ...datazAppData,
-      user_id: localStorage.getItem("user_id") || "",
-      session_id: sessionStorage.getItem("session_id") || "",
-    });
 
     if (json.config.jitsuEventUrl)
       sendJitsuEvent(json.config.jitsuEventUrl, jitsuEventData);
