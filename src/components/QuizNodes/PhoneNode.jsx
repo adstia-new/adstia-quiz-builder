@@ -112,7 +112,7 @@ const PhoneNode = ({
         if (eventData.nodeName === nodeName) {
           return {
             ...eventData,
-            answer: val,
+            answer: val.replace(/\D/g, ""),
           };
         }
 

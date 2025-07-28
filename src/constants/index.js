@@ -14,7 +14,7 @@ export const QUIZ_NODE_TYPES = {
 };
 
 export const JITSU_EVENT = {
-  PAGE_VIEW: "page-view",
-  QUIZ_DATA: "quiz-data",
-  LEAD_SUBMIT: "lead-submit"
+  PAGE_VIEW: "page_view",
+  QUIZ_DATA: "quiz_data",
+  LEAD_SUBMIT: "lead_submit"
 }
