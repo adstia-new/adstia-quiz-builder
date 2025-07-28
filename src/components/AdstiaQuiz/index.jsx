@@ -84,7 +84,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
     // Handle end node redirect logic
     setTimeout(() => {
       handleEndNodeRedirect(json.quizJson, currentSlide);
-    }, 1500)
+    }, 1500);
   };
 
   useEffect(() => {
