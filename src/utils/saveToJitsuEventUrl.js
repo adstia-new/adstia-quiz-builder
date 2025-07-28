@@ -25,3 +25,45 @@ export async function sendDataToJitsuEvent(url, data) {
     console.error("Failed to send data to Jitsu:", err);
   }
 }
+
+export const sendDataToJitsuIdentifyEvent = (data) => {
+  let user_id = localStorage.getItem("user_id");
+  if (!user_id) {
+    user_id = `user_id_${crypto.randomUUID()}`;
+    localStorage.setItem("user_id", user_id);
+  }
+
+  console.log("jitsu user_id", user_id);
+  try {
+    window?.jitsu?.identify(user_id, data);
+  } catch (err) {
+    console.error("Failed to send data to Jitsu identify:", err);
+  }
+};
+
+export const sendJitsuEvent = () => {
+  const domainName = getDomainName();
+  const slug = getCurrentSlug();
+  const dateTime = getESTISOString();
+  const previousStep =
+    jitsuEventData.length > 0 && jitsuEventData[0].previousStep
+      ? jitsuEventData[0].previousStep
+      : "-";
+
+  if (jitsuEventData.length > 0) {
+    jitsuEventData.forEach((eventData) => {
+      const { nodeName, ...data } = eventData;
+
+      sendDataToJitsuEvent(
+        json.config.jitsuEventUrl,
+        JSON.stringify({
+          ...data,
+          domain: domainName,
+          slug,
+          dateTime,
+          previousStep,
+        })
+      );
+    });
+  }
+};

@@ -6,7 +6,11 @@ import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
 import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
-import { sendDataToJitsuEvent } from "../../utils/saveToJitsuEventUrl";
+import {
+  sendDataToJitsuEvent,
+  sendDataToJitsuIdentifyEvent,
+  sendJitsuEvent,
+} from "../../utils/saveToJitsuEventUrl";
 import { getCurrentSlug, getDomainName } from "../../utils/windowUtils";
 import { getESTISOString } from "../../utils/dateTimeUtils";
 import { JITSU_EVENT } from "../../constants";
@@ -35,56 +39,29 @@ const QuizBuilder = ({ json, setQuizData }) => {
     return cleanup;
   }, [json.config]);
 
-  const sendJitsuEvent = () => {
-    const domainName = getDomainName();
-    const slug = getCurrentSlug();
-    const dateTime = getESTISOString();
-    const previousStep =
-      jitsuEventData.length > 0 && jitsuEventData[0].previousStep
-        ? jitsuEventData[0].previousStep
-        : "-";
-
-    if (jitsuEventData.length > 0) {
-      jitsuEventData.forEach((eventData) => {
-        const { nodeName, ...data } = eventData;
-
-        sendDataToJitsuEvent(
-          json.config.jitsuEventUrl,
-          JSON.stringify({
-            ...data,
-            domain: domainName,
-            slug,
-            dateTime,
-            previousStep,
-          })
-        );
-      });
-    }
-  };
-
   const handleFormSubmission = async (e) => {
     e.preventDefault();
     setQuizData(formData);
-    
+
     let datazAppData = null;
-    
+
     const { fname, lname, email, phoneNumber } = formData;
     if (fname && lname && email && phoneNumber) {
       datazAppData = await sendDataToDatazapp(fname, lname, email, phoneNumber);
-      console.log("Datazapp response:", datazAppData);
     }
 
     // Send localStorage data to pabblyUrl if present
     if (json.config && json.config.pabblyUrl) {
-      await sendDataToPabbly(json.config.pabblyUrl);
+      await sendDataToPabbly(json.config.pabblyUrl, datazAppData);
     }
 
     if (json.config && json.config.leadsUrl) {
-      await saveLeadsDataToDb(json.config.leadsUrl);
+      await saveLeadsDataToDb(json.config.leadsUrl, datazAppData);
     }
 
+    sendDataToJitsuIdentifyEvent(datazAppData);
+
     sendJitsuEvent();
-    
 
     window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
       user_id: localStorage.getItem("user_id") || "",
