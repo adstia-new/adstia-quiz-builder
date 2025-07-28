@@ -12,6 +12,15 @@ export async function sendDataToJitsuEvent(url, data) {
     window?.jitsu?.identify(user_id, {
       [nodeName]: EVENT_DATA.answer
     });
+    console.log({
+      user_id,
+      session_id: sessionStorage.getItem("session_id") || "",
+      question_key: EVENT_DATA.questionKey,
+      answer_value: EVENT_DATA.answer,
+      current_step: EVENT_DATA.currentStep,
+      previous_step: EVENT_DATA.previousStep,
+      next_step: EVENT_DATA.nextStep,
+    });
     window?.jitsu?.track(JITSU_EVENT.QUIZ_DATA, {
       user_id,
       session_id: sessionStorage.getItem("session_id") || "",
