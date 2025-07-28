@@ -15,5 +15,6 @@ export const QUIZ_NODE_TYPES = {
 
 export const JITSU_EVENT = {
   PAGE_VIEW: "page-view",
-  QUIZ_DATA: "quiz-data"
+  QUIZ_DATA: "quiz-data",
+  LEAD_SUBMIT: "lead-submit"
 }

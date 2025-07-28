@@ -9,6 +9,7 @@ import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
 import { sendDataToJitsuEvent } from "../../utils/saveToJitsuEventUrl";
 import { getCurrentSlug, getDomainName } from "../../utils/windowUtils";
 import { getESTISOString } from "../../utils/dateTimeUtils";
+import { JITSU_EVENT } from "../../constants";
 
 export const QuizConfigContext = createContext();
 
@@ -75,8 +76,15 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
     sendJitsuEvent();
 
+    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+      user_id: localStorage.getItem("user_id") || "",
+      session_id: sessionStorage.getItem("session_id") || "",
+    });
+
     // Handle end node redirect logic
-    handleEndNodeRedirect(json.quizJson, currentSlide);
+    setTimeout(() => {
+      handleEndNodeRedirect(json.quizJson, currentSlide);
+    }, 1500)
   };
 
   useEffect(() => {
