@@ -16,5 +16,10 @@ export const QUIZ_NODE_TYPES = {
 export const JITSU_EVENT = {
   PAGE_VIEW: "page_view",
   QUIZ_DATA: "quiz_data",
-  LEAD_SUBMIT: "lead_submit"
-}
+  LEAD_SUBMIT: "lead_submit",
+};
+
+export const DATAZAPP_CONFIG = {
+  API_KEY: "UMKMDTIECH",
+  BASE_URL: "https://secureapi.datazapp.com/Appendv2",
+};
