@@ -54,6 +54,8 @@ const RenderNodes = ({
     history.push(String(currentSlide));
     setSlideHistory(history);
     setCurrentSlide(String(slideId));
+
+    window.history.pushState({ step: slideId }, "", window.location.pathname);
   };
 
   const handleNextButtonClick = () => {
@@ -61,6 +63,13 @@ const RenderNodes = ({
     history.push(String(currentSlide));
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
+
+    // Push history entry
+    window.history.pushState(
+      { step: findNextSlideId },
+      "",
+      window.location.pathname
+    );
 
     setSendQuizEventData(true);
     // Push quiz data to GTM
@@ -112,6 +121,24 @@ const RenderNodes = ({
       });
     }
   }, [sendQuizEventData]);
+
+  useEffect(() => {
+    window.history.replaceState(
+      { step: currentSlide },
+      "",
+      window.location.pathname
+    );
+    
+    const onPopState = (event) => {
+      const step = event.state?.step;
+      if (step) {
+        setCurrentSlide(String(step));
+      }
+    };
+
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   return (
     <div className="render-nodes">
