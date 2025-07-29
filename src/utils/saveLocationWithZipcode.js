@@ -3,7 +3,6 @@ import { ZIPCODE_API_URL } from "../constants";
 // Utility to save user location with zipcode
 export async function saveLocationWithZipcode(zipcode) {
   try {
-    console.log("saveLocationWithZipcode called with zipcode:", zipcode);
     if (!zipcode) return;
 
     const fetchZipcode = await fetch(`${ZIPCODE_API_URL}/${zipcode}`);
