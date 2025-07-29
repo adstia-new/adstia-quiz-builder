@@ -74,6 +74,7 @@ export const sendDataToDatazapp = async (fname, lname, email, phoneNumber) => {
     }
 
     const data = await response.json();
+
     if (data?.ResponseDetail?.Data?.length > 0)
       return formatDatazAppResponse(data?.ResponseDetail?.Data[0]);
   } catch (error) {
