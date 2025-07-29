@@ -37,8 +37,8 @@ const QuizBuilder = ({ json, setQuizData }) => {
     return cleanup;
   }, [json.config]);
 
-  const handleFormSubmission = async (e) => {
-    e.preventDefault();
+  const handleFormSubmission = async (e, isOptionsQuiz) => {
+    e?.preventDefault();
     setQuizData(formData);
 
     let datazAppData = null;
@@ -76,7 +76,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
     // Handle end node redirect logic
     setTimeout(() => {
-      handleEndNodeRedirect(json.quizJson, currentSlide);
+      handleEndNodeRedirect(json.quizJson, currentSlide, isOptionsQuiz);
     }, 1500);
   };
 
@@ -108,6 +108,12 @@ const QuizBuilder = ({ json, setQuizData }) => {
       setSendQuizEventData(false);
     }
   }, [jitsuEventData, sendQuizEventData]);
+
+  useEffect(() => {
+    if (json.quizJson[currentSlide - 1]?.quizCardType === "end") {
+      handleFormSubmission(null, true);
+    }
+  }, [currentSlide]);
 
   return (
     <QuizConfigContext.Provider value={json.config}>
