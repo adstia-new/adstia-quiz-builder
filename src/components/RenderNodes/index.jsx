@@ -128,7 +128,7 @@ const RenderNodes = ({
       "",
       window.location.pathname
     );
-    
+
     const onPopState = (event) => {
       const step = event.state?.step;
       if (step) {
