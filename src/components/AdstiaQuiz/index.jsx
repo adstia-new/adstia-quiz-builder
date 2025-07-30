@@ -80,7 +80,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
   };
 
   useEffect(() => {
-    console.log("sendQuizEventData", sendQuizEventData);
     if (sendQuizEventData && json.config) {
       sendJitsuEvent(jitsuEventData);
 
