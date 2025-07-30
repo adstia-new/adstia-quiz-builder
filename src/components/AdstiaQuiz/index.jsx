@@ -63,8 +63,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
     sendDataToJitsuIdentifyEvent(datazAppData);
 
-    if (json.config.jitsuEventUrl)
-      sendJitsuEvent(json.config.jitsuEventUrl, jitsuEventData);
+    sendJitsuEvent(jitsuEventData);
 
     window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
       user_id: localStorage.getItem("user_id") || "",
@@ -81,8 +80,8 @@ const QuizBuilder = ({ json, setQuizData }) => {
   };
 
   useEffect(() => {
-    if (sendQuizEventData && json.config && json.config.jitsuEventUrl) {
-      sendJitsuEvent(json.config.jitsuEventUrl, jitsuEventData);
+    if (sendQuizEventData && json.config) {
+      sendJitsuEvent(jitsuEventData);
 
       const currentSlideNodes = json?.quizJson?.find(
         (element) => element.quizCardId === String(currentSlide)
