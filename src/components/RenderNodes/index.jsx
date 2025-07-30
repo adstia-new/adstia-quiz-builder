@@ -10,6 +10,7 @@ import PhoneNode from "../QuizNodes/PhoneNode";
 import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
+import { sortAndRemoveDuplicate } from "../../utils/sortAndRemoveDuplicate";
 
 const RenderNodes = ({
   quizNodes,
@@ -52,7 +53,7 @@ const RenderNodes = ({
   const setCurrentSlideWithHistory = (slideId) => {
     const history = getSlideHistory();
     history.push(String(currentSlide));
-    setSlideHistory(history);
+    setSlideHistory(sortAndRemoveDuplicate(history));
     setCurrentSlide(String(slideId));
 
     window.history.pushState({ step: slideId }, "", window.location.pathname);
