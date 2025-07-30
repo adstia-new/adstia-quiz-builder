@@ -117,6 +117,28 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   return (
     <QuizConfigContext.Provider value={json.config}>
+      {json.config.progressBar && (
+        <div className="quiz-builder-progress-bar-container">
+          <div className="quiz-builder-text">
+            <span className="quiz-builder-step-text">
+              Step {json?.quizJson[currentSlide - 1]?.stepNum} of{" "}
+              {json?.totalSteps}
+            </span>
+            <span className="quiz-builder-total-progress-text">100%</span>
+          </div>
+          <div className="quiz-builder-progress-bar">
+            <div
+              className="quiz-builder-progress-bar-fill"
+              style={{
+                width: `${
+                  (json?.quizJson[currentSlide - 1]?.progress / 100) * 100
+                }%`,
+              }}
+            ></div>
+          </div>
+        </div>
+      )}
+
       <form className="quiz-builder__form" onSubmit={handleFormSubmission}>
         <RenderNodes
           quizNodes={json.quizJson}

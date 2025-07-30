@@ -8,3 +8,26 @@
   gap: 18px;
   padding: 20px;
 }
+
+.quiz-builder-progress-bar-container {
+  width: 100%;
+}
+
+.quiz-builder-progress-bar {
+  height: 10px;
+  background-color: rgb(229, 231, 235);
+  border-radius: 9999px;
+}
+
+.quiz-builder-text {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.quiz-builder-progress-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background-color: #28a745;
+}
