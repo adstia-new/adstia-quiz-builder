@@ -2,7 +2,7 @@ import { JITSU_EVENT, LOCAL_STORAGE_QUIZ_VALUES } from "../constants";
 import { getESTISOString } from "./dateTimeUtils";
 import { getCurrentSlug, getDomainName } from "./windowUtils";
 
-export async function sendDataToJitsuEvent(url, data) {
+export async function sendDataToJitsuEvent(data) {
   const EVENT_DATA = JSON.parse(data);
   const nodeName = EVENT_DATA.questionKey.split("_").slice(1).join("_");
   let user_id = localStorage.getItem("user_id");
@@ -42,7 +42,7 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
   }
 };
 
-export const sendJitsuEvent = (jitsuEventUrl, jitsuEventData) => {
+export const sendJitsuEvent = (jitsuEventData) => {
   const domainName = getDomainName();
   const slug = getCurrentSlug();
   const dateTime = getESTISOString();
@@ -56,7 +56,6 @@ export const sendJitsuEvent = (jitsuEventUrl, jitsuEventData) => {
       const { nodeName, ...data } = eventData;
 
       sendDataToJitsuEvent(
-        jitsuEventUrl,
         JSON.stringify({
           ...data,
           domain: domainName,
