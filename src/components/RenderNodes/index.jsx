@@ -21,8 +21,11 @@ const RenderNodes = ({
   sendQuizEventData,
   setSendQuizEventData,
 }) => {
+  const searchParams = new URLSearchParams(window.location.search);
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
+
+  console.log("searchParams", searchParams.toString());
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
@@ -56,7 +59,11 @@ const RenderNodes = ({
     setSlideHistory(sortAndRemoveDuplicate(history));
     setCurrentSlide(String(slideId));
 
-    window.history.pushState({ step: slideId }, "", window.location.pathname);
+    window.history.pushState(
+      { step: slideId },
+      "",
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
   };
 
   const handleNextButtonClick = () => {
@@ -69,7 +76,7 @@ const RenderNodes = ({
     window.history.pushState(
       { step: findNextSlideId },
       "",
-      window.location.pathname
+      `${window.location.pathname}?${searchParams.toString()}`
     );
 
     setSendQuizEventData(true);
@@ -127,7 +134,7 @@ const RenderNodes = ({
     window.history.replaceState(
       { step: currentSlide },
       "",
-      window.location.pathname
+      `${window.location.pathname}?${searchParams.toString()}`
     );
 
     const onPopState = (event) => {
