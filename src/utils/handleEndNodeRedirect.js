@@ -1,5 +1,6 @@
 // Utility to handle end node redirect logic
 export function handleEndNodeRedirect(quizJson, currentSlide, isOptionsQuiz) {
+  if(typeof window === "undefined" || !window.location) return null;
   const searchParams = new URLSearchParams(window.location.search);
 
   const currentNode = quizJson.find(

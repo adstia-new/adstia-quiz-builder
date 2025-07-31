@@ -2,6 +2,7 @@
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../constants";
 
 export function saveQueryParamsToLocalStorage() {
+  if(typeof window === "undefined" || !window.location) return null;
   const params = new URLSearchParams(window.location.search);
   const queryObj = {};
   for (const [key, value] of params.entries()) {
