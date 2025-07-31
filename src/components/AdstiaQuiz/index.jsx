@@ -68,6 +68,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
     window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
       user_id: localStorage.getItem("user_id") || "",
       session_id: sessionStorage.getItem("session_id") || "",
+      ...formData,
     });
 
     // Push quiz data to GTM

@@ -1,6 +1,10 @@
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../constants/index";
+import { getAnonymousId } from "./getAnonymousId";
 
 export const pushLocalDataToDataLayer = () => {
+  const user_id = localStorage.getItem("user_id") || "";
+  const session_id = sessionStorage.getItem("session_id") || "";
+  const anonymous_id = getAnonymousId() || "";
   const storedData = JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
   );
@@ -16,6 +20,6 @@ export const pushLocalDataToDataLayer = () => {
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: "quiz",
-    data: data,
+    data: { ...data, user_id, session_id, anonymous_id },
   });
 };

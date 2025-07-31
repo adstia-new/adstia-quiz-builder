@@ -10,6 +10,8 @@ import PhoneNode from "../QuizNodes/PhoneNode";
 import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
+import { sortAndRemoveDuplicate } from "../../utils/sortAndRemoveDuplicate";
+import LoaderImg from "/public/loader.svg";
 
 const RenderNodes = ({
   quizNodes,
@@ -20,8 +22,10 @@ const RenderNodes = ({
   sendQuizEventData,
   setSendQuizEventData,
 }) => {
+  const searchParams = new URLSearchParams(window.location.search);
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
@@ -52,10 +56,14 @@ const RenderNodes = ({
   const setCurrentSlideWithHistory = (slideId) => {
     const history = getSlideHistory();
     history.push(String(currentSlide));
-    setSlideHistory(history);
+    setSlideHistory(sortAndRemoveDuplicate(history));
     setCurrentSlide(String(slideId));
 
-    window.history.pushState({ step: slideId }, "", window.location.pathname);
+    window.history.pushState(
+      { step: slideId },
+      "",
+      `${window.location.pathname}?${searchParams.toString()}`
+    );
   };
 
   const handleNextButtonClick = () => {
@@ -68,7 +76,7 @@ const RenderNodes = ({
     window.history.pushState(
       { step: findNextSlideId },
       "",
-      window.location.pathname
+      `${window.location.pathname}?${searchParams.toString()}`
     );
 
     setSendQuizEventData(true);
@@ -126,7 +134,7 @@ const RenderNodes = ({
     window.history.replaceState(
       { step: currentSlide },
       "",
-      window.location.pathname
+      `${window.location.pathname}?${searchParams.toString()}`
     );
 
     const onPopState = (event) => {
@@ -254,8 +262,15 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button className="quiz-builder__submit button" type="submit">
+          <button
+            className="quiz-builder__submit button"
+            type="submit"
+            onClick={() => {
+              setShowLoader(true);
+            }}
+          >
             {quizConfig.submitButtonText}
+            {showLoader && <LoaderImg className="quiz-builder__loader" />}
           </button>
         </div>
       )}
