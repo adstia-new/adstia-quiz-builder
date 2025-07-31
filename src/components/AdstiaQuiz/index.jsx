@@ -17,6 +17,7 @@ import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 export const QuizConfigContext = createContext();
 
 const QuizBuilder = ({ json, setQuizData }) => {
+  console.log("quizbuilder loaded");
   const startingNode = json.quizJson.find(
     (element) => element.quizCardType === "start"
   ).quizCardId;
