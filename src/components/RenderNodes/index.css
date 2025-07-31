@@ -1,4 +1,4 @@
-.render-nodes{
+.render-nodes {
   max-width: 800px;
   display: flex;
   flex-direction: column;
@@ -71,4 +71,26 @@
 
 .render-nodes__button:disabled {
   opacity: 0.8;
+}
+
+.quiz-builder__submit.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.quiz-builder__loader {
+  height: 24px;
+  width: auto;
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

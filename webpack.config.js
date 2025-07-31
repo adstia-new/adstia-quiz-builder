@@ -5,8 +5,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "index.js",
-    libraryTarget: 'umd',
-    globalObject: 'this'
+    libraryTarget: "umd",
+    globalObject: "this",
   },
   externals: {
     react: "react",
@@ -27,6 +27,11 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        use: ["@svgr/webpack"],
       },
     ],
   },
