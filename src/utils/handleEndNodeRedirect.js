@@ -1,5 +1,7 @@
 // Utility to handle end node redirect logic
 export function handleEndNodeRedirect(quizJson, currentSlide, isOptionsQuiz) {
+  const searchParams = new URLSearchParams(window.location.search);
+
   const currentNode = quizJson.find(
     (element) => element.quizCardId === String(currentSlide)
   );
@@ -9,19 +11,22 @@ export function handleEndNodeRedirect(quizJson, currentSlide, isOptionsQuiz) {
       currentNode?.nodes?.[0]?.openInNewTab &&
       currentNode?.nodes?.[0]?.redirectUrl
     ) {
-      window.open(currentNode?.nodes?.[0]?.redirectUrl, "_blank");
+      window.open(
+        `${currentNode?.nodes?.[0]?.redirectUrl}?${searchParams}`,
+        "_blank"
+      );
     }
     // Redirect current tab
     if (
       currentNode?.nodes?.[0]?.redirectCurrentTab &&
       currentNode?.nodes?.[0]?.redirectCurrentTabUrl
     ) {
-      window.location.href = currentNode?.nodes?.[0]?.redirectCurrentTabUrl;
+      window.location.href = `${currentNode?.nodes?.[0]?.redirectCurrentTabUrl}?${searchParams}`;
     } else if (
       currentNode?.nodes?.[0]?.redirectUrl &&
       !currentNode?.nodes?.[0]?.openInNewTab
     ) {
-      window.location.href = currentNode?.nodes?.[0]?.redirectUrl;
+      window.location.href = `${currentNode?.nodes?.[0]?.redirectUrl}?${searchParams}`;
     }
     return;
   }
@@ -37,13 +42,13 @@ export function handleEndNodeRedirect(quizJson, currentSlide, isOptionsQuiz) {
   if (endNode) {
     // Open new tab immediately if needed
     if (endNode.openInNewTab && endNode.redirectUrl) {
-      window.open(endNode.redirectUrl, "_blank");
+      window.open(`${endNode.redirectUrl}?${searchParams}`, "_blank");
     }
     // Redirect current tab
     if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
-      window.location.href = endNode.redirectCurrentTabUrl;
+      window.location.href = `${endNode.redirectCurrentTabUrl}?${searchParams}`;
     } else if (endNode.redirectUrl && !endNode.openInNewTab) {
-      window.location.href = endNode.redirectUrl;
+      window.location.href = `${endNode.redirectUrl}?${searchParams}`;
     }
   }
 }

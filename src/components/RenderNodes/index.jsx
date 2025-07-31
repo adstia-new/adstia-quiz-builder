@@ -25,8 +25,6 @@ const RenderNodes = ({
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
 
-  console.log("searchParams", searchParams.toString());
-
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
   );
