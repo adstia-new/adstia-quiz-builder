@@ -11,12 +11,15 @@ export async function sendDataToJitsuEvent(data) {
     localStorage.setItem("user_id", user_id);
   }
   try {
+    const sessionId = sessionStorage.getItem("session_id") || "";
     window?.jitsu?.identify(user_id, {
       [nodeName]: EVENT_DATA.answer,
+      session_id: sessionId,
+      $insert_id: sessionId,
     });
     window?.jitsu?.track(JITSU_EVENT.QUIZ_DATA, {
       user_id,
-      session_id: sessionStorage.getItem("session_id") || "",
+      session_id: sessionId,
       question_key: EVENT_DATA.questionKey,
       answer_value: EVENT_DATA.answer,
       current_step: EVENT_DATA.currentStep,
@@ -36,7 +39,11 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
   }
 
   try {
-    window?.jitsu?.identify(user_id, data);
+    window?.jitsu?.identify(user_id, {
+      ...data,
+      session_id: sessionId,
+      $insert_id: sessionId,
+    });
   } catch (err) {
     console.error("Failed to send data to Jitsu identify:", err);
   }
