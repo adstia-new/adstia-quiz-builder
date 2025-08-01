@@ -39,6 +39,7 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
   }
 
   try {
+    const sessionId = sessionStorage.getItem("session_id") || "";
     window?.jitsu?.identify(user_id, {
       ...data,
       session_id: sessionId,

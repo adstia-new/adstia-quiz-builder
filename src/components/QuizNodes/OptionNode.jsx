@@ -5,7 +5,6 @@ import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 
 const OptionNode = ({
   data,
-  setCurrentSlide,
   setFormData,
   setJitsuEventData,
   handleOptionClick,
@@ -20,7 +19,6 @@ const OptionNode = ({
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [data.nodeName]: value })
     );
-    setCurrentSlide(clickedOptionData.next);
 
     // Push quiz data to GTM
     pushLocalDataToDataLayer();
@@ -37,7 +35,7 @@ const OptionNode = ({
       return [newEventData];
     });
 
-    handleOptionClick();
+    handleOptionClick(clickedOptionData.next);
   };
   return (
     <div className="option-node">

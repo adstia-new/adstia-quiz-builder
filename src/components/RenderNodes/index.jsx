@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import { QuizConfigContext } from "../AdstiaQuiz";
@@ -21,8 +21,9 @@ const RenderNodes = ({
   setJitsuEventData,
   sendQuizEventData,
   setSendQuizEventData,
+  handleFormSubmit,
 }) => {
-  if(typeof window === "undefined" || !window.location) return null;
+  if (typeof window === "undefined" || !window.location) return null;
   const searchParams = new URLSearchParams(window.location.search);
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
@@ -94,8 +95,12 @@ const RenderNodes = ({
     }
   };
 
-  const handleOptionClick = () => {
+  const handleOptionClick = (next) => {
     const nodeName = findCurrentSlideNodes.nodes[0].nodeName;
+
+    const nextNodeType =
+      quizNodes.find((element) => element.quizCardId === String(next))
+        ?.quizCardType || null;
 
     setJitsuEventData((prev) => {
       let newEventData = prev[0];
@@ -108,7 +113,14 @@ const RenderNodes = ({
 
       return [newEventData];
     });
+
     setSendQuizEventData(true);
+
+    if (nextNodeType !== "end") {
+      setCurrentSlideWithHistory(next);
+    } else {
+      handleFormSubmit(null, next);
+    }
   };
 
   useEffect(() => {
@@ -213,7 +225,6 @@ const RenderNodes = ({
             <OptionNode
               key={index}
               data={quizElement}
-              setCurrentSlide={setCurrentSlideWithHistory}
               setFormData={setFormData}
               setJitsuEventData={setJitsuEventData}
               handleOptionClick={handleOptionClick}
