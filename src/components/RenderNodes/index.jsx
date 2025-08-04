@@ -11,7 +11,6 @@ import SelectNode from "../QuizNodes/SelectNode";
 import ZipcodeNode from "../QuizNodes/ZipcodeNode";
 import "./index.css";
 import { sortAndRemoveDuplicate } from "../../utils/sortAndRemoveDuplicate";
-import LoaderImg from "/public/loader.svg";
 
 const RenderNodes = ({
   quizNodes,
@@ -27,7 +26,6 @@ const RenderNodes = ({
   const searchParams = new URLSearchParams(window.location.search);
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
@@ -274,15 +272,8 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button
-            className="quiz-builder__submit button"
-            type="submit"
-            onClick={() => {
-              setShowLoader(true);
-            }}
-          >
+          <button className="quiz-builder__submit button" type="submit">
             {quizConfig.submitButtonText}
-            {showLoader && <LoaderImg className="quiz-builder__loader" />}
           </button>
         </div>
       )}
