@@ -127,8 +127,13 @@ const QuizBuilder = ({ json, setQuizData }) => {
   }, [jitsuEventData, sendQuizEventData, isLoading]);
 
   useEffect(() => {
-    return () => {
+    const handlePageShow = () => {
       setIsLoading(false);
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
     };
   }, []);
 
