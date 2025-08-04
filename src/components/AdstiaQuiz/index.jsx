@@ -25,7 +25,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [formData, setFormData] = useState({});
   const [jitsuEventData, setJitsuEventData] = useState([]);
   const [sendQuizEventData, setSendQuizEventData] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Save query params to localStorage on mount
