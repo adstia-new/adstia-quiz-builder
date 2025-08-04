@@ -13,6 +13,7 @@ import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
+import LoadingScreen from "../ui/LoadingScreen";
 
 export const QuizConfigContext = createContext();
 
@@ -24,6 +25,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [formData, setFormData] = useState({});
   const [jitsuEventData, setJitsuEventData] = useState([]);
   const [sendQuizEventData, setSendQuizEventData] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Save query params to localStorage on mount
@@ -39,6 +41,8 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   const handleFormSubmission = async (e, next) => {
     e?.preventDefault();
+    setIsLoading(true);
+
     setQuizData(formData);
 
     let datazAppData = null;
@@ -77,6 +81,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
     // Handle end node redirect logic
     setTimeout(() => {
       handleEndNodeRedirect(json.quizJson, currentSlide, next);
+      setIsLoading(false);
     }, 1500);
   };
 
@@ -107,10 +112,24 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
       setSendQuizEventData(false);
     }
-  }, [jitsuEventData, sendQuizEventData]);
+
+    if (isLoading) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [jitsuEventData, sendQuizEventData, isLoading]);
 
   return (
     <QuizConfigContext.Provider value={json.config}>
+      {isLoading && <LoadingScreen />}
       <form className="quiz-builder__form" onSubmit={handleFormSubmission}>
         <RenderNodes
           quizNodes={json.quizJson}
