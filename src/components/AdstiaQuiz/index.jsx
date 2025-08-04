@@ -81,7 +81,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
     // Handle end node redirect logic
     setTimeout(() => {
       handleEndNodeRedirect(json.quizJson, currentSlide, next);
-      setIsLoading(false);
     }, 1500);
   };
 
@@ -126,6 +125,12 @@ const QuizBuilder = ({ json, setQuizData }) => {
       document.documentElement.style.overflow = "";
     };
   }, [jitsuEventData, sendQuizEventData, isLoading]);
+
+  useEffect(() => {
+    return () => {
+      setIsLoading(false);
+    };
+  }, []);
 
   return (
     <QuizConfigContext.Provider value={json.config}>
