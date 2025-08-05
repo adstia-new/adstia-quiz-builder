@@ -117,7 +117,8 @@ const ZipcodeNode = ({
     setValue(numericValue);
 
     setJitsuEventData((prev) => {
-      const newEventData = prev?.map((eventData) => {
+      const newEventData = prev.map((eventData) => {
+        console.log("eventData", eventData);
         if (eventData?.nodeName === nodeName) {
           return {
             ...eventData,

@@ -59,11 +59,11 @@ const RenderNodes = ({
     setSlideHistory(sortAndRemoveDuplicate(history));
     setCurrentSlide(String(slideId));
 
-    window.history.pushState(
-      { step: slideId },
-      "",
-      `${window.location.pathname}?${searchParams.toString()}`
-    );
+    // window.history.pushState(
+    //   { step: slideId },
+    //   "",
+    //   `${window.location.pathname}?${searchParams.toString()}`
+    // );
   };
 
   const handleNextButtonClick = () => {
@@ -73,11 +73,11 @@ const RenderNodes = ({
     setCurrentSlide(String(findNextSlideId));
 
     // Push history entry
-    window.history.pushState(
-      { step: findNextSlideId },
-      "",
-      `${window.location.pathname}?${searchParams.toString()}`
-    );
+    // window.history.pushState(
+    //   { step: findNextSlideId },
+    //   "",
+    //   `${window.location.pathname}?${searchParams.toString()}`
+    // );
 
     setSendQuizEventData(true);
     // Push quiz data to GTM
@@ -142,16 +142,31 @@ const RenderNodes = ({
   }, [sendQuizEventData]);
 
   useEffect(() => {
-    window.history.replaceState(
-      { step: currentSlide },
-      "",
-      `${window.location.pathname}?${searchParams.toString()}`
-    );
+    // window.history.replaceState(
+    //   { step: currentSlide },
+    //   "",
+    //   `${window.location.pathname}?${searchParams.toString()}`
+    // );
 
-    const onPopState = (event) => {
-      const step = event.state?.step;
+    const onPopState = () => {
+      const stepsHistory = JSON.parse(
+        sessionStorage?.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
+      );
+
+      const step =
+        stepsHistory?.length > 0 ? stepsHistory[stepsHistory.length - 1] : 1;
+
       if (step) {
         setCurrentSlide(String(step));
+
+        const newStepsHistory =
+          stepsHistory?.length > 0
+            ? stepsHistory.slice(0, stepsHistory.length-1)
+            : [];
+        sessionStorage.setItem(
+          LOCAL_STORAGE_QUIZ_HISTORY,
+          JSON.stringify(newStepsHistory)
+        );
       }
     };
 
