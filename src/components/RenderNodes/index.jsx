@@ -23,6 +23,7 @@ const RenderNodes = ({
   handleFormSubmit,
 }) => {
   if (typeof window === "undefined" || !window.location) return null;
+
   const searchParams = new URLSearchParams(window.location.search);
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
@@ -50,13 +51,16 @@ const RenderNodes = ({
   };
 
   const setSlideHistory = (history) => {
-    sessionStorage.setItem(LOCAL_STORAGE_QUIZ_HISTORY, JSON.stringify(history));
+    sessionStorage.setItem(
+      LOCAL_STORAGE_QUIZ_HISTORY,
+      JSON.stringify(sortAndRemoveDuplicate(history))
+    );
   };
 
   const setCurrentSlideWithHistory = (slideId) => {
     const history = getSlideHistory();
     history.push(String(currentSlide));
-    setSlideHistory(sortAndRemoveDuplicate(history));
+    setSlideHistory(history);
     setCurrentSlide(String(slideId));
 
     window.history.pushState(
@@ -71,6 +75,22 @@ const RenderNodes = ({
     history.push(String(currentSlide));
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
+
+    setJitsuEventData((prev) => {
+      let newEventData = [...prev];
+      if (prev.length > 0) {
+        newEventData = prev.map((eventData) => {
+          return {
+            ...eventData,
+            currentStep: currentSlide,
+            questionKey: `${currentSlide}_${eventData.nodeName}`,
+            nextStep: findNextSlideId,
+          };
+        });
+      }
+
+      return newEventData;
+    });
 
     // Push history entry
     window.history.pushState(
@@ -139,19 +159,33 @@ const RenderNodes = ({
         return newEventData;
       });
     }
-  }, [sendQuizEventData]);
+  }, [sendQuizEventData, currentSlide]);
 
   useEffect(() => {
+    if (isStartingNode) {
+      setSlideHistory([]);
+    }
+
     window.history.replaceState(
       { step: currentSlide },
       "",
       `${window.location.pathname}?${searchParams.toString()}`
     );
 
-    const onPopState = (event) => {
-      const step = event.state?.step;
+    const onPopState = () => {
+      const stepsHistory = getSlideHistory();
+
+      const step =
+        stepsHistory?.length > 0 ? stepsHistory[stepsHistory.length - 1] : 1;
+
       if (step) {
         setCurrentSlide(String(step));
+
+        const newStepsHistory =
+          stepsHistory?.length > 0
+            ? stepsHistory.slice(0, stepsHistory.length - 1)
+            : [];
+        setSlideHistory(newStepsHistory);
       }
     };
 

@@ -4,7 +4,8 @@ import { getCurrentSlug, getDomainName } from "./windowUtils";
 
 export async function sendDataToJitsuEvent(data) {
   const EVENT_DATA = JSON.parse(data);
-  const nodeName = EVENT_DATA.questionKey.split("_").slice(1).join("_");
+  let nodeName = EVENT_DATA.questionKey;
+  nodeName = nodeName?.split("_")?.slice(1)?.join("_") || nodeName;
   let user_id = localStorage.getItem("user_id");
   if (!user_id) {
     user_id = `user_id_${crypto.randomUUID()}`;

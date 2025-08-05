@@ -39,21 +39,6 @@ const PhoneNode = ({
             ...prev,
             [nodeName]: stored[nodeName].replace(/\D/g, ""),
           }));
-
-        setJitsuEventData((prev) => {
-          const newEventData = prev.map((eventData) => {
-            if (eventData?.nodeName === nodeName) {
-              return {
-                ...eventData,
-                answer: stored[nodeName].replace(/\D/g, ""),
-              };
-            }
-
-            return eventData;
-          });
-
-          return newEventData;
-        });
       }
     }
   }, [quizConfig.prefillValues, nodeName]);
@@ -67,6 +52,21 @@ const PhoneNode = ({
       setNextDisabled(true);
     } else {
       setNextDisabled(false);
+
+      setJitsuEventData((prev) => {
+        const newEventData = prev.map((eventData) => {
+          if (eventData?.nodeName === nodeName) {
+            return {
+              ...eventData,
+              answer: value,
+            };
+          }
+
+          return eventData;
+        });
+
+        return newEventData;
+      });
     }
   }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
 
@@ -91,6 +91,22 @@ const PhoneNode = ({
     }
     const formatted = formatPhone(raw);
     setValue(formatted);
+
+    setJitsuEventData((prev) => {
+      const newEventData =
+        prev.map((eventData) => {
+          if (eventData.nodeName === nodeName) {
+            return {
+              ...eventData,
+              answer: formatted,
+            };
+          }
+          return eventData;
+        }) || [];
+
+      return newEventData;
+    });
+
     if (error) setError("");
   };
 
