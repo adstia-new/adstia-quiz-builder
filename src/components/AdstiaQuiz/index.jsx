@@ -1,5 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
-import { JITSU_EVENT, SESSION_STORAGE_DATAZAPP_KEY } from "../../constants";
+import {
+  JITSU_EVENT,
+  LOCAL_STORAGE_QUIZ_HISTORY,
+  SESSION_STORAGE_DATAZAPP_KEY,
+} from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
 import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
 import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
@@ -67,6 +71,22 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
     sendDataToJitsuIdentifyEvent(datazAppData);
 
+    setJitsuEventData((prev) => {
+      let newEventData = [...prev];
+      if (prev.length > 0) {
+        newEventData = prev.map((eventData) => {
+          return {
+            ...eventData,
+            currentStep: currentSlide,
+            questionKey: `${currentSlide}_${eventData.nodeName}`,
+            nextStep: "-",
+          };
+        });
+      }
+
+      return newEventData;
+    });
+
     sendJitsuEvent(jitsuEventData);
 
     window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
@@ -85,29 +105,32 @@ const QuizBuilder = ({ json, setQuizData }) => {
   };
 
   useEffect(() => {
+    const currentSlideNodes = json?.quizJson?.find(
+      (element) => element.quizCardId === String(currentSlide)
+    );
+
+    setJitsuEventData((prev) => {
+      let newEventData = [];
+      let previousStep = JSON.parse(
+        sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
+      );
+      previousStep =
+        previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+
+      currentSlideNodes.nodes.forEach((node) => {
+        newEventData.push({
+          previousStep,
+          nodeName: node?.nodeName,
+        });
+      });
+
+      return newEventData;
+    });
+  }, [currentSlide]);
+
+  useEffect(() => {
     if (sendQuizEventData && json.config) {
       sendJitsuEvent(jitsuEventData);
-
-      const currentSlideNodes = json?.quizJson?.find(
-        (element) => element.quizCardId === String(currentSlide)
-      );
-
-      setJitsuEventData((prev) => {
-        let newEventData = [];
-        const previousStep =
-          prev && prev.length > 0 && prev[0]?.currentStep
-            ? prev[0].currentStep
-            : "-";
-
-        currentSlideNodes.nodes.forEach((node) => {
-          newEventData.push({
-            previousStep,
-            nodeName: node?.nodeName,
-          });
-        });
-
-        return newEventData;
-      });
 
       setSendQuizEventData(false);
     }

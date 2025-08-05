@@ -30,21 +30,6 @@ const InputNode = ({
         setValue(stored[nodeName]);
         setFormData &&
           setFormData((prev) => ({ ...prev, [nodeName]: stored[nodeName] }));
-
-        setJitsuEventData((prev) => {
-          const newEventData = prev.map((eventData) => {
-            if (eventData?.nodeName === nodeName) {
-              return {
-                ...eventData,
-                answer: stored[nodeName],
-              };
-            }
-
-            return eventData;
-          });
-
-          return newEventData;
-        });
       }
     }
   }, [quizConfig?.prefillValues, nodeName]);
@@ -55,6 +40,22 @@ const InputNode = ({
         setNextDisabled(true);
       } else {
         setNextDisabled(false);
+
+        // Update Jitsu event data with the current value
+        setJitsuEventData((prev) => {
+          const newEventData = prev.map((eventData) => {
+            if (eventData?.nodeName === nodeName) {
+              return {
+                ...eventData,
+                answer: value,
+              };
+            }
+
+            return eventData;
+          });
+
+          return newEventData;
+        });
       }
     }
   }, [error, value, required, setNextDisabled]);
@@ -73,7 +74,24 @@ const InputNode = ({
   };
 
   const handleChange = (e) => {
-    setValue(e.target.value);
+    const newValue = e.target.value;
+    setValue(newValue);
+
+    setJitsuEventData((prev) => {
+      const newEventData =
+        prev.map((eventData) => {
+          if (eventData.nodeName === nodeName) {
+            return {
+              ...eventData,
+              answer: newValue,
+            };
+          }
+          return eventData;
+        }) || [];
+
+      return newEventData;
+    });
+
     if (error) setError("");
   };
 
