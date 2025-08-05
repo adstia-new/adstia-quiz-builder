@@ -117,14 +117,15 @@ const ZipcodeNode = ({
     setValue(numericValue);
 
     setJitsuEventData((prev) => {
-      const newEventData = prev.map((eventData) => {
-        if (eventData.nodeName === nodeName) {
+      const newEventData = prev?.map((eventData) => {
+        if (eventData?.nodeName === nodeName) {
           return {
             ...eventData,
             answer: numericValue,
           };
         }
-      });
+        return eventData;
+      }) || [];
 
       return newEventData;
     });
