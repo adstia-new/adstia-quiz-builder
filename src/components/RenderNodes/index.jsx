@@ -101,7 +101,9 @@ const RenderNodes = ({
 
     setSendQuizEventData(true);
     // Push quiz data to GTM
-    pushLocalDataToDataLayer();
+    setTimeout(() => {
+      pushLocalDataToDataLayer();
+    }, 500);
   };
 
   const handlePreviousButtonClick = () => {

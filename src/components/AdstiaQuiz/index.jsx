@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import {
   JITSU_EVENT,
   LOCAL_STORAGE_QUIZ_HISTORY,
+  LOCAL_STORAGE_QUIZ_VALUES,
   SESSION_STORAGE_DATAZAPP_KEY,
 } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
@@ -87,7 +88,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
       return newEventData;
     });
 
-    sendJitsuEvent(jitsuEventData);
+    setTimeout(() => {
+      sendJitsuEvent(jitsuEventData);
+    }, 500);
 
     window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
       user_id: localStorage.getItem("user_id") || "",
@@ -96,7 +99,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
     });
 
     // Push quiz data to GTM
-    pushLocalDataToDataLayer();
+    setTimeout(() => {
+      pushLocalDataToDataLayer();
+    }, 500);
 
     // Handle end node redirect logic
     setTimeout(() => {
@@ -130,7 +135,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   useEffect(() => {
     if (sendQuizEventData && json.config) {
-      sendJitsuEvent(jitsuEventData);
+      setTimeout(() => {
+        sendJitsuEvent(jitsuEventData);
+      }, 500);
 
       setSendQuizEventData(false);
     }
