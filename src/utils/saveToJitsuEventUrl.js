@@ -1,4 +1,5 @@
-import { JITSU_EVENT, LOCAL_STORAGE_QUIZ_VALUES } from "../constants";
+import React from "react";
+import { JITSU_EVENT } from "../constants";
 import { getESTISOString } from "./dateTimeUtils";
 import { getCurrentSlug, getDomainName } from "./windowUtils";
 

@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState } from "react";
 import {
   JITSU_EVENT,
   LOCAL_STORAGE_QUIZ_HISTORY,
-  LOCAL_STORAGE_QUIZ_VALUES,
   SESSION_STORAGE_DATAZAPP_KEY,
 } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
@@ -46,6 +45,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   const handleFormSubmission = async (e, next) => {
     e?.preventDefault();
+
     setIsLoading(true);
 
     setQuizData(formData);
@@ -70,7 +70,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
       await saveLeadsDataToDb(json.config.leadsUrl, datazAppData);
     }
 
-    sendDataToJitsuIdentifyEvent(datazAppData);
+    await sendDataToJitsuIdentifyEvent(datazAppData);
 
     setJitsuEventData((prev) => {
       let newEventData = [...prev];
@@ -78,24 +78,29 @@ const QuizBuilder = ({ json, setQuizData }) => {
         newEventData = prev.map((eventData) => {
           return {
             ...eventData,
-            currentStep: currentSlide,
-            questionKey: `${currentSlide}_${eventData.nodeName}`,
-            nextStep: "-",
+            currentStep: eventData.currentStep
+              ? eventData.currentStep
+              : currentSlide,
+            questionKey: eventData.questionKey
+              ? eventData.questionKey
+              : `${currentSlide}_${eventData.nodeName}`,
+            nextStep: eventData.nextStep ? eventData.nextStep : "-",
           };
         });
       }
 
+      sendJitsuEvent(newEventData);
       return newEventData;
     });
 
-    setTimeout(() => {
-      sendJitsuEvent(jitsuEventData);
-    }, 500);
+    setFormData((prevFormData) => {
+      window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+        user_id: localStorage.getItem("user_id") || "",
+        session_id: sessionStorage.getItem("session_id") || "",
+        ...prevFormData,
+      });
 
-    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
-      user_id: localStorage.getItem("user_id") || "",
-      session_id: sessionStorage.getItem("session_id") || "",
-      ...formData,
+      return prevFormData;
     });
 
     // Push quiz data to GTM

@@ -129,14 +129,14 @@ const RenderNodes = ({
         ...newEventData,
         currentStep: currentSlide,
         questionKey: `${currentSlide}_${prev.nodeName || nodeName}`,
+        nextStep: next,
       };
 
       return [newEventData];
     });
 
-    setSendQuizEventData(true);
-
     if (nextNodeType !== "end") {
+      setSendQuizEventData(true);
       setCurrentSlideWithHistory(next);
     } else {
       handleFormSubmit(null, next);
