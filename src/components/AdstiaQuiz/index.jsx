@@ -19,10 +19,12 @@ import RenderNodes from "../RenderNodes";
 import "./index.css";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import LoadingScreen from "../ui/LoadingScreen";
+import { flushSync } from "react-dom";
 
 export const QuizConfigContext = createContext();
 
 const QuizBuilder = ({ json, setQuizData }) => {
+  console.log("adstia-quiz-builder loaded");
   const startingNode = json.quizJson.find(
     (element) => element.quizCardType === "start"
   ).quizCardId;
@@ -46,6 +48,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   const handleFormSubmission = async (e, next) => {
     e?.preventDefault();
+
     setIsLoading(true);
 
     setQuizData(formData);
@@ -70,7 +73,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
       await saveLeadsDataToDb(json.config.leadsUrl, datazAppData);
     }
 
-    sendDataToJitsuIdentifyEvent(datazAppData);
+    await sendDataToJitsuIdentifyEvent(datazAppData);
 
     setJitsuEventData((prev) => {
       let newEventData = [...prev];
@@ -78,24 +81,29 @@ const QuizBuilder = ({ json, setQuizData }) => {
         newEventData = prev.map((eventData) => {
           return {
             ...eventData,
-            currentStep: currentSlide,
-            questionKey: `${currentSlide}_${eventData.nodeName}`,
-            nextStep: "-",
+            currentStep: eventData.currentStep
+              ? eventData.currentStep
+              : currentSlide,
+            questionKey: eventData.questionKey
+              ? eventData.questionKey
+              : `${currentSlide}_${eventData.nodeName}`,
+            nextStep: eventData.nextStep ? eventData.nextStep : "-",
           };
         });
       }
 
+      sendJitsuEvent(newEventData);
       return newEventData;
     });
 
-    setTimeout(() => {
-      sendJitsuEvent(jitsuEventData);
-    }, 500);
+    setFormData((prevFormData) => {
+      window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+        user_id: localStorage.getItem("user_id") || "",
+        session_id: sessionStorage.getItem("session_id") || "",
+        ...prevFormData,
+      });
 
-    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
-      user_id: localStorage.getItem("user_id") || "",
-      session_id: sessionStorage.getItem("session_id") || "",
-      ...formData,
+      return prevFormData;
     });
 
     // Push quiz data to GTM

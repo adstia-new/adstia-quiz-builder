@@ -2,6 +2,7 @@ import React from "react";
 import "./OptionNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
+import { flushSync } from "react-dom";
 
 const OptionNode = ({
   data,
