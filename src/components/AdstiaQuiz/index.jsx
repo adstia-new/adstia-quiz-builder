@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState } from "react";
 import {
   JITSU_EVENT,
   LOCAL_STORAGE_QUIZ_HISTORY,
-  LOCAL_STORAGE_QUIZ_VALUES,
   SESSION_STORAGE_DATAZAPP_KEY,
 } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
@@ -19,12 +18,10 @@ import RenderNodes from "../RenderNodes";
 import "./index.css";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import LoadingScreen from "../ui/LoadingScreen";
-import { flushSync } from "react-dom";
 
 export const QuizConfigContext = createContext();
 
 const QuizBuilder = ({ json, setQuizData }) => {
-  console.log("adstia-quiz-builder loaded");
   const startingNode = json.quizJson.find(
     (element) => element.quizCardType === "start"
   ).quizCardId;
