@@ -90,18 +90,20 @@ const QuizBuilder = ({ json, setQuizData }) => {
       }
 
       sendJitsuEvent(newEventData);
+
       return newEventData;
     });
 
-    setFormData((prevFormData) => {
-      window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
-        user_id: localStorage.getItem("user_id") || "",
-        session_id: sessionStorage.getItem("session_id") || "",
-        ...prevFormData,
+    setTimeout(() => {
+      setFormData((prevFormData) => {
+        window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+          user_id: localStorage.getItem("user_id") || "",
+          session_id: sessionStorage.getItem("session_id") || "",
+          ...prevFormData,
+        });
+        return prevFormData;
       });
-
-      return prevFormData;
-    });
+    }, 500);
 
     // Push quiz data to GTM
     setTimeout(() => {
