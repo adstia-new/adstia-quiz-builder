@@ -4,6 +4,7 @@ import { getESTISOString } from "./dateTimeUtils";
 import { getCurrentSlug, getDomainName } from "./windowUtils";
 
 export async function sendDataToJitsuEvent(data) {
+  console.log("Sending Jitsu event data");
   const EVENT_DATA = JSON.parse(data);
   let nodeName = EVENT_DATA.questionKey;
   nodeName = nodeName?.split("_")?.slice(1)?.join("_") || nodeName;
@@ -14,11 +15,7 @@ export async function sendDataToJitsuEvent(data) {
   }
   try {
     const sessionId = sessionStorage.getItem("session_id") || "";
-    window?.jitsu?.identify(user_id, {
-      [nodeName]: EVENT_DATA.answer,
-      session_id: sessionId,
-      $insert_id: sessionId,
-    });
+
     window?.jitsu?.track(JITSU_EVENT.QUIZ_DATA, {
       user_id,
       session_id: sessionId,

@@ -19,6 +19,10 @@ const DobNode = ({ data, setNextDisabled, setFormData }) => {
       fields.forEach((f) => {
         if (stored[f.fieldName]) {
           initial[f.fieldName] = stored[f.fieldName];
+          setFormData((prev) => ({
+            ...prev,
+            [f.fieldName]: stored[f.fieldName],
+          }));
         }
       });
     }
@@ -75,8 +79,10 @@ const DobNode = ({ data, setNextDisabled, setFormData }) => {
   const handleBlur = (field, e) => {
     const value = e.target.value;
     setFormData((prev) => {
-      return { ...prev, [field.fieldName]: e.target.value };
+      console.log("formData prev DOB", prev);
+      return { ...prev, [field.fieldName]: value };
     });
+
     const prev =
       JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
