@@ -1,7 +1,22 @@
-import { QUIZ_MODULE_SUBMISSION_URL } from "../constants";
+import {
+  LOCAL_STORAGE_QUIZ_HISTORY,
+  LOCAL_STORAGE_QUIZ_VALUES,
+  QUIZ_MODULE_SUBMISSION_URL,
+} from "../constants";
 
 export async function saveQuizModuleSubmission(pabblyUrl, data) {
   try {
+    const { phoneNumber, ...formData } = data;
+    const { phoneNumber: phone, ...storedData } = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
+    );
+
+    const dataJSON = {
+      ...storedData,
+      ...formData,
+      phone: phoneNumber,
+    };
+
     const response = await fetch(QUIZ_MODULE_SUBMISSION_URL, {
       method: "POST",
       headers: {
@@ -10,13 +25,7 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
       body: JSON.stringify({
         pabblyUrl: pabblyUrl,
         userId: localStorage.getItem("user_id") || "",
-        data: {
-          fname: data.fname || "",
-          lname: data.lname || "",
-          email: data.email || "",
-          phone: data.phoneNumber || "",
-          websiteZip: data.websiteZip || "",
-        },
+        data: dataJSON,
       }),
     });
 

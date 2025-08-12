@@ -3,19 +3,14 @@ import {
   JITSU_EVENT,
   LOCAL_STORAGE_QUIZ_HISTORY,
   LOCAL_STORAGE_QUIZ_VALUES,
-  QUERY_PARAMS,
-  SESSION_STORAGE_DATAZAPP_KEY,
 } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
 import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
-import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
 import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
 import {
   sendDataToJitsuIdentifyEvent,
   sendJitsuEvent,
 } from "../../utils/saveToJitsuEventUrl";
-import { sendDataToDatazapp } from "../../utils/sendDataToDatazapp";
-import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
@@ -52,6 +47,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
   }, [json.config]);
 
   const handleFormSubmission = async (e, next) => {
+    console.log('form Submission triggered');
     e?.preventDefault();
     setIsLoading(true);
 
