@@ -2,22 +2,20 @@ import React, { createContext, useEffect, useState } from "react";
 import {
   JITSU_EVENT,
   LOCAL_STORAGE_QUIZ_HISTORY,
-  SESSION_STORAGE_DATAZAPP_KEY,
+  LOCAL_STORAGE_QUIZ_VALUES,
 } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
 import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
-import saveLeadsDataToDb from "../../utils/saveLeadsDataToDb";
 import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
 import {
   sendDataToJitsuIdentifyEvent,
   sendJitsuEvent,
 } from "../../utils/saveToJitsuEventUrl";
-import { sendDataToDatazapp } from "../../utils/sendDataToDatazapp";
-import { sendDataToPabbly } from "../../utils/sendDataToPabbly";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import LoadingScreen from "../ui/LoadingScreen";
+import { saveQuizModuleSubmission } from "../../utils/saveQuizModuleSubmission";
 
 export const QuizConfigContext = createContext();
 
@@ -30,6 +28,11 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [jitsuEventData, setJitsuEventData] = useState([]);
   const [sendQuizEventData, setSendQuizEventData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  let searchParams = null;
+  if (typeof window !== "undefined") {
+    searchParams = new URLSearchParams(window.location.search);
+  }
 
   useEffect(() => {
     // Save query params to localStorage on mount
@@ -45,65 +48,44 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   const handleFormSubmission = async (e, next) => {
     e?.preventDefault();
-
     setIsLoading(true);
 
     setQuizData(formData);
 
-    let datazAppData = null;
+    const { email, phoneNumber } = formData;
 
-    const { fname, lname, email, phoneNumber } = formData;
-    if (fname && lname && email && phoneNumber) {
-      datazAppData = await sendDataToDatazapp(fname, lname, email, phoneNumber);
-      sessionStorage.setItem(
-        SESSION_STORAGE_DATAZAPP_KEY,
-        JSON.stringify(datazAppData)
-      );
+    const isLongForm =
+      searchParams && searchParams.get("formtype") === "f" ? true : false;
+
+    if (
+      isLongForm &&
+      json.config &&
+      json.config.pabblyUrl &&
+      email &&
+      phoneNumber
+    ) {
+      await saveQuizModuleSubmission(json.config.pabblyUrl, formData);
     }
 
-    // Send localStorage data to pabblyUrl if present
-    if (json.config && json.config.pabblyUrl) {
-      await sendDataToPabbly(json.config.pabblyUrl, datazAppData);
-    }
+    sendJitsuEvent(jitsuEventData);
 
-    if (json.config && json.config.leadsUrl) {
-      await saveLeadsDataToDb(json.config.leadsUrl, datazAppData);
-    }
+    const quizData = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
+    );
 
-    await sendDataToJitsuIdentifyEvent(datazAppData);
-
-    setJitsuEventData((prev) => {
-      let newEventData = [...prev];
-      if (prev.length > 0) {
-        newEventData = prev.map((eventData) => {
-          return {
-            ...eventData,
-            currentStep: eventData.currentStep
-              ? eventData.currentStep
-              : currentSlide,
-            questionKey: eventData.questionKey
-              ? eventData.questionKey
-              : `${currentSlide}_${eventData.nodeName}`,
-            nextStep: eventData.nextStep ? eventData.nextStep : "-",
-          };
-        });
-      }
-
-      sendJitsuEvent(newEventData);
-
-      return newEventData;
+    // Jitsu Track Event
+    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+      user_id: localStorage.getItem("user_id") || "",
+      session_id: sessionStorage.getItem("session_id") || "",
+      ...quizData,
     });
 
-    setTimeout(() => {
-      setFormData((prevFormData) => {
-        window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
-          user_id: localStorage.getItem("user_id") || "",
-          session_id: sessionStorage.getItem("session_id") || "",
-          ...prevFormData,
-        });
-        return prevFormData;
-      });
-    }, 500);
+    // Jitus Identify Event
+    sendDataToJitsuIdentifyEvent({
+      user_id: localStorage.getItem("user_id") || "",
+      session_id: sessionStorage.getItem("session_id") || "",
+      ...quizData,
+    });
 
     // Push quiz data to GTM
     setTimeout(() => {

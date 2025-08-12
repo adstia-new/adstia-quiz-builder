@@ -2,6 +2,7 @@ export const LOCAL_STORAGE_QUIZ_VALUES = "quizValues";
 export const LOCAL_STORAGE_QUIZ_HISTORY = "quizHistory";
 export const SESSION_STORAGE_DATAZAPP_KEY = "datazAppData";
 export const ZIPCODE_API_URL = "https://server.adstiacms.com/api/zipcode/us";
+export const QUIZ_MODULE_SUBMISSION_URL="https://server.adstiacms.com/api/save-quiz-module-submission"
 export const QUIZ_NODE_TYPES = {
   START: "start",
   OPTIONS: "options",
@@ -24,3 +25,7 @@ export const DATAZAPP_CONFIG = {
   API_KEY: "UMKMDTIECH",
   BASE_URL: "https://secureapi.datazapp.com/Appendv2",
 };
+
+export const QUERY_PARAMS = {
+  FORM_TYPE: 'formtype'
+}

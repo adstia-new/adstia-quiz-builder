@@ -14,11 +14,7 @@ export async function sendDataToJitsuEvent(data) {
   }
   try {
     const sessionId = sessionStorage.getItem("session_id") || "";
-    window?.jitsu?.identify(user_id, {
-      [nodeName]: EVENT_DATA.answer,
-      session_id: sessionId,
-      $insert_id: sessionId,
-    });
+
     window?.jitsu?.track(JITSU_EVENT.QUIZ_DATA, {
       user_id,
       session_id: sessionId,
