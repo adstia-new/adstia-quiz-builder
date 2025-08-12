@@ -79,7 +79,6 @@ const DobNode = ({ data, setNextDisabled, setFormData }) => {
   const handleBlur = (field, e) => {
     const value = e.target.value;
     setFormData((prev) => {
-      console.log("formData prev DOB", prev);
       return { ...prev, [field.fieldName]: value };
     });
 

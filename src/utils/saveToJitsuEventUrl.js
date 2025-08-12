@@ -4,7 +4,6 @@ import { getESTISOString } from "./dateTimeUtils";
 import { getCurrentSlug, getDomainName } from "./windowUtils";
 
 export async function sendDataToJitsuEvent(data) {
-  console.log("Sending Jitsu event data");
   const EVENT_DATA = JSON.parse(data);
   let nodeName = EVENT_DATA.questionKey;
   nodeName = nodeName?.split("_")?.slice(1)?.join("_") || nodeName;

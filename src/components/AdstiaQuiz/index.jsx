@@ -25,7 +25,6 @@ import { saveQuizModuleSubmission } from "../../utils/saveQuizModuleSubmission";
 export const QuizConfigContext = createContext();
 
 const QuizBuilder = ({ json, setQuizData }) => {
-  console.log("adstia-quiz-builder running");
   const startingNode = json.quizJson.find(
     (element) => element.quizCardType === "start"
   ).quizCardId;
@@ -130,7 +129,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   useEffect(() => {
     if (sendQuizEventData && json.config) {
-      console.log("sendQuizEventData", sendQuizEventData);
       setTimeout(() => {
         sendJitsuEvent(jitsuEventData);
       }, 500);
