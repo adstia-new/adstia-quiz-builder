@@ -47,7 +47,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
   }, [json.config]);
 
   const handleFormSubmission = async (e, next) => {
-    console.log('form Submission triggered');
     e?.preventDefault();
     setIsLoading(true);
 
