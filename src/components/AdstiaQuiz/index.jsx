@@ -68,20 +68,20 @@ const QuizBuilder = ({ json, setQuizData }) => {
     }
 
     sendJitsuEvent(jitsuEventData);
-
+    
     const quizData = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
     );
-
-    // Jitsu Track Event
-    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+    
+    // Jitus Identify Event
+    sendDataToJitsuIdentifyEvent({
       user_id: localStorage.getItem("user_id") || "",
       session_id: sessionStorage.getItem("session_id") || "",
       ...quizData,
     });
 
-    // Jitus Identify Event
-    sendDataToJitsuIdentifyEvent({
+    // Jitsu Track Event
+    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
       user_id: localStorage.getItem("user_id") || "",
       session_id: sessionStorage.getItem("session_id") || "",
       ...quizData,

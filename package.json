@@ -38,6 +38,6 @@
   },
   "peerDependencies": {
     "@svgr/webpack": "^8.1.0",
-    "react-dom": "^19.1.1"
+    "react-dom": "^18"
   }
 }
