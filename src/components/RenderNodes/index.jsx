@@ -250,6 +250,7 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
+              setJitsuEventData={setJitsuEventData}
               setFormData={setFormData}
             />
           );
@@ -270,7 +271,8 @@ const RenderNodes = ({
             <SelectNode
               key={index}
               data={quizElement}
-              setCurrentSlide={setCurrentSlideWithHistory}
+              setFormData={setFormData}
+              setJitsuEventData={setJitsuEventData}
             />
           );
         }
