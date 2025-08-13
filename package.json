@@ -37,7 +37,6 @@
     "webpack-cli": "^6.0.1"
   },
   "peerDependencies": {
-    "@svgr/webpack": "^8.1.0",
-    "react-dom": "^18"
+    "@svgr/webpack": "^8.1.0"
   }
 }
