@@ -250,6 +250,7 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
+              setJitsuEventData={setJitsuEventData}
               setFormData={setFormData}
             />
           );

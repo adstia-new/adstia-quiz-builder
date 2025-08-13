@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import "./DobNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { DOB_FIELDS, LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
 
-const DobNode = ({ data, setNextDisabled, setFormData }) => {
+const DobNode = ({ data, setNextDisabled, setFormData, setJitsuEventData }) => {
   const quizConfig = useContext(QuizConfigContext);
   const fields = data.fields || [];
   const inputRefs = useRef([]);
+  const { nodeName } = data;
   const [values, setValues] = useState(() => {
     const initial = {};
     fields.forEach((f) => {
@@ -91,6 +92,32 @@ const DobNode = ({ data, setNextDisabled, setFormData }) => {
     const error = validate(field, value);
     setErrors((prev) => ({ ...prev, [field.fieldName]: error }));
   };
+
+  useEffect(() => {
+    if (
+      values &&
+      values[DOB_FIELDS.DOB_MONTH] &&
+      values[DOB_FIELDS.DOB_DAY] &&
+      values[DOB_FIELDS.DOB_YEAR]
+    ) {
+      setJitsuEventData((prev) => {
+        const newEventData = prev.map((eventData) => {
+          if (eventData?.nodeName === nodeName) {
+            return {
+              ...eventData,
+              answer: `${values[DOB_FIELDS.DOB_MONTH]}-${
+                values[DOB_FIELDS.DOB_DAY]
+              }-${values[DOB_FIELDS.DOB_YEAR]}`,
+            };
+          }
+
+          return eventData;
+        });
+
+        return newEventData;
+      });
+    }
+  }, [values]);
 
   return (
     <div className="dob-node">
