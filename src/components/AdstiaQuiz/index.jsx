@@ -20,6 +20,7 @@ import { saveQuizModuleSubmission } from "../../utils/saveQuizModuleSubmission";
 export const QuizConfigContext = createContext();
 
 const QuizBuilder = ({ json, setQuizData }) => {
+  console.log("Quiz Builder running")
   const startingNode = json.quizJson.find(
     (element) => element.quizCardType === "start"
   ).quizCardId;
