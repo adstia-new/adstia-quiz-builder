@@ -1,3 +1,5 @@
+import { replaceShortcodes } from "./replaceShortcodes";
+
 // Utility to handle end node redirect logic
 export function handleEndNodeRedirect(quizJson, currentSlide, next) {
   if (typeof window === "undefined" || !window.location) return null;
@@ -14,16 +16,24 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
     ) || {};
 
   const endNode = nextSlideData.nodes?.[0];
+
   if (endNode) {
     // Open new tab immediately if needed
     if (endNode.openInNewTab && endNode.redirectUrl) {
-      window.open(`${endNode.redirectUrl}?${searchParams}`, "_blank");
+      window.open(
+        replaceShortcodes(`${endNode.redirectUrl}?${searchParams}`),
+        "_blank"
+      );
     }
     // Redirect current tab
     if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
-      window.location.href = `${endNode.redirectCurrentTabUrl}?${searchParams}`;
+      window.location.href = replaceShortcodes(
+        `${endNode.redirectCurrentTabUrl}?${searchParams}`
+      );
     } else if (endNode.redirectUrl && !endNode.openInNewTab) {
-      window.location.href = `${endNode.redirectUrl}?${searchParams}`;
+      window.location.href = replaceShortcodes(
+        `${endNode.redirectUrl}?${searchParams}`
+      );
     }
   }
 }

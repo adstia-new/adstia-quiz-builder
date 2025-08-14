@@ -1,5 +1,6 @@
 export const LOCAL_STORAGE_QUIZ_VALUES = "quizValues";
 export const LOCAL_STORAGE_QUIZ_HISTORY = "quizHistory";
+export const LOCAL_STORAGE_USER_ID_KEY = "user_id";
 export const ZIPCODE_API_URL = "https://server.adstiacms.com/api/zipcode/us";
 export const QUIZ_MODULE_SUBMISSION_URL =
   "https://server.adstiacms.com/api/save-quiz-module-submission";
