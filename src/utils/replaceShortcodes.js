@@ -12,9 +12,9 @@ export const replaceShortcodes = (str) => {
     const userId = localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY) || "";
 
     const shortcodes = {
-      ...storedShortcodes,
       user_id: userId,
       referral_d: window.location.hostname,
+      ...storedShortcodes,
     };
 
     const replaced = str.replace(/\{\{query\.(.*?)\}\}/g, (_, match) => {
