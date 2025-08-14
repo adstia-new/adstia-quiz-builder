@@ -67,7 +67,10 @@ const QuizBuilder = ({ json, setQuizData }) => {
       await saveQuizModuleSubmission(json.config.pabblyUrl, formData);
     }
 
-    sendJitsuEvent(jitsuEventData);
+    setJitsuEventData((prev) => {
+      sendJitsuEvent(prev);
+      return prev;
+    });
 
     const quizData = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
