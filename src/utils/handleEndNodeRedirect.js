@@ -14,16 +14,44 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
     ) || {};
 
   const endNode = nextSlideData.nodes?.[0];
+
   if (endNode) {
     // Open new tab immediately if needed
     if (endNode.openInNewTab && endNode.redirectUrl) {
-      window.open(`${endNode.redirectUrl}?${searchParams}`, "_blank");
+      let url = `${endNode.redirectUrl}?${searchParams}`;
+
+      if (
+        typeof window !== "undefined" &&
+        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+      ) {
+        url = window?.adstiaScripts?.replaceShortcodes(url);
+      }
+
+      window.open(url, "_blank");
     }
     // Redirect current tab
     if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
-      window.location.href = `${endNode.redirectCurrentTabUrl}?${searchParams}`;
+      let url = `${endNode.redirectCurrentTabUrl}?${searchParams}`;
+
+      if (
+        typeof window !== "undefined" &&
+        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+      ) {
+        url = window?.adstiaScripts?.replaceShortcodes(url);
+      }
+
+      window.location.href = url;
     } else if (endNode.redirectUrl && !endNode.openInNewTab) {
-      window.location.href = `${endNode.redirectUrl}?${searchParams}`;
+      let url = `${endNode.redirectUrl}?${searchParams}`;
+
+      if (
+        typeof window !== "undefined" &&
+        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+      ) {
+        url = window?.adstiaScripts?.replaceShortcodes(url);
+      }
+
+      window.location.href = url;
     }
   }
 }
