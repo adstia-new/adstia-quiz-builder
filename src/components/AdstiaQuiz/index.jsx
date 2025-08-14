@@ -68,11 +68,11 @@ const QuizBuilder = ({ json, setQuizData }) => {
     }
 
     sendJitsuEvent(jitsuEventData);
-    
+
     const quizData = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
     );
-    
+
     // Jitus Identify Event
     sendDataToJitsuIdentifyEvent({
       user_id: localStorage.getItem("user_id") || "",

@@ -1,5 +1,3 @@
-import { replaceShortcodes } from "./replaceShortcodes";
-
 // Utility to handle end node redirect logic
 export function handleEndNodeRedirect(quizJson, currentSlide, next) {
   if (typeof window === "undefined" || !window.location) return null;
@@ -20,20 +18,40 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
   if (endNode) {
     // Open new tab immediately if needed
     if (endNode.openInNewTab && endNode.redirectUrl) {
-      window.open(
-        replaceShortcodes(`${endNode.redirectUrl}?${searchParams}`),
-        "_blank"
-      );
+      let url = `${endNode.redirectUrl}?${searchParams}`;
+
+      if (
+        typeof window !== "undefined" &&
+        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+      ) {
+        url = window?.adstiaScripts?.replaceShortcodes(url);
+      }
+
+      window.open(url, "_blank");
     }
     // Redirect current tab
     if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
-      window.location.href = replaceShortcodes(
-        `${endNode.redirectCurrentTabUrl}?${searchParams}`
-      );
+      let url = `${endNode.redirectCurrentTabUrl}?${searchParams}`;
+
+      if (
+        typeof window !== "undefined" &&
+        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+      ) {
+        url = window?.adstiaScripts?.replaceShortcodes(url);
+      }
+
+      window.location.href = url;
     } else if (endNode.redirectUrl && !endNode.openInNewTab) {
-      window.location.href = replaceShortcodes(
-        `${endNode.redirectUrl}?${searchParams}`
-      );
+      let url = `${endNode.redirectUrl}?${searchParams}`;
+
+      if (
+        typeof window !== "undefined" &&
+        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+      ) {
+        url = window?.adstiaScripts?.replaceShortcodes(url);
+      }
+
+      window.location.href = url;
     }
   }
 }
