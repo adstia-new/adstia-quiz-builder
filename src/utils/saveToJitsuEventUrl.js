@@ -12,6 +12,7 @@ export async function sendDataToJitsuEvent(data) {
     user_id = `user_id_${crypto.randomUUID()}`;
     localStorage.setItem("user_id", user_id);
   }
+
   try {
     const sessionId = sessionStorage.getItem("session_id") || "";
 
