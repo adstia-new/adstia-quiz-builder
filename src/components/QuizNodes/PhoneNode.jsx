@@ -19,6 +19,7 @@ const PhoneNode = ({
   setNextDisabled,
   setFormData,
   setJitsuEventData,
+  handleJitsuData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
@@ -67,6 +68,8 @@ const PhoneNode = ({
 
         return newEventData;
       });
+
+      handleJitsuData();
     }
   }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
 
