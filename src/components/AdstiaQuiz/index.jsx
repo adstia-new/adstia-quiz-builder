@@ -6,7 +6,6 @@ import {
 } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
 import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
-import { saveQueryParamsToLocalStorage } from "../../utils/saveQueryParamsToLocalStorage";
 import {
   sendDataToJitsuIdentifyEvent,
   sendJitsuEvent,
@@ -35,9 +34,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
   }
 
   useEffect(() => {
-    // Save query params to localStorage on mount
-    saveQueryParamsToLocalStorage();
-
     // Add LeadiD script to head only if leadId is present in config
     let cleanup = () => {};
     if (json.config && json.config.leadId) {
