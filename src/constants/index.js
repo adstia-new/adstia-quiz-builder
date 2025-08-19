@@ -27,7 +27,7 @@ export const DATAZAPP_CONFIG = {
 };
 
 export const QUERY_PARAMS = {
-  FORM_TYPE: "formtype",
+  FORM_TYPE: "form_type",
 };
 
 export const DOB_FIELDS = {
