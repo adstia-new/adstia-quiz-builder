@@ -3,6 +3,7 @@ import {
   JITSU_EVENT,
   LOCAL_STORAGE_QUIZ_HISTORY,
   LOCAL_STORAGE_QUIZ_VALUES,
+  QUERY_PARAMS,
 } from "../../constants";
 import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
 import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
@@ -51,7 +52,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
     const { email, phoneNumber } = formData;
 
     const isLongForm =
-      searchParams && searchParams.get("formtype") === "f" ? true : false;
+      searchParams && searchParams.get(QUERY_PARAMS.FORM_TYPE) === "f"
+        ? true
+        : false;
 
     if (
       isLongForm &&
