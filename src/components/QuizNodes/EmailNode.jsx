@@ -8,6 +8,7 @@ const EmailNode = ({
   setNextDisabled,
   setFormData,
   setJitsuEventData,
+  handleJitsuData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation } = data;
@@ -49,6 +50,7 @@ const EmailNode = ({
 
         return newEventData;
       });
+      handleJitsuData();
     }
   }, [error, value, required, setNextDisabled]);
 

@@ -9,6 +9,7 @@ const ZipcodeNode = ({
   setNextDisabled,
   setFormData,
   setJitsuEventData,
+  handleJitsuData
 }) => {
   const quizConfig = useContext(QuizConfigContext);
   const {
@@ -64,6 +65,8 @@ const ZipcodeNode = ({
 
         return newEventData;
       });
+
+      handleJitsuData();
     }
   }, [error, value, required, setNextDisabled]);
 

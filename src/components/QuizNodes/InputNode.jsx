@@ -7,6 +7,7 @@ const InputNode = ({
   setNextDisabled,
   setFormData,
   setJitsuEventData,
+  handleJitsuData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
   const {
@@ -56,6 +57,8 @@ const InputNode = ({
 
           return newEventData;
         });
+
+        handleJitsuData();
       }
     }
   }, [error, value, required, setNextDisabled]);

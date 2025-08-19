@@ -163,6 +163,24 @@ const RenderNodes = ({
     }
   }, [sendQuizEventData, currentSlide]);
 
+  const handleJitsuData = () => {
+    setJitsuEventData((prev) => {
+      let newEventData = [...prev];
+      if (prev.length > 0) {
+        newEventData = prev.map((eventData) => {
+          return {
+            ...eventData,
+            currentStep: currentSlide,
+            questionKey: `${currentSlide}_${eventData.nodeName}`,
+            nextStep: findNextSlideId,
+          };
+        });
+      }
+
+      return newEventData;
+    });
+  };
+
   useEffect(() => {
     if (isStartingNode) {
       setSlideHistory([]);
@@ -208,6 +226,7 @@ const RenderNodes = ({
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
               setJitsuEventData={setJitsuEventData}
+              handleJitsuData={handleJitsuData}
             />
           );
         }
@@ -219,6 +238,7 @@ const RenderNodes = ({
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
               setJitsuEventData={setJitsuEventData}
+              handleJitsuData={handleJitsuData}
             />
           );
         }
@@ -230,6 +250,7 @@ const RenderNodes = ({
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
               setJitsuEventData={setJitsuEventData}
+              handleJitsuData={handleJitsuData}
             />
           );
         }
@@ -241,6 +262,7 @@ const RenderNodes = ({
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
               setJitsuEventData={setJitsuEventData}
+              handleJitsuData={handleJitsuData}
             />
           );
         }
@@ -252,6 +274,7 @@ const RenderNodes = ({
               setNextDisabled={setNextDisabled}
               setJitsuEventData={setJitsuEventData}
               setFormData={setFormData}
+              handleJitsuData={handleJitsuData}
             />
           );
         }
