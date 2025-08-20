@@ -176,7 +176,7 @@ const RenderNodes = ({
     );
     previousStep =
       previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
-      
+
     setJitsuEventData((prev) => {
       let newEventData = {};
 

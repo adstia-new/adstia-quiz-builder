@@ -126,11 +126,15 @@ const QuizBuilder = ({ json, setQuizData }) => {
   // }, [currentSlide]);
 
   useEffect(() => {
+    console.log(
+      "QuizBuilder mounted with sendQuizEventData:",
+      sendQuizEventData
+    );
+    console.log("jitsuEventData :", jitsuEventData);
     if (sendQuizEventData && json.config) {
       setTimeout(() => {
         sendJitsuEvent(jitsuEventData);
       }, 500);
-
       setJitsuEventData([]);
 
       setSendQuizEventData(false);
