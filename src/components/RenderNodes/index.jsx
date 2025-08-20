@@ -76,21 +76,21 @@ const RenderNodes = ({
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
 
-    setJitsuEventData((prev) => {
-      let newEventData = [...prev];
-      if (prev.length > 0) {
-        newEventData = prev.map((eventData) => {
-          return {
-            ...eventData,
-            currentStep: currentSlide,
-            questionKey: `${currentSlide}_${eventData.nodeName}`,
-            nextStep: findNextSlideId,
-          };
-        });
-      }
+    // setJitsuEventData((prev) => {
+    //   let newEventData = [...prev];
+    //   if (prev.length > 0) {
+    //     newEventData = prev.map((eventData) => {
+    //       return {
+    //         ...eventData,
+    //         currentStep: currentSlide,
+    //         questionKey: `${currentSlide}_${eventData.nodeName}`,
+    //         nextStep: findNextSlideId,
+    //       };
+    //     });
+    //   }
 
-      return newEventData;
-    });
+    //   return newEventData;
+    // });
 
     // Push history entry
     window.history.pushState(
@@ -166,6 +166,8 @@ const RenderNodes = ({
   const handleJitsuData = () => {
     setJitsuEventData((prev) => {
       let newEventData = [...prev];
+      const currentSlideNodes = findCurrentSlideNodes;
+
       if (prev.length > 0) {
         newEventData = prev.map((eventData) => {
           return {
@@ -174,6 +176,22 @@ const RenderNodes = ({
             questionKey: `${currentSlide}_${eventData.nodeName}`,
             nextStep: findNextSlideId,
           };
+        });
+      } else {
+        let previousStep = JSON.parse(
+          sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
+        );
+        previousStep =
+          previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+
+        currentSlideNodes.nodes.forEach((node) => {
+          newEventData.push({
+            previousStep,
+            nodeName: node?.nodeName,
+            currentStep: currentSlide,
+            questionKey: `${currentSlide}_${node?.nodeName}`,
+            nextStep: findNextSlideId,
+          });
         });
       }
 
@@ -296,6 +314,7 @@ const RenderNodes = ({
               data={quizElement}
               setFormData={setFormData}
               setJitsuEventData={setJitsuEventData}
+              handleJitsuData={handleJitsuData}
             />
           );
         }

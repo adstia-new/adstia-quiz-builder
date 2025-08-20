@@ -19,6 +19,7 @@ const DobNode = ({
     fields.forEach((f) => {
       initial[f.fieldName] = "";
     });
+
     // Prefill from localStorage if enabled
     if (quizConfig.prefillValues) {
       const stored =
@@ -33,6 +34,7 @@ const DobNode = ({
         }
       });
     }
+
     return initial;
   });
   const [errors, setErrors] = useState(() => {
@@ -108,6 +110,7 @@ const DobNode = ({
     ) {
       setJitsuEventData((prev) => {
         const newEventData = prev.map((eventData) => {
+          console.log("eventData", eventData);
           if (eventData?.nodeName === nodeName) {
             return {
               ...eventData,
@@ -122,8 +125,6 @@ const DobNode = ({
 
         return newEventData;
       });
-
-      handleJitsuData();
     }
   }, [values]);
 
