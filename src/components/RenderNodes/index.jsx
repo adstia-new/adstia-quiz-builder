@@ -330,7 +330,11 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button className="quiz-builder__submit button" type="submit">
+          <button
+            className="quiz-builder__submit button"
+            type="submit"
+            disabled={nextDisabled}
+          >
             {quizConfig.submitButtonText}
           </button>
         </div>

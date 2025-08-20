@@ -33,23 +33,22 @@ const ZipcodeNode = ({
         setFormData((prev) => {
           return { ...prev, [nodeName]: stored[nodeName] };
         });
-
-        (async () => {
-          await saveLocationWithZipcode(stored[nodeName]);
-        })();
       }
     }
   }, [quizConfig.prefillValues, nodeName]);
 
   // Update Next button state whenever error or value changes
   useEffect(() => {
-    if (error || (required && !value.trim())) {
+    if (error || (required && !value.trim()) || value.trim().length < 5) {
       setNextDisabled(true);
     } else {
-      setNextDisabled(false);
+      (async () => {
+        await saveLocationWithZipcode(value);
+        setNextDisabled(false);
 
-      // Update Jitsu event data
-      handleJitsuData(nodeName, value);
+        // Update Jitsu event data
+        handleJitsuData(nodeName, value);
+      })();
     }
   }, [error, value, required, setNextDisabled]);
 
@@ -87,8 +86,6 @@ const ZipcodeNode = ({
     setFormData((prev) => {
       return { ...prev, [nodeName]: val };
     });
-
-    await saveLocationWithZipcode(val);
 
     const prev =
       JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
