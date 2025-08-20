@@ -23,19 +23,19 @@ const OptionNode = ({
     // Push quiz data to GTM
     pushLocalDataToDataLayer();
 
-    setJitsuEventData((prev) => {
-      let newEventData = prev[0];
+    // setJitsuEventData((prev) => {
+    //   let newEventData = prev[0];
 
-      newEventData = {
-        ...newEventData,
-        nextStep: clickedOptionData.next,
-        answer: value,
-      };
+    //   newEventData = {
+    //     ...newEventData,
+    //     nextStep: clickedOptionData.next,
+    //     answer: value,
+    //   };
 
-      return [newEventData];
-    });
+    //   return [newEventData];
+    // });
 
-    handleOptionClick(clickedOptionData.next);
+    handleOptionClick(value, clickedOptionData.next);
   };
   return (
     <div className="option-node">

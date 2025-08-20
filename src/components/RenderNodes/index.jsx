@@ -115,54 +115,6 @@ const RenderNodes = ({
     }
   };
 
-  const handleOptionClick = (next) => {
-    const nodeName = findCurrentSlideNodes.nodes[0].nodeName;
-
-    const nextNodeType =
-      quizNodes.find((element) => element.quizCardId === String(next))
-        ?.quizCardType || null;
-
-    setJitsuEventData((prev) => {
-      let newEventData = prev[0];
-
-      newEventData = {
-        ...newEventData,
-        currentStep: currentSlide,
-        questionKey: `${currentSlide}_${prev.nodeName || nodeName}`,
-        nextStep: next,
-      };
-
-      return [newEventData];
-    });
-
-    if (nextNodeType !== "end") {
-      setSendQuizEventData(true);
-      setCurrentSlideWithHistory(next);
-    } else {
-      handleFormSubmit(null, next);
-    }
-  };
-
-  // useEffect(() => {
-  //   if (!sendQuizEventData) {
-  //     setJitsuEventData((prev) => {
-  //       let newEventData = [...prev];
-  //       if (prev.length > 0) {
-  //         newEventData = prev.map((eventData) => {
-  //           return {
-  //             ...eventData,
-  //             currentStep: currentSlide,
-  //             questionKey: `${currentSlide}_${eventData.nodeName}`,
-  //             nextStep: findNextSlideId,
-  //           };
-  //         });
-  //       }
-
-  //       return newEventData;
-  //     });
-  //   }
-  // }, [sendQuizEventData, currentSlide]);
-
   const handleJitsuData = (currentNodeName, answer) => {
     setJitsuEventData((prev) => {
       let newEventData = [...prev];
@@ -210,6 +162,41 @@ const RenderNodes = ({
 
       return newEventData;
     });
+  };
+
+  const handleOptionClick = (answer, next) => {
+    const nodeName = findCurrentSlideNodes.nodes[0].nodeName;
+
+    const nextNodeType =
+      quizNodes.find((element) => element.quizCardId === String(next))
+        ?.quizCardType || null;
+
+    let previousStep = JSON.parse(
+      sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
+    );
+    previousStep =
+      previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+      
+    setJitsuEventData((prev) => {
+      let newEventData = {};
+
+      newEventData = {
+        previousStep,
+        answer,
+        currentStep: currentSlide,
+        questionKey: `${currentSlide}_${prev.nodeName || nodeName}`,
+        nextStep: next,
+      };
+
+      return [newEventData];
+    });
+
+    if (nextNodeType !== "end") {
+      setSendQuizEventData(true);
+      setCurrentSlideWithHistory(next);
+    } else {
+      handleFormSubmit(null, next);
+    }
   };
 
   useEffect(() => {
