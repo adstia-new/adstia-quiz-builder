@@ -144,25 +144,27 @@ const PhoneNode = ({
 
   return (
     <div className="phone-node">
-      <label className="phone-node__label" htmlFor={nodeName}>
-        {inputLabel}
-        {required && <span className="phone-node__required">*</span>}
-      </label>
-      <input
-        id={nodeName}
-        type="tel"
-        name={nodeName}
-        placeholder={placeholder}
-        className={`phone-node__input input ${
-          error ? "phone-node__input--error" : ""
-        }`}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        maxLength={17} // +1 (xxx)-xxx-xxxx
-        autoComplete="tel"
-      />
-      {error && <span className="phone-node__error">{error}</span>}
+      <div className="phone-node__input-container">
+        <label className="phone-node__label" htmlFor={nodeName}>
+          {inputLabel}
+          {required && <span className="phone-node__required">*</span>}
+        </label>
+        <input
+          id={nodeName}
+          type="tel"
+          name={nodeName}
+          placeholder={placeholder}
+          className={`phone-node__input input ${
+            error ? "phone-node__input--error" : ""
+          }`}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          maxLength={17} // +1 (xxx)-xxx-xxxx
+          autoComplete="tel"
+        />
+        {error && <span className="phone-node__error">{error}</span>}
+      </div>
       {tcpaConsent && (
         <div className="phone-node__tcpa">
           <label className="phone-node__tcpa-label">

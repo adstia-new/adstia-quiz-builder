@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
+import "./InputNode.css";
 
 const InputNode = ({
   data,
