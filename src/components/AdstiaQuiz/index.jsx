@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import {
   JITSU_EVENT,
-  LOCAL_STORAGE_QUIZ_HISTORY,
   LOCAL_STORAGE_QUIZ_VALUES,
   QUERY_PARAMS,
 } from "../../constants";
@@ -100,37 +99,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
     }, 1500);
   };
 
-  // // Set initial Jitsu event data for the current slide
-  // useEffect(() => {
-  // const currentSlideNodes = json?.quizJson?.find(
-  //   (element) => element.quizCardId === String(currentSlide)
-  // );
-
-  //   setJitsuEventData((prev) => {
-  // let newEventData = [];
-  // let previousStep = JSON.parse(
-  //   sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
-  // );
-  // previousStep =
-  //   previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
-
-  // currentSlideNodes.nodes.forEach((node) => {
-  //   newEventData.push({
-  //     previousStep,
-  //     nodeName: node?.nodeName,
-  //   });
-  // });
-
-  // return newEventData;
-  //   });
-  // }, [currentSlide]);
-
   useEffect(() => {
-    console.log(
-      "QuizBuilder mounted with sendQuizEventData:",
-      sendQuizEventData
-    );
-    console.log("jitsuEventData :", jitsuEventData);
     if (sendQuizEventData && json.config) {
       setTimeout(() => {
         sendJitsuEvent(jitsuEventData);
@@ -175,7 +144,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
           setCurrentSlide={setCurrentSlide}
           setFormData={setFormData}
           setJitsuEventData={setJitsuEventData}
-          sendQuizEventData={sendQuizEventData}
           setSendQuizEventData={setSendQuizEventData}
           handleFormSubmit={handleFormSubmission}
         />

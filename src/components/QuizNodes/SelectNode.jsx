@@ -2,12 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./SelectNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_NODE_TYPES } from "../../constants";
 
-const SelectNode = ({
-  data,
-  setFormData,
-  setJitsuEventData,
-  handleJitsuData,
-}) => {
+const SelectNode = ({ data, setFormData, handleJitsuData }) => {
   const [selectedOption, setSelectedOption] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const nodeRef = useRef(null);
@@ -59,18 +54,6 @@ const SelectNode = ({
       });
 
       handleJitsuData(nodeName, selectedOption);
-
-      // setJitsuEventData((prev) => {
-      //   let newEventData = prev.map((eventData) => {
-      //     if (eventData?.nodeName === data?.nodeName) {
-      //       return {
-      //         ...eventData,
-      //         answer: selectedOption,
-      //       };
-      //     }
-      //   });
-      //   return newEventData;
-      // });
     }
   }, [selectedOption]);
 

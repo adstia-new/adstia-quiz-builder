@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import { QuizConfigContext } from "../AdstiaQuiz";
@@ -18,7 +18,6 @@ const RenderNodes = ({
   setCurrentSlide,
   setFormData,
   setJitsuEventData,
-  sendQuizEventData,
   setSendQuizEventData,
   handleFormSubmit,
 }) => {
@@ -75,22 +74,6 @@ const RenderNodes = ({
     history.push(String(currentSlide));
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
-
-    // setJitsuEventData((prev) => {
-    //   let newEventData = [...prev];
-    //   if (prev.length > 0) {
-    //     newEventData = prev.map((eventData) => {
-    //       return {
-    //         ...eventData,
-    //         currentStep: currentSlide,
-    //         questionKey: `${currentSlide}_${eventData.nodeName}`,
-    //         nextStep: findNextSlideId,
-    //       };
-    //     });
-    //   }
-
-    //   return newEventData;
-    // });
 
     // Push history entry
     window.history.pushState(
@@ -213,6 +196,8 @@ const RenderNodes = ({
     const onPopState = () => {
       const stepsHistory = getSlideHistory();
 
+      setJitsuEventData([]);
+
       const step =
         stepsHistory?.length > 0 ? stepsHistory[stepsHistory.length - 1] : 1;
 
@@ -243,7 +228,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -255,7 +239,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -267,7 +250,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -279,7 +261,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -290,7 +271,6 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
-              setJitsuEventData={setJitsuEventData}
               setFormData={setFormData}
               handleJitsuData={handleJitsuData}
             />
@@ -302,7 +282,6 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleOptionClick={handleOptionClick}
             />
           );
@@ -313,7 +292,6 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );

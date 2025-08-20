@@ -14,13 +14,7 @@ const formatPhone = (value) => {
   return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
-const PhoneNode = ({
-  data,
-  setNextDisabled,
-  setFormData,
-  setJitsuEventData,
-  handleJitsuData,
-}) => {
+const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
   const { required, errorMessage } = validation || {};
@@ -54,22 +48,7 @@ const PhoneNode = ({
     } else {
       setNextDisabled(false);
 
-      setJitsuEventData((prev) => {
-        const newEventData = prev.map((eventData) => {
-          if (eventData?.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: value,
-            };
-          }
-
-          return eventData;
-        });
-
-        return newEventData;
-      });
-
-      handleJitsuData();
+      handleJitsuData(nodeName, value.replace(/\D/g, ""));
     }
   }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
 
@@ -95,21 +74,6 @@ const PhoneNode = ({
     const formatted = formatPhone(raw);
     setValue(formatted);
 
-    setJitsuEventData((prev) => {
-      const newEventData =
-        prev.map((eventData) => {
-          if (eventData.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: formatted,
-            };
-          }
-          return eventData;
-        }) || [];
-
-      return newEventData;
-    });
-
     if (error) setError("");
   };
 
@@ -125,21 +89,6 @@ const PhoneNode = ({
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [nodeName]: val.replace(/\D/g, "") })
     );
-
-    setJitsuEventData((prev) => {
-      const newEventData = prev.map((eventData) => {
-        if (eventData.nodeName === nodeName) {
-          return {
-            ...eventData,
-            answer: val.replace(/\D/g, ""),
-          };
-        }
-
-        return eventData;
-      });
-
-      return newEventData;
-    });
   };
 
   return (

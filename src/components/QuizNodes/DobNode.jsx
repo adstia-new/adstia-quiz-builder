@@ -3,13 +3,7 @@ import "./DobNode.css";
 import { DOB_FIELDS, LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
 
-const DobNode = ({
-  data,
-  setNextDisabled,
-  setFormData,
-  setJitsuEventData,
-  handleJitsuData,
-}) => {
+const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
   const fields = data.fields || [];
   const inputRefs = useRef([]);

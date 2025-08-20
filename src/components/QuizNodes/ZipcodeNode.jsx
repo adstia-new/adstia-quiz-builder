@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ZipcodeNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_NODE_TYPES } from "../../constants";
+import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
 import { saveLocationWithZipcode } from "../../utils/saveLocationWithZipcode";
 
@@ -8,7 +8,6 @@ const ZipcodeNode = ({
   data,
   setNextDisabled,
   setFormData,
-  setJitsuEventData,
   handleJitsuData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
@@ -103,20 +102,6 @@ const ZipcodeNode = ({
     let numericValue = e.target.value.replace(/\D/g, "");
     setValue(numericValue);
 
-    setJitsuEventData((prev) => {
-      const newEventData =
-        prev.map((eventData) => {
-          if (eventData.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: numericValue,
-            };
-          }
-          return eventData;
-        }) || [];
-
-      return newEventData;
-    });
     if (error) {
       setError("");
     }

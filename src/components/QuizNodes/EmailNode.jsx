@@ -3,13 +3,7 @@ import "./EmailNode.css";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
 
-const EmailNode = ({
-  data,
-  setNextDisabled,
-  setFormData,
-  setJitsuEventData,
-  handleJitsuData,
-}) => {
+const EmailNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation } = data;
   const { required, errorMessage } = validation || {};
@@ -36,21 +30,7 @@ const EmailNode = ({
     } else {
       setNextDisabled(false);
 
-      setJitsuEventData((prev) => {
-        const newEventData = prev.map((eventData) => {
-          if (eventData.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: value,
-            };
-          }
-
-          return eventData;
-        });
-
-        return newEventData;
-      });
-      handleJitsuData();
+      handleJitsuData(nodeName, value);
     }
   }, [error, value, required, setNextDisabled]);
 
@@ -70,21 +50,6 @@ const EmailNode = ({
     const newValue = e.target.value;
     setValue(newValue);
 
-    setJitsuEventData((prev) => {
-      const newEventData =
-        prev.map((eventData) => {
-          if (eventData.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: newValue,
-            };
-          }
-          return eventData;
-        }) || [];
-
-      return newEventData;
-    });
-
     if (error) setError("");
   };
 
@@ -99,21 +64,6 @@ const EmailNode = ({
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [nodeName]: val })
     );
-
-    setJitsuEventData((prev) => {
-      const newEventData = prev.map((eventData) => {
-        if (eventData.nodeName === nodeName) {
-          return {
-            ...eventData,
-            answer: val,
-          };
-        }
-
-        return eventData;
-      });
-
-      return newEventData;
-    });
   };
 
   return (
