@@ -102,26 +102,26 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   // // Set initial Jitsu event data for the current slide
   // useEffect(() => {
-    // const currentSlideNodes = json?.quizJson?.find(
-    //   (element) => element.quizCardId === String(currentSlide)
-    // );
+  // const currentSlideNodes = json?.quizJson?.find(
+  //   (element) => element.quizCardId === String(currentSlide)
+  // );
 
   //   setJitsuEventData((prev) => {
-      // let newEventData = [];
-      // let previousStep = JSON.parse(
-      //   sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
-      // );
-      // previousStep =
-      //   previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+  // let newEventData = [];
+  // let previousStep = JSON.parse(
+  //   sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
+  // );
+  // previousStep =
+  //   previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
 
-      // currentSlideNodes.nodes.forEach((node) => {
-      //   newEventData.push({
-      //     previousStep,
-      //     nodeName: node?.nodeName,
-      //   });
-      // });
+  // currentSlideNodes.nodes.forEach((node) => {
+  //   newEventData.push({
+  //     previousStep,
+  //     nodeName: node?.nodeName,
+  //   });
+  // });
 
-      // return newEventData;
+  // return newEventData;
   //   });
   // }, [currentSlide]);
 
@@ -130,6 +130,8 @@ const QuizBuilder = ({ json, setQuizData }) => {
       setTimeout(() => {
         sendJitsuEvent(jitsuEventData);
       }, 500);
+
+      setJitsuEventData([]);
 
       setSendQuizEventData(false);
     }

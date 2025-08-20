@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import "./SelectNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
+import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_NODE_TYPES } from "../../constants";
 
 const SelectNode = ({
   data,
@@ -11,6 +11,7 @@ const SelectNode = ({
   const [selectedOption, setSelectedOption] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const nodeRef = useRef(null);
+  const nodeName = data.nodeName || QUIZ_NODE_TYPES.DROPDOWN;
 
   useEffect(() => {
     if (data.defaultOption) {
@@ -57,19 +58,19 @@ const SelectNode = ({
         return { ...prev, [data.nodeName]: selectedOption };
       });
 
-      handleJitsuData();
+      handleJitsuData(nodeName, selectedOption);
 
-      setJitsuEventData((prev) => {
-        let newEventData = prev.map((eventData) => {
-          if (eventData?.nodeName === data?.nodeName) {
-            return {
-              ...eventData,
-              answer: selectedOption,
-            };
-          }
-        });
-        return newEventData;
-      });
+      // setJitsuEventData((prev) => {
+      //   let newEventData = prev.map((eventData) => {
+      //     if (eventData?.nodeName === data?.nodeName) {
+      //       return {
+      //         ...eventData,
+      //         answer: selectedOption,
+      //       };
+      //     }
+      //   });
+      //   return newEventData;
+      // });
     }
   }, [selectedOption]);
 

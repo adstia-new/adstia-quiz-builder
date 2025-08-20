@@ -143,31 +143,32 @@ const RenderNodes = ({
     }
   };
 
-  useEffect(() => {
-    if (!sendQuizEventData) {
-      setJitsuEventData((prev) => {
-        let newEventData = [...prev];
-        if (prev.length > 0) {
-          newEventData = prev.map((eventData) => {
-            return {
-              ...eventData,
-              currentStep: currentSlide,
-              questionKey: `${currentSlide}_${eventData.nodeName}`,
-              nextStep: findNextSlideId,
-            };
-          });
-        }
+  // useEffect(() => {
+  //   if (!sendQuizEventData) {
+  //     setJitsuEventData((prev) => {
+  //       let newEventData = [...prev];
+  //       if (prev.length > 0) {
+  //         newEventData = prev.map((eventData) => {
+  //           return {
+  //             ...eventData,
+  //             currentStep: currentSlide,
+  //             questionKey: `${currentSlide}_${eventData.nodeName}`,
+  //             nextStep: findNextSlideId,
+  //           };
+  //         });
+  //       }
 
-        return newEventData;
-      });
-    }
-  }, [sendQuizEventData, currentSlide]);
+  //       return newEventData;
+  //     });
+  //   }
+  // }, [sendQuizEventData, currentSlide]);
 
-  const handleJitsuData = () => {
+  const handleJitsuData = (currentNodeName, answer) => {
     setJitsuEventData((prev) => {
       let newEventData = [...prev];
       const currentSlideNodes = findCurrentSlideNodes;
 
+      // Check if jitsuEventData already has data for the current slide
       if (prev.length > 0) {
         newEventData = prev.map((eventData) => {
           return {
@@ -192,6 +193,18 @@ const RenderNodes = ({
             questionKey: `${currentSlide}_${node?.nodeName}`,
             nextStep: findNextSlideId,
           });
+        });
+      }
+
+      if (currentNodeName && answer) {
+        newEventData = newEventData.map((eventData) => {
+          if (eventData.nodeName === currentNodeName) {
+            return {
+              ...eventData,
+              answer: answer,
+            };
+          }
+          return eventData;
         });
       }
 

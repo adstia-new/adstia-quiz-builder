@@ -9,7 +9,7 @@ const ZipcodeNode = ({
   setNextDisabled,
   setFormData,
   setJitsuEventData,
-  handleJitsuData
+  handleJitsuData,
 }) => {
   const quizConfig = useContext(QuizConfigContext);
   const {
@@ -24,7 +24,6 @@ const ZipcodeNode = ({
     validation || {};
   const [error, setError] = useState("");
   const [value, setValue] = useState("");
-
   // Prefill value from localStorage if enabled in quizConfig
   useEffect(() => {
     if (quizConfig.prefillValues) {
@@ -50,23 +49,8 @@ const ZipcodeNode = ({
     } else {
       setNextDisabled(false);
 
-      // Update Jitsu event data with the current value
-      setJitsuEventData((prev) => {
-        const newEventData = prev.map((eventData) => {
-          if (eventData?.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: value,
-            };
-          }
-
-          return eventData;
-        });
-
-        return newEventData;
-      });
-
-      handleJitsuData();
+      // Update Jitsu event data
+      handleJitsuData(nodeName, value);
     }
   }, [error, value, required, setNextDisabled]);
 
