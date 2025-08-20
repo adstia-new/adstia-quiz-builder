@@ -27,11 +27,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [jitsuEventData, setJitsuEventData] = useState([]);
   const [sendQuizEventData, setSendQuizEventData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  let searchParams = null;
-  if (typeof window !== "undefined") {
-    searchParams = new URLSearchParams(window.location.search);
-  }
+  const [searchParams, setSearchParams] = useState(null);
 
   useEffect(() => {
     // Add LeadiD script to head only if leadId is present in config
@@ -124,6 +120,11 @@ const QuizBuilder = ({ json, setQuizData }) => {
   }, [jitsuEventData, sendQuizEventData, isLoading]);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const pramas = new URLSearchParams(window.location.search);
+      setSearchParams(pramas);
+    }
+
     const handlePageShow = () => {
       setIsLoading(false);
     };

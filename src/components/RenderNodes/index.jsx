@@ -21,9 +21,7 @@ const RenderNodes = ({
   setSendQuizEventData,
   handleFormSubmit,
 }) => {
-  if (typeof window === "undefined" || !window.location) return null;
-
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = new URLSearchParams(window?.location?.search || "");
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
 
@@ -65,7 +63,9 @@ const RenderNodes = ({
     window.history.pushState(
       { step: slideId },
       "",
-      `${window.location.pathname}?${searchParams.toString()}`
+      `${window.location.pathname}${
+        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
+      }`
     );
   };
 
@@ -79,7 +79,9 @@ const RenderNodes = ({
     window.history.pushState(
       { step: findNextSlideId },
       "",
-      `${window.location.pathname}?${searchParams.toString()}`
+      `${window.location.pathname}${
+        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
+      }`
     );
 
     setSendQuizEventData(true);
@@ -190,7 +192,9 @@ const RenderNodes = ({
     window.history.replaceState(
       { step: currentSlide },
       "",
-      `${window.location.pathname}?${searchParams.toString()}`
+      `${window.location.pathname}${
+        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
+      }`
     );
 
     const onPopState = () => {
