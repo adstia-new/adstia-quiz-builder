@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from 'react';
-import { JITSU_EVENT, LOCAL_STORAGE_QUIZ_VALUES, QUERY_PARAMS } from '../../constants';
+import { LOCAL_STORAGE_QUIZ_VALUES, QUERY_PARAMS } from '../../constants';
 import { appendLeadIdScript } from '../../utils/appendLeadIdScript';
 import { handleEndNodeRedirect } from '../../utils/handleEndNodeRedirect';
 import {
@@ -10,7 +10,7 @@ import {
 import RenderNodes from '../RenderNodes';
 import './index.css';
 import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
-import LoadingScreen from '../ui/LoadingScreen';
+import LoadingScreen from '../ui/LoadingScreen/LoadingScreen';
 import { saveQuizModuleSubmission } from '../../utils/saveQuizModuleSubmission';
 import { getLeadIdTokenValue } from '../../utils/getLeadIdTokenValue';
 
@@ -24,6 +24,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [sendQuizEventData, setSendQuizEventData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useState(null);
+  const leadId = getLeadIdTokenValue();
 
   useEffect(() => {
     // Add LeadiD script to head only if leadId is present in config
@@ -40,7 +41,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
     setQuizData(formData);
 
-    const leadId = getLeadIdTokenValue();
     const { email, phoneNumber } = formData;
 
     const isLongForm =
