@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import { QuizConfigContext } from "../AdstiaQuiz";
@@ -18,13 +18,10 @@ const RenderNodes = ({
   setCurrentSlide,
   setFormData,
   setJitsuEventData,
-  sendQuizEventData,
   setSendQuizEventData,
   handleFormSubmit,
 }) => {
-  if (typeof window === "undefined" || !window.location) return null;
-
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = new URLSearchParams(window?.location?.search || "");
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
 
@@ -66,7 +63,9 @@ const RenderNodes = ({
     window.history.pushState(
       { step: slideId },
       "",
-      `${window.location.pathname}?${searchParams.toString()}`
+      `${window.location.pathname}${
+        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
+      }`
     );
   };
 
@@ -76,27 +75,13 @@ const RenderNodes = ({
     setSlideHistory(history);
     setCurrentSlide(String(findNextSlideId));
 
-    setJitsuEventData((prev) => {
-      let newEventData = [...prev];
-      if (prev.length > 0) {
-        newEventData = prev.map((eventData) => {
-          return {
-            ...eventData,
-            currentStep: currentSlide,
-            questionKey: `${currentSlide}_${eventData.nodeName}`,
-            nextStep: findNextSlideId,
-          };
-        });
-      }
-
-      return newEventData;
-    });
-
     // Push history entry
     window.history.pushState(
       { step: findNextSlideId },
       "",
-      `${window.location.pathname}?${searchParams.toString()}`
+      `${window.location.pathname}${
+        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
+      }`
     );
 
     setSendQuizEventData(true);
@@ -115,18 +100,74 @@ const RenderNodes = ({
     }
   };
 
-  const handleOptionClick = (next) => {
+  const handleJitsuData = (currentNodeName, answer) => {
+    setJitsuEventData((prev) => {
+      let newEventData = [...prev];
+      const currentSlideNodes = findCurrentSlideNodes;
+
+      // Check if jitsuEventData already has data for the current slide
+      if (prev.length > 0) {
+        newEventData = prev.map((eventData) => {
+          return {
+            ...eventData,
+            currentStep: currentSlide,
+            questionKey: `${currentSlide}_${eventData.nodeName}`,
+            nextStep: findNextSlideId,
+          };
+        });
+      } else {
+        let previousStep = JSON.parse(
+          sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
+        );
+        previousStep =
+          previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+
+        currentSlideNodes.nodes.forEach((node) => {
+          newEventData.push({
+            previousStep,
+            nodeName: node?.nodeName,
+            currentStep: currentSlide,
+            questionKey: `${currentSlide}_${node?.nodeName}`,
+            nextStep: findNextSlideId,
+          });
+        });
+      }
+
+      if (currentNodeName && answer) {
+        newEventData = newEventData.map((eventData) => {
+          if (eventData.nodeName === currentNodeName) {
+            return {
+              ...eventData,
+              answer: answer,
+            };
+          }
+          return eventData;
+        });
+      }
+
+      return newEventData;
+    });
+  };
+
+  const handleOptionClick = (answer, next) => {
     const nodeName = findCurrentSlideNodes.nodes[0].nodeName;
 
     const nextNodeType =
       quizNodes.find((element) => element.quizCardId === String(next))
         ?.quizCardType || null;
 
+    let previousStep = JSON.parse(
+      sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
+    );
+    previousStep =
+      previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+
     setJitsuEventData((prev) => {
-      let newEventData = prev[0];
+      let newEventData = {};
 
       newEventData = {
-        ...newEventData,
+        previousStep,
+        answer,
         currentStep: currentSlide,
         questionKey: `${currentSlide}_${prev.nodeName || nodeName}`,
         nextStep: next,
@@ -144,44 +185,6 @@ const RenderNodes = ({
   };
 
   useEffect(() => {
-    if (!sendQuizEventData) {
-      setJitsuEventData((prev) => {
-        let newEventData = [...prev];
-        if (prev.length > 0) {
-          newEventData = prev.map((eventData) => {
-            return {
-              ...eventData,
-              currentStep: currentSlide,
-              questionKey: `${currentSlide}_${eventData.nodeName}`,
-              nextStep: findNextSlideId,
-            };
-          });
-        }
-
-        return newEventData;
-      });
-    }
-  }, [sendQuizEventData, currentSlide]);
-
-  const handleJitsuData = () => {
-    setJitsuEventData((prev) => {
-      let newEventData = [...prev];
-      if (prev.length > 0) {
-        newEventData = prev.map((eventData) => {
-          return {
-            ...eventData,
-            currentStep: currentSlide,
-            questionKey: `${currentSlide}_${eventData.nodeName}`,
-            nextStep: findNextSlideId,
-          };
-        });
-      }
-
-      return newEventData;
-    });
-  };
-
-  useEffect(() => {
     if (isStartingNode) {
       setSlideHistory([]);
     }
@@ -189,11 +192,15 @@ const RenderNodes = ({
     window.history.replaceState(
       { step: currentSlide },
       "",
-      `${window.location.pathname}?${searchParams.toString()}`
+      `${window.location.pathname}${
+        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
+      }`
     );
 
     const onPopState = () => {
       const stepsHistory = getSlideHistory();
+
+      setJitsuEventData([]);
 
       const step =
         stepsHistory?.length > 0 ? stepsHistory[stepsHistory.length - 1] : 1;
@@ -225,7 +232,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -237,7 +243,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -249,7 +254,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -261,7 +265,6 @@ const RenderNodes = ({
               data={quizElement}
               setNextDisabled={setNextDisabled}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleJitsuData={handleJitsuData}
             />
           );
@@ -272,7 +275,6 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setNextDisabled={setNextDisabled}
-              setJitsuEventData={setJitsuEventData}
               setFormData={setFormData}
               handleJitsuData={handleJitsuData}
             />
@@ -284,7 +286,6 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
               handleOptionClick={handleOptionClick}
             />
           );
@@ -295,7 +296,7 @@ const RenderNodes = ({
               key={index}
               data={quizElement}
               setFormData={setFormData}
-              setJitsuEventData={setJitsuEventData}
+              handleJitsuData={handleJitsuData}
             />
           );
         }
@@ -333,7 +334,11 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button className="quiz-builder__submit button" type="submit">
+          <button
+            className="quiz-builder__submit button"
+            type="submit"
+            disabled={nextDisabled}
+          >
             {quizConfig.submitButtonText}
           </button>
         </div>

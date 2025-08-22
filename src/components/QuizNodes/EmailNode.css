@@ -3,6 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .email-node__label {

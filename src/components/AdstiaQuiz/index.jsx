@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import {
   JITSU_EVENT,
-  LOCAL_STORAGE_QUIZ_HISTORY,
   LOCAL_STORAGE_QUIZ_VALUES,
   QUERY_PARAMS,
 } from "../../constants";
@@ -28,11 +27,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [jitsuEventData, setJitsuEventData] = useState([]);
   const [sendQuizEventData, setSendQuizEventData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  let searchParams = null;
-  if (typeof window !== "undefined") {
-    searchParams = new URLSearchParams(window.location.search);
-  }
+  const [searchParams, setSearchParams] = useState(null);
 
   useEffect(() => {
     // Add LeadiD script to head only if leadId is present in config
@@ -101,34 +96,11 @@ const QuizBuilder = ({ json, setQuizData }) => {
   };
 
   useEffect(() => {
-    const currentSlideNodes = json?.quizJson?.find(
-      (element) => element.quizCardId === String(currentSlide)
-    );
-
-    setJitsuEventData((prev) => {
-      let newEventData = [];
-      let previousStep = JSON.parse(
-        sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
-      );
-      previousStep =
-        previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
-
-      currentSlideNodes.nodes.forEach((node) => {
-        newEventData.push({
-          previousStep,
-          nodeName: node?.nodeName,
-        });
-      });
-
-      return newEventData;
-    });
-  }, [currentSlide]);
-
-  useEffect(() => {
     if (sendQuizEventData && json.config) {
       setTimeout(() => {
         sendJitsuEvent(jitsuEventData);
       }, 500);
+      setJitsuEventData([]);
 
       setSendQuizEventData(false);
     }
@@ -148,6 +120,11 @@ const QuizBuilder = ({ json, setQuizData }) => {
   }, [jitsuEventData, sendQuizEventData, isLoading]);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const pramas = new URLSearchParams(window.location.search);
+      setSearchParams(pramas);
+    }
+
     const handlePageShow = () => {
       setIsLoading(false);
     };
@@ -168,7 +145,6 @@ const QuizBuilder = ({ json, setQuizData }) => {
           setCurrentSlide={setCurrentSlide}
           setFormData={setFormData}
           setJitsuEventData={setJitsuEventData}
-          sendQuizEventData={sendQuizEventData}
           setSendQuizEventData={setSendQuizEventData}
           handleFormSubmit={handleFormSubmission}
         />

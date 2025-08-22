@@ -1,30 +1,24 @@
-.phone-node {
+.input-node {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 2rem;
-}
-
-.phone-node__input-container {
   width: 100%;
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
 }
 
-.phone-node__label {
+.input-node__label {
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
   color: #222;
 }
 
-.phone-node__required {
+.input-node__required {
   color: #e53935;
   margin-left: 0.2em;
 }
 
-.phone-node__input {
+.input-node__input {
   width: 100%;
   padding: 0.5rem 0.75rem;
   border: 1.5px solid #bdbdbd;
@@ -35,39 +29,19 @@
   outline: none;
 }
 
-.phone-node__input:focus {
+.input-node__input:focus {
   border-color: #1976d2;
   box-shadow: 0 0 0 2px #1976d220;
 }
 
-.phone-node__input--error {
+.input-node__input--error {
   border-color: #e53935;
   background: #fff0f0;
 }
 
-.phone-node__error {
+.input-node__error {
   color: #e53935;
   font-size: 0.92rem;
   margin-top: 0.25rem;
   min-height: 1.1em;
-}
-
-.phone-node__tcpa {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #444;
-}
-
-.phone-node__tcpa-label {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
-.phone-node__tcpa-checkbox {
-  margin-top: 0.2em;
-}
-
-.phone-node__tcpa-text {
-  line-height: 1.4;
 }

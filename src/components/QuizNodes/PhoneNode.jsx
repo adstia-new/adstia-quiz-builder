@@ -14,13 +14,7 @@ const formatPhone = (value) => {
   return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
-const PhoneNode = ({
-  data,
-  setNextDisabled,
-  setFormData,
-  setJitsuEventData,
-  handleJitsuData,
-}) => {
+const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
   const { required, errorMessage } = validation || {};
@@ -54,22 +48,7 @@ const PhoneNode = ({
     } else {
       setNextDisabled(false);
 
-      setJitsuEventData((prev) => {
-        const newEventData = prev.map((eventData) => {
-          if (eventData?.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: value,
-            };
-          }
-
-          return eventData;
-        });
-
-        return newEventData;
-      });
-
-      handleJitsuData();
+      handleJitsuData(nodeName, value.replace(/\D/g, ""));
     }
   }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
 
@@ -95,21 +74,6 @@ const PhoneNode = ({
     const formatted = formatPhone(raw);
     setValue(formatted);
 
-    setJitsuEventData((prev) => {
-      const newEventData =
-        prev.map((eventData) => {
-          if (eventData.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: formatted,
-            };
-          }
-          return eventData;
-        }) || [];
-
-      return newEventData;
-    });
-
     if (error) setError("");
   };
 
@@ -125,44 +89,31 @@ const PhoneNode = ({
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [nodeName]: val.replace(/\D/g, "") })
     );
-
-    setJitsuEventData((prev) => {
-      const newEventData = prev.map((eventData) => {
-        if (eventData.nodeName === nodeName) {
-          return {
-            ...eventData,
-            answer: val.replace(/\D/g, ""),
-          };
-        }
-
-        return eventData;
-      });
-
-      return newEventData;
-    });
   };
 
   return (
     <div className="phone-node">
-      <label className="phone-node__label" htmlFor={nodeName}>
-        {inputLabel}
-        {required && <span className="phone-node__required">*</span>}
-      </label>
-      <input
-        id={nodeName}
-        type="tel"
-        name={nodeName}
-        placeholder={placeholder}
-        className={`phone-node__input input ${
-          error ? "phone-node__input--error" : ""
-        }`}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        maxLength={17} // +1 (xxx)-xxx-xxxx
-        autoComplete="tel"
-      />
-      {error && <span className="phone-node__error">{error}</span>}
+      <div className="phone-node__input-container">
+        <label className="phone-node__label" htmlFor={nodeName}>
+          {inputLabel}
+          {required && <span className="phone-node__required">*</span>}
+        </label>
+        <input
+          id={nodeName}
+          type="tel"
+          name={nodeName}
+          placeholder={placeholder}
+          className={`phone-node__input input ${
+            error ? "phone-node__input--error" : ""
+          }`}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          maxLength={17} // +1 (xxx)-xxx-xxxx
+          autoComplete="tel"
+        />
+        {error && <span className="phone-node__error">{error}</span>}
+      </div>
       {tcpaConsent && (
         <div className="phone-node__tcpa">
           <label className="phone-node__tcpa-label">

@@ -1,8 +1,8 @@
 import {
-  LOCAL_STORAGE_QUIZ_HISTORY,
   LOCAL_STORAGE_QUIZ_VALUES,
   QUIZ_MODULE_SUBMISSION_URL,
 } from "../constants";
+import { getCurrentSlug, getCurrentUrl, getDomainName } from "./windowUtils";
 
 export async function saveQuizModuleSubmission(pabblyUrl, data) {
   try {
@@ -11,10 +11,17 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
       localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
     );
 
+    const domainName = getDomainName();
+    const domainSlug = getCurrentSlug();
+    const finalUrl = getCurrentUrl();
+
     const dataJSON = {
       ...storedData,
       ...formData,
       phone: phoneNumber,
+      domainName,
+      domainSlug,
+      finalUrl,
     };
 
     const response = await fetch(QUIZ_MODULE_SUBMISSION_URL, {

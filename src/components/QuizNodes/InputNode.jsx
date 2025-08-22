@@ -1,14 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
 import { QuizConfigContext } from "../AdstiaQuiz";
+import "./InputNode.css";
 
-const InputNode = ({
-  data,
-  setNextDisabled,
-  setFormData,
-  setJitsuEventData,
-  handleJitsuData,
-}) => {
+const InputNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
   const {
     inputLabel,
@@ -42,23 +37,7 @@ const InputNode = ({
       } else {
         setNextDisabled(false);
 
-        // Update Jitsu event data with the current value
-        setJitsuEventData((prev) => {
-          const newEventData = prev.map((eventData) => {
-            if (eventData?.nodeName === nodeName) {
-              return {
-                ...eventData,
-                answer: value,
-              };
-            }
-
-            return eventData;
-          });
-
-          return newEventData;
-        });
-
-        handleJitsuData();
+        handleJitsuData(nodeName, value);
       }
     }
   }, [error, value, required, setNextDisabled]);
@@ -80,21 +59,6 @@ const InputNode = ({
     const newValue = e.target.value;
     setValue(newValue);
 
-    setJitsuEventData((prev) => {
-      const newEventData =
-        prev.map((eventData) => {
-          if (eventData.nodeName === nodeName) {
-            return {
-              ...eventData,
-              answer: newValue,
-            };
-          }
-          return eventData;
-        }) || [];
-
-      return newEventData;
-    });
-
     if (error) setError("");
   };
 
@@ -109,21 +73,6 @@ const InputNode = ({
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [nodeName]: val })
     );
-
-    setJitsuEventData((prev) => {
-      const newEventData = prev.map((eventData) => {
-        if (eventData.nodeName === nodeName) {
-          return {
-            ...eventData,
-            answer: val,
-          };
-        }
-
-        return eventData;
-      });
-
-      return newEventData;
-    });
   };
 
   return (
