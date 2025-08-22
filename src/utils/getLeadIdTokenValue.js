@@ -1,5 +1,5 @@
 export const getLeadIdTokenValue = () => {
-  const leadIdElement = document.getElementById("leadid_token");
+  const leadIdElement = document.getElementById('leadid_token');
 
-  return leadIdElement ? leadIdElement.value : "";
+  return leadIdElement ? leadIdElement.value : '';
 };

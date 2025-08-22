@@ -1,19 +1,15 @@
-import { mergeUrlWithParams } from "./mergeUrlWithParams";
+import { mergeUrlWithParams } from './mergeUrlWithParams';
 
 // Utility to handle end node redirect logic
 export function handleEndNodeRedirect(quizJson, currentSlide, next) {
-  if (typeof window === "undefined" || !window.location) return null;
+  if (typeof window === 'undefined' || !window.location) return null;
   const searchParams = new URLSearchParams(window.location.search);
 
-  const currentNode = quizJson.find(
-    (element) => element.quizCardId === String(currentSlide)
-  );
+  const currentNode = quizJson.find((element) => element.quizCardId === String(currentSlide));
 
   const findNextSlideId = next || currentNode?.next;
   const nextSlideData =
-    quizJson.find(
-      (element) => element.quizCardId === String(findNextSlideId)
-    ) || {};
+    quizJson.find((element) => element.quizCardId === String(findNextSlideId)) || {};
 
   const endNode = nextSlideData.nodes?.[0];
 
@@ -23,21 +19,21 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
       let url = mergeUrlWithParams(endNode.redirectUrl, searchParams);
 
       if (
-        typeof window !== "undefined" &&
-        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+        typeof window !== 'undefined' &&
+        typeof window?.adstiaScripts?.replaceShortcodes === 'function'
       ) {
         url = window?.adstiaScripts?.replaceShortcodes(url);
       }
 
-      window.open(url, "_blank");
+      window.open(url, '_blank');
     }
     // Redirect current tab
     if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
       let url = mergeUrlWithParams(endNode.redirectUrl, searchParams);
 
       if (
-        typeof window !== "undefined" &&
-        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+        typeof window !== 'undefined' &&
+        typeof window?.adstiaScripts?.replaceShortcodes === 'function'
       ) {
         url = window?.adstiaScripts?.replaceShortcodes(url);
       }
@@ -47,8 +43,8 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
       let url = mergeUrlWithParams(endNode.redirectUrl, searchParams);
 
       if (
-        typeof window !== "undefined" &&
-        typeof window?.adstiaScripts?.replaceShortcodes === "function"
+        typeof window !== 'undefined' &&
+        typeof window?.adstiaScripts?.replaceShortcodes === 'function'
       ) {
         url = window?.adstiaScripts?.replaceShortcodes(url);
       }

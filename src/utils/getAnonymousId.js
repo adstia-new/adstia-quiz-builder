@@ -1,10 +1,10 @@
 export const getAnonymousId = () => {
   const cookieString = document.cookie;
-  const cookies = cookieString.split("; ");
+  const cookies = cookieString.split('; ');
 
   for (const cookie of cookies) {
-    const [name, value] = cookie.split("=");
-    if (name === "__eventn_id") {
+    const [name, value] = cookie.split('=');
+    if (name === '__eventn_id') {
       return decodeURIComponent(value);
     }
   }

@@ -1,15 +1,14 @@
-import React from "react";
-import "./OptionNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
-import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
+import React from 'react';
+import './OptionNode.css';
+import { LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
+import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
 
 const OptionNode = ({ data, setFormData, handleOptionClick }) => {
   const handleOptionButtonClick = (clickedOptionData, value) => {
     setFormData((prev) => {
       return { ...prev, [data.nodeName]: value };
     });
-    const prev =
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [data.nodeName]: value })

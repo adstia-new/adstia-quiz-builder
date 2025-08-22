@@ -1,7 +1,7 @@
-import React from "react";
-import LoadingImg from "/public/loader.svg";
-import { createPortal } from "react-dom";
-import "./LoadingScreen.css";
+import React from 'react';
+import LoadingImg from '/public/loader.svg';
+import { createPortal } from 'react-dom';
+import './LoadingScreen.css';
 
 const LoadingScreen = () => {
   return createPortal(

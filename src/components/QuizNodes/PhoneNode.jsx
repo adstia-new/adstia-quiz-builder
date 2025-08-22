@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
-import "./PhoneNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
-import { QuizConfigContext } from "../AdstiaQuiz";
+import React, { useState, useEffect, useContext } from 'react';
+import './PhoneNode.css';
+import { LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
+import { QuizConfigContext } from '../AdstiaQuiz';
 
 const formatPhone = (value) => {
-  let digits = value.replace(/\D/g, "");
-  digits = digits.replace(/^1+/, "");
+  let digits = value.replace(/\D/g, '');
+  digits = digits.replace(/^1+/, '');
   digits = digits.slice(0, 10);
-  if (digits.length === 0) return "+1 ";
+  if (digits.length === 0) return '+1 ';
   if (digits.length <= 3) return `+1 (${digits}`;
-  if (digits.length <= 6)
-    return `+1 (${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  if (digits.length <= 6) return `+1 (${digits.slice(0, 3)}) ${digits.slice(3)}`;
   return `+1 (${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 };
 
@@ -18,76 +17,69 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
   const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
   const { required, errorMessage } = validation || {};
-  const [value, setValue] = useState("");
-  const [error, setError] = useState("");
+  const [value, setValue] = useState('');
+  const [error, setError] = useState('');
   const [consentChecked] = useState(true);
 
   // Prefill value from localStorage if enabled in quizConfig
   useEffect(() => {
     if (quizConfig.prefillValues) {
-      const stored =
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       if (stored[nodeName]) {
         setValue(formatPhone(stored[nodeName]));
         setFormData &&
           setFormData((prev) => ({
             ...prev,
-            [nodeName]: stored[nodeName].replace(/\D/g, ""),
+            [nodeName]: stored[nodeName].replace(/\D/g, ''),
           }));
       }
     }
   }, [quizConfig.prefillValues, nodeName]);
 
   useEffect(() => {
-    if (
-      error ||
-      (required && !value.trim()) ||
-      (tcpaConsent && !consentChecked)
-    ) {
+    if (error || (required && !value.trim()) || (tcpaConsent && !consentChecked)) {
       setNextDisabled(true);
     } else {
       setNextDisabled(false);
 
-      handleJitsuData(nodeName, value.replace(/\D/g, ""));
+      handleJitsuData(nodeName, value.replace(/\D/g, ''));
     }
   }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
 
   const validatePhone = (val) => {
-    const digits = val.replace(/\D/g, "");
+    const digits = val.replace(/\D/g, '');
     if (required && !digits) {
-      return "This field is required";
+      return 'This field is required';
     }
     if (digits.length !== 11) {
-      return errorMessage || "Invalid Phone Number";
+      return errorMessage || 'Invalid Phone Number';
     }
-    return "";
+    return '';
   };
 
   const handleChange = (e) => {
     const raw = e.target.value;
     // Allow user to clear the field
-    if (raw === "") {
-      setValue("");
-      if (error) setError("");
+    if (raw === '') {
+      setValue('');
+      if (error) setError('');
       return;
     }
     const formatted = formatPhone(raw);
     setValue(formatted);
 
-    if (error) setError("");
+    if (error) setError('');
   };
 
   const handleBlur = (e) => {
     const val = e.target.value;
     const err = validatePhone(val);
     setError(err);
-    setFormData &&
-      setFormData((prev) => ({ ...prev, [nodeName]: val.replace(/\D/g, "") }));
-    const prev =
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    setFormData && setFormData((prev) => ({ ...prev, [nodeName]: val.replace(/\D/g, '') }));
+    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
-      JSON.stringify({ ...prev, [nodeName]: val.replace(/\D/g, "") })
+      JSON.stringify({ ...prev, [nodeName]: val.replace(/\D/g, '') })
     );
   };
 
@@ -103,9 +95,7 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
           type="tel"
           name={nodeName}
           placeholder={placeholder}
-          className={`phone-node__input input ${
-            error ? "phone-node__input--error" : ""
-          }`}
+          className={`phone-node__input input ${error ? 'phone-node__input--error' : ''}`}
           value={value}
           onChange={handleChange}
           onBlur={handleBlur}

@@ -1,70 +1,72 @@
 .dob-node {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
 }
 
 .dob-node__label {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-    color: #222;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  color: #222;
 }
 
 .dob-node__required {
-    color: #e53935;
-    margin-left: 0.2em;
+  color: #e53935;
+  margin-left: 0.2em;
 }
 
 .dob-node__fields {
-    display: flex;
-    gap: 1rem;
-    width: 100%;
+  display: flex;
+  gap: 1rem;
+  width: 100%;
 }
 
 .dob-node__field {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    min-width: 80px;
-    flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 80px;
+  flex: 1 1 0;
 }
 
 .dob-node__input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1.5px solid #bdbdbd;
-    border-radius: 6px;
-    font-size: 1rem;
-    background: #fafbfc;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  outline: none;
 }
 
 .dob-node__input:focus {
-    border-color: #1976d2;
-    box-shadow: 0 0 0 2px #1976d220;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px #1976d220;
 }
 
 .dob-node__input--error {
-    border-color: #e53935;
-    background: #fff0f0;
+  border-color: #e53935;
+  background: #fff0f0;
 }
 
 .dob-node__error {
-    color: #e53935;
-    font-size: 0.92rem;
-    margin-top: 0.25rem;
-    min-height: 1.1em;
+  color: #e53935;
+  font-size: 0.92rem;
+  margin-top: 0.25rem;
+  min-height: 1.1em;
 }
 
 @media (max-width: 600px) {
-    .dob-node__fields {
-        gap: 0.5rem;
-    }
+  .dob-node__fields {
+    gap: 0.5rem;
+  }
 
-    .dob-node__field {
-        min-width: 0;
-    }
+  .dob-node__field {
+    min-width: 0;
+  }
 }

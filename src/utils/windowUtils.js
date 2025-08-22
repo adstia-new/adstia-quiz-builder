@@ -21,9 +21,6 @@ export const getScreenResolution = () => {
 };
 
 export const getConnectionType = () => {
-  const connection =
-    navigator.connection ||
-    navigator.mozConnection ||
-    navigator.webkitConnection;
-  return connection ? connection.effectiveType || "unknown" : "unknown";
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  return connection ? connection.effectiveType || 'unknown' : 'unknown';
 };
