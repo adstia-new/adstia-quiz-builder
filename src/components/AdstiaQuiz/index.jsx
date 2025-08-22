@@ -16,6 +16,7 @@ import "./index.css";
 import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
 import LoadingScreen from "../ui/LoadingScreen";
 import { saveQuizModuleSubmission } from "../../utils/saveQuizModuleSubmission";
+import { getLeadIdTokenValue } from "../../utils/getLeadIdTokenValue";
 
 export const QuizConfigContext = createContext();
 
@@ -29,7 +30,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [sendQuizEventData, setSendQuizEventData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useState(null);
-
+  
   useEffect(() => {
     // Add LeadiD script to head only if leadId is present in config
     let cleanup = () => {};
@@ -38,20 +39,21 @@ const QuizBuilder = ({ json, setQuizData }) => {
     }
     return cleanup;
   }, [json.config]);
-
+  
   const handleFormSubmission = async (e, next) => {
     e?.preventDefault();
     setIsLoading(true);
-
+    
     setQuizData(formData);
-
+    
+    const leadId = getLeadIdTokenValue();
     const { email, phoneNumber } = formData;
-
+    
     const isLongForm =
-      searchParams && searchParams.get(QUERY_PARAMS.FORM_TYPE) === "f"
-        ? true
-        : false;
-
+    searchParams && searchParams.get(QUERY_PARAMS.FORM_TYPE) === "f"
+    ? true
+    : false;
+    
     if (
       isLongForm &&
       json.config &&
@@ -59,7 +61,15 @@ const QuizBuilder = ({ json, setQuizData }) => {
       email &&
       phoneNumber
     ) {
-      await saveQuizModuleSubmission(json.config.pabblyUrl, formData);
+      let dataJson = { ...formData };
+
+      if (leadId) {
+        dataJson = {
+          ...dataJson,
+          leadId,
+        };
+      }
+      await saveQuizModuleSubmission(json.config.pabblyUrl, dataJson);
     }
 
     setJitsuEventData((prev) => {
@@ -78,11 +88,20 @@ const QuizBuilder = ({ json, setQuizData }) => {
       ...quizData,
     });
 
-    sendJitsuLeadSubmitEvent({
+    let jsonData = {
       user_id: localStorage.getItem("user_id") || "",
       session_id: sessionStorage.getItem("session_id") || "",
       ...quizData,
-    });
+    };
+
+    if (leadId) {
+      jsonData = {
+        ...jsonData,
+        leadId,
+      };
+    }
+
+    sendJitsuLeadSubmitEvent(jsonData);
 
     // Push quiz data to GTM
     setTimeout(() => {

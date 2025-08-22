@@ -2,6 +2,7 @@ import {
   LOCAL_STORAGE_QUIZ_VALUES,
   QUIZ_MODULE_SUBMISSION_URL,
 } from "../constants";
+import { getLeadIdTokenValue } from "./getLeadIdTokenValue";
 import { getCurrentSlug, getCurrentUrl, getDomainName } from "./windowUtils";
 
 export async function saveQuizModuleSubmission(pabblyUrl, data) {
@@ -15,7 +16,7 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     const domainSlug = getCurrentSlug();
     const finalUrl = getCurrentUrl();
 
-    const dataJSON = {
+    let dataJSON = {
       ...storedData,
       ...formData,
       phone: phoneNumber,

@@ -2,6 +2,7 @@ import React from "react";
 import { JITSU_EVENT } from "../constants";
 import { getESTISOString } from "./dateTimeUtils";
 import { getCurrentSlug, getDomainName } from "./windowUtils";
+import { getLeadIdTokenValue } from "./getLeadIdTokenValue";
 
 export async function sendDataToJitsuEvent(data) {
   const EVENT_DATA = JSON.parse(data);
@@ -105,9 +106,11 @@ export const sendJitsuLeadSubmitEvent = (jitsuEventData) => {
       phoneNumber,
     };
   }
+
   window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
     user_id: localStorage.getItem("user_id") || "",
     session_id: sessionStorage.getItem("session_id") || "",
+
     ...jsonData,
   });
 };
