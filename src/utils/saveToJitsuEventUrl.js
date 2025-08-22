@@ -8,9 +8,10 @@ import {
   getDomainName,
   getScreenResolution,
 } from './windowUtils';
-import { getLeadIdTokenValue } from './getLeadIdTokenValue';
 
 export async function sendDataToJitsuEvent(data) {
+  if (typeof window === 'undefined') return null;
+
   const EVENT_DATA = JSON.parse(data);
   let nodeName = EVENT_DATA.questionKey;
   nodeName = nodeName?.split('_')?.slice(1)?.join('_') || nodeName;
@@ -45,6 +46,8 @@ export async function sendDataToJitsuEvent(data) {
 }
 
 export const sendDataToJitsuIdentifyEvent = (data) => {
+  if (typeof window === 'undefined') return null;
+
   let user_id = localStorage.getItem('user_id');
   if (!user_id) {
     user_id = `user_id_${crypto.randomUUID()}`;
@@ -75,6 +78,8 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
 };
 
 export const sendJitsuEvent = (jitsuEventData) => {
+  if (typeof window === 'undefined') return null;
+
   const domainName = getDomainName();
   const slug = getCurrentSlug();
   const dateTime = getESTISOString();
@@ -101,6 +106,8 @@ export const sendJitsuEvent = (jitsuEventData) => {
 };
 
 export const sendJitsuLeadSubmitEvent = (jitsuEventData) => {
+  if (typeof window === 'undefined') return null;
+
   const domainName = getDomainName();
   const domainSlug = getCurrentSlug();
   const finalUrl = getCurrentUrl();

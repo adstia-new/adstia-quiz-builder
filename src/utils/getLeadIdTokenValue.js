@@ -1,4 +1,6 @@
 export const getLeadIdTokenValue = () => {
+  if (typeof window === 'undefined') return null;
+
   const storedLeadId = localStorage.getItem('leadId');
 
   if (storedLeadId) {
