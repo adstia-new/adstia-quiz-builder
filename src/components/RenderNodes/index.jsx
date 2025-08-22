@@ -21,7 +21,8 @@ const RenderNodes = ({
   setSendQuizEventData,
   handleFormSubmit,
 }) => {
-  const searchParams = new URLSearchParams(window?.location?.search || '');
+  const searchParams =
+    typeof window !== 'undefined' ? new URLSearchParams(window?.location?.search || '') : '';
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
 
