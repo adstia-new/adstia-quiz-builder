@@ -15,3 +15,15 @@ export const getCurrentUrl = () => {
 
   return location.href;
 };
+
+export const getScreenResolution = () => {
+  return `${window.screen.width}x${window.screen.height}`;
+};
+
+export const getConnectionType = () => {
+  const connection =
+    navigator.connection ||
+    navigator.mozConnection ||
+    navigator.webkitConnection;
+  return connection ? connection.effectiveType || "unknown" : "unknown";
+};

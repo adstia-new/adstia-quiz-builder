@@ -1,7 +1,13 @@
 import React from "react";
 import { JITSU_EVENT } from "../constants";
 import { getESTISOString } from "./dateTimeUtils";
-import { getCurrentSlug, getDomainName } from "./windowUtils";
+import {
+  getConnectionType,
+  getCurrentSlug,
+  getCurrentUrl,
+  getDomainName,
+  getScreenResolution,
+} from "./windowUtils";
 import { getLeadIdTokenValue } from "./getLeadIdTokenValue";
 
 export async function sendDataToJitsuEvent(data) {
@@ -95,7 +101,20 @@ export const sendJitsuEvent = (jitsuEventData) => {
 };
 
 export const sendJitsuLeadSubmitEvent = (jitsuEventData) => {
-  let jsonData = { ...jitsuEventData };
+  const domainName = getDomainName();
+  const domainSlug = getCurrentSlug();
+  const finalUrl = getCurrentUrl();
+  const screenResolution = getScreenResolution();
+  const connectionType = getConnectionType();
+
+  let jsonData = {
+    ...jitsuEventData,
+    domainName,
+    domainSlug,
+    finalUrl,
+    screenResolution,
+    connectionType,
+  };
 
   if (jitsuEventData.phoneNumber) {
     let phoneNumber = jitsuEventData.phoneNumber
@@ -110,7 +129,6 @@ export const sendJitsuLeadSubmitEvent = (jitsuEventData) => {
   window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
     user_id: localStorage.getItem("user_id") || "",
     session_id: sessionStorage.getItem("session_id") || "",
-
     ...jsonData,
   });
 };

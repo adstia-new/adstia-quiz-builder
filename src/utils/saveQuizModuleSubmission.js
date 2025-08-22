@@ -3,7 +3,13 @@ import {
   QUIZ_MODULE_SUBMISSION_URL,
 } from "../constants";
 import { getLeadIdTokenValue } from "./getLeadIdTokenValue";
-import { getCurrentSlug, getCurrentUrl, getDomainName } from "./windowUtils";
+import {
+  getConnectionType,
+  getCurrentSlug,
+  getCurrentUrl,
+  getDomainName,
+  getScreenResolution,
+} from "./windowUtils";
 
 export async function saveQuizModuleSubmission(pabblyUrl, data) {
   try {
@@ -15,6 +21,8 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     const domainName = getDomainName();
     const domainSlug = getCurrentSlug();
     const finalUrl = getCurrentUrl();
+    const screenResolution = getScreenResolution();
+    const connectionType = getConnectionType();
 
     let dataJSON = {
       ...storedData,
@@ -23,6 +31,8 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
       domainName,
       domainSlug,
       finalUrl,
+      screenResolution,
+      connectionType,
     };
 
     const response = await fetch(QUIZ_MODULE_SUBMISSION_URL, {
