@@ -1,0 +1,16 @@
+function preservePlaceholders(str) {
+  return str.replace(/\{\{.*?\}\}/g, (m) => encodeURIComponent(m));
+}
+
+export function mergeUrlWithParams(baseUrl, extraParams) {
+  const safeBase = preservePlaceholders(baseUrl);
+  const url = new URL(safeBase, window.location.origin);
+
+  extraParams.forEach((value, key) => {
+    if (!url.searchParams.has(key)) {
+      url.searchParams.set(key, value);
+    }
+  });
+
+  return decodeURIComponent(url.toString());
+}

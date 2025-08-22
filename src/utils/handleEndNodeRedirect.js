@@ -1,3 +1,5 @@
+import { mergeUrlWithParams } from "./mergeUrlWithParams";
+
 // Utility to handle end node redirect logic
 export function handleEndNodeRedirect(quizJson, currentSlide, next) {
   if (typeof window === "undefined" || !window.location) return null;
@@ -18,7 +20,7 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
   if (endNode) {
     // Open new tab immediately if needed
     if (endNode.openInNewTab && endNode.redirectUrl) {
-      let url = `${endNode.redirectUrl}?${searchParams}`;
+      let url = mergeUrlWithParams(endNode.redirectUrl, searchParams);
 
       if (
         typeof window !== "undefined" &&
@@ -31,7 +33,7 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
     }
     // Redirect current tab
     if (endNode.redirectCurrentTab && endNode.redirectCurrentTabUrl) {
-      let url = `${endNode.redirectCurrentTabUrl}?${searchParams}`;
+      let url = mergeUrlWithParams(endNode.redirectUrl, searchParams);
 
       if (
         typeof window !== "undefined" &&
@@ -42,7 +44,7 @@ export function handleEndNodeRedirect(quizJson, currentSlide, next) {
 
       window.location.href = url;
     } else if (endNode.redirectUrl && !endNode.openInNewTab) {
-      let url = `${endNode.redirectUrl}?${searchParams}`;
+      let url = mergeUrlWithParams(endNode.redirectUrl, searchParams);
 
       if (
         typeof window !== "undefined" &&
