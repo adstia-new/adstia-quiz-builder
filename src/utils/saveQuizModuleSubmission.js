@@ -24,7 +24,7 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     let dataJSON = {
       ...storedData,
       ...formData,
-      phone: phoneNumber,
+      phoneNumber,
       domainName,
       domainSlug,
       finalUrl,
