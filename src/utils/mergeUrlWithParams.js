@@ -3,6 +3,8 @@ function preservePlaceholders(str) {
 }
 
 export function mergeUrlWithParams(baseUrl, extraParams) {
+  if (typeof window === 'undefined') return null;
+
   const safeBase = preservePlaceholders(baseUrl);
   const url = new URL(safeBase, window.location.origin);
 

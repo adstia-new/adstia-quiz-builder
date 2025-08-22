@@ -9,6 +9,8 @@ import {
 } from './windowUtils';
 
 export async function saveQuizModuleSubmission(pabblyUrl, data) {
+  if (typeof window === 'undefined') return null;
+
   try {
     const { phoneNumber, ...formData } = data;
     const { phoneNumber: phone, ...storedData } = JSON.parse(
@@ -24,7 +26,8 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     let dataJSON = {
       ...storedData,
       ...formData,
-      phoneNumber,
+      phoneNumber:
+        phoneNumber?.replace(/\D/g, '')?.slice(-10) || phone?.replace(/\D/g, '')?.slice(-10),
       domainName,
       domainSlug,
       finalUrl,
