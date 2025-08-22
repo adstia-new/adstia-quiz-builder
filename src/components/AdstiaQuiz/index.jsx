@@ -9,6 +9,7 @@ import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
 import {
   sendDataToJitsuIdentifyEvent,
   sendJitsuEvent,
+  sendJitsuLeadSubmitEvent,
 } from "../../utils/saveToJitsuEventUrl";
 import RenderNodes from "../RenderNodes";
 import "./index.css";
@@ -77,8 +78,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
       ...quizData,
     });
 
-    // Jitsu Track Event
-    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+    sendJitsuLeadSubmitEvent({
       user_id: localStorage.getItem("user_id") || "",
       session_id: sessionStorage.getItem("session_id") || "",
       ...quizData,

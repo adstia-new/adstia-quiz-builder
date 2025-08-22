@@ -7,6 +7,13 @@ export async function sendDataToJitsuEvent(data) {
   const EVENT_DATA = JSON.parse(data);
   let nodeName = EVENT_DATA.questionKey;
   nodeName = nodeName?.split("_")?.slice(1)?.join("_") || nodeName;
+
+  let answerValue = EVENT_DATA.answer;
+
+  if (nodeName === "phoneNumber") {
+    answerValue = answerValue?.replace(/\D/g, "")?.slice(-10);
+  }
+
   let user_id = localStorage.getItem("user_id");
   if (!user_id) {
     user_id = `user_id_${crypto.randomUUID()}`;
@@ -20,7 +27,7 @@ export async function sendDataToJitsuEvent(data) {
       user_id,
       session_id: sessionId,
       question_key: EVENT_DATA.questionKey,
-      answer_value: EVENT_DATA.answer,
+      answer_value: answerValue,
       current_step: EVENT_DATA.currentStep,
       previous_step: EVENT_DATA.previousStep,
       next_step: EVENT_DATA.nextStep,
@@ -37,10 +44,21 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
     localStorage.setItem("user_id", user_id);
   }
 
+  let jsonData = data;
+
+  if (data.phoneNumber) {
+    let phoneNumber = data.phoneNumber?.replace(/\D/g, "")?.slice(-10);
+
+    jsonData = {
+      ...data,
+      phoneNumber,
+    };
+  }
+
   try {
     const sessionId = sessionStorage.getItem("session_id") || "";
     window?.jitsu?.identify(user_id, {
-      ...data,
+      ...jsonData,
       session_id: sessionId,
       $insert_id: sessionId,
     });
@@ -73,4 +91,23 @@ export const sendJitsuEvent = (jitsuEventData) => {
       );
     });
   }
+};
+
+export const sendJitsuLeadSubmitEvent = (jitsuEventData) => {
+  let jsonData = { ...jitsuEventData };
+
+  if (jitsuEventData.phoneNumber) {
+    let phoneNumber = jitsuEventData.phoneNumber
+      ?.replace(/\D/g, "")
+      ?.slice(-10);
+    jsonData = {
+      ...jsonData,
+      phoneNumber,
+    };
+  }
+  window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
+    user_id: localStorage.getItem("user_id") || "",
+    session_id: sessionStorage.getItem("session_id") || "",
+    ...jsonData,
+  });
 };
