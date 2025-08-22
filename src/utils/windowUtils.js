@@ -9,3 +9,9 @@ export const getCurrentSlug = () => {
 
   return location.pathname;
 };
+
+export const getCurrentUrl = () => {
+  const location = window.location;
+
+  return location.href;
+};
