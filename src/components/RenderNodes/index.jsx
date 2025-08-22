@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
-import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from "../../constants";
-import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
-import { QuizConfigContext } from "../AdstiaQuiz";
-import DobNode from "../QuizNodes/DobNode";
-import EmailNode from "../QuizNodes/EmailNode";
-import InputNode from "../QuizNodes/InputNode";
-import OptionNode from "../QuizNodes/OptionNode";
-import PhoneNode from "../QuizNodes/PhoneNode";
-import SelectNode from "../QuizNodes/SelectNode";
-import ZipcodeNode from "../QuizNodes/ZipcodeNode";
-import "./index.css";
-import { sortAndRemoveDuplicate } from "../../utils/sortAndRemoveDuplicate";
+import React, { useContext, useEffect, useState } from 'react';
+import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from '../../constants';
+import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
+import { QuizConfigContext } from '../AdstiaQuiz';
+import DobNode from '../QuizNodes/DobNode';
+import EmailNode from '../QuizNodes/EmailNode';
+import InputNode from '../QuizNodes/InputNode';
+import OptionNode from '../QuizNodes/OptionNode';
+import PhoneNode from '../QuizNodes/PhoneNode';
+import SelectNode from '../QuizNodes/SelectNode';
+import ZipcodeNode from '../QuizNodes/ZipcodeNode';
+import './index.css';
+import { sortAndRemoveDuplicate } from '../../utils/sortAndRemoveDuplicate';
 
 const RenderNodes = ({
   quizNodes,
@@ -21,27 +21,24 @@ const RenderNodes = ({
   setSendQuizEventData,
   handleFormSubmit,
 }) => {
-  const searchParams = new URLSearchParams(window?.location?.search || "");
+  const searchParams = new URLSearchParams(window?.location?.search || '');
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState(false);
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
   );
-  const isStartingNode =
-    findCurrentSlideNodes.quizCardType === QUIZ_NODE_TYPES.START;
+  const isStartingNode = findCurrentSlideNodes.quizCardType === QUIZ_NODE_TYPES.START;
   const findNextSlideId = findCurrentSlideNodes?.next;
   const nextSlideType =
-    quizNodes.find((element) => element.quizCardId === String(findNextSlideId))
-      ?.quizCardType || null;
+    quizNodes.find((element) => element.quizCardId === String(findNextSlideId))?.quizCardType ||
+    null;
   const currentNodeType = findCurrentSlideNodes.nodes[0].nodeType;
   const showNextPreviousButtons = currentNodeType === QUIZ_NODE_TYPES.OPTIONS;
 
   const getSlideHistory = () => {
     try {
-      return (
-        JSON.parse(sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY)) || []
-      );
+      return JSON.parse(sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY)) || [];
     } catch {
       return [];
     }
@@ -62,10 +59,8 @@ const RenderNodes = ({
 
     window.history.pushState(
       { step: slideId },
-      "",
-      `${window.location.pathname}${
-        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
-      }`
+      '',
+      `${window.location.pathname}${searchParams?.toString() ? `?${searchParams?.toString()}` : ''}`
     );
   };
 
@@ -78,10 +73,8 @@ const RenderNodes = ({
     // Push history entry
     window.history.pushState(
       { step: findNextSlideId },
-      "",
-      `${window.location.pathname}${
-        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
-      }`
+      '',
+      `${window.location.pathname}${searchParams?.toString() ? `?${searchParams?.toString()}` : ''}`
     );
 
     setSendQuizEventData(true);
@@ -116,11 +109,8 @@ const RenderNodes = ({
           };
         });
       } else {
-        let previousStep = JSON.parse(
-          sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
-        );
-        previousStep =
-          previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+        let previousStep = JSON.parse(sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || '[]');
+        previousStep = previousStep.length > 0 ? previousStep[previousStep.length - 1] : '-';
 
         currentSlideNodes.nodes.forEach((node) => {
           newEventData.push({
@@ -153,14 +143,10 @@ const RenderNodes = ({
     const nodeName = findCurrentSlideNodes.nodes[0].nodeName;
 
     const nextNodeType =
-      quizNodes.find((element) => element.quizCardId === String(next))
-        ?.quizCardType || null;
+      quizNodes.find((element) => element.quizCardId === String(next))?.quizCardType || null;
 
-    let previousStep = JSON.parse(
-      sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || "[]"
-    );
-    previousStep =
-      previousStep.length > 0 ? previousStep[previousStep.length - 1] : "-";
+    let previousStep = JSON.parse(sessionStorage.getItem(LOCAL_STORAGE_QUIZ_HISTORY) || '[]');
+    previousStep = previousStep.length > 0 ? previousStep[previousStep.length - 1] : '-';
 
     setJitsuEventData((prev) => {
       let newEventData = {};
@@ -176,7 +162,7 @@ const RenderNodes = ({
       return [newEventData];
     });
 
-    if (nextNodeType !== "end") {
+    if (nextNodeType !== 'end') {
       setSendQuizEventData(true);
       setCurrentSlideWithHistory(next);
     } else {
@@ -191,10 +177,8 @@ const RenderNodes = ({
 
     window.history.replaceState(
       { step: currentSlide },
-      "",
-      `${window.location.pathname}${
-        searchParams?.toString() ? `?${searchParams?.toString()}` : ""
-      }`
+      '',
+      `${window.location.pathname}${searchParams?.toString() ? `?${searchParams?.toString()}` : ''}`
     );
 
     const onPopState = () => {
@@ -202,22 +186,19 @@ const RenderNodes = ({
 
       setJitsuEventData([]);
 
-      const step =
-        stepsHistory?.length > 0 ? stepsHistory[stepsHistory.length - 1] : 1;
+      const step = stepsHistory?.length > 0 ? stepsHistory[stepsHistory.length - 1] : 1;
 
       if (step) {
         setCurrentSlide(String(step));
 
         const newStepsHistory =
-          stepsHistory?.length > 0
-            ? stepsHistory.slice(0, stepsHistory.length - 1)
-            : [];
+          stepsHistory?.length > 0 ? stepsHistory.slice(0, stepsHistory.length - 1) : [];
         setSlideHistory(newStepsHistory);
       }
     };
 
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   return (
@@ -323,7 +304,7 @@ const RenderNodes = ({
           </button>
         </div>
       )}
-      {nextSlideType === "end" && !showNextPreviousButtons && (
+      {nextSlideType === 'end' && !showNextPreviousButtons && (
         <div className="render-nodes__nav">
           {!isStartingNode && (
             <button
@@ -334,11 +315,7 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button
-            className="quiz-builder__submit button"
-            type="submit"
-            disabled={nextDisabled}
-          >
+          <button className="quiz-builder__submit button" type="submit" disabled={nextDisabled}>
             {quizConfig.submitButtonText}
           </button>
         </div>

@@ -25,7 +25,9 @@
   border-radius: 6px;
   font-size: 1rem;
   background: #fafbfc;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   outline: none;
 }
 

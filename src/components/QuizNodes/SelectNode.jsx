@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import "./SelectNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_NODE_TYPES } from "../../constants";
+import React, { useEffect, useState, useRef } from 'react';
+import './SelectNode.css';
+import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_NODE_TYPES } from '../../constants';
 
 const SelectNode = ({ data, setFormData, handleJitsuData }) => {
   const [selectedOption, setSelectedOption] = useState();
@@ -10,8 +10,7 @@ const SelectNode = ({ data, setFormData, handleJitsuData }) => {
 
   useEffect(() => {
     if (data.defaultOption) {
-      const prev =
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       localStorage.setItem(
         LOCAL_STORAGE_QUIZ_VALUES,
         JSON.stringify({ ...prev, [data.nodeName]: data.defaultOption })
@@ -28,8 +27,8 @@ const SelectNode = ({ data, setFormData, handleJitsuData }) => {
         setIsOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, [isOpen]);
 
   const toggleDropdown = () => {
@@ -37,8 +36,7 @@ const SelectNode = ({ data, setFormData, handleJitsuData }) => {
   };
 
   const handleOptionClick = (option) => {
-    const prev =
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [data.nodeName]: option.value })
@@ -61,26 +59,22 @@ const SelectNode = ({ data, setFormData, handleJitsuData }) => {
     <div className="select-node" ref={nodeRef}>
       <div
         className={`select-node__selected-option ${
-          isOpen ? "select-node__selected-option--open" : ""
+          isOpen ? 'select-node__selected-option--open' : ''
         }`}
         onClick={toggleDropdown}
       >
         {selectedOption
           ? data.options.find((opt) => opt.value === selectedOption)?.label
-          : "Select an option"}
+          : 'Select an option'}
       </div>
-      <div
-        className={`select-node__options ${
-          isOpen ? "select-node__options--open" : ""
-        }`}
-      >
+      <div className={`select-node__options ${isOpen ? 'select-node__options--open' : ''}`}>
         {data.options.map((option, index) => {
           const isSelected = selectedOption === option.value;
           return (
             <button
               key={index}
               className={`select-node__option-button${
-                isSelected ? " select-node__option-button--selected" : ""
+                isSelected ? ' select-node__option-button--selected' : ''
               }`}
               onClick={() => handleOptionClick(option)}
               type="button"

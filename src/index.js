@@ -1,3 +1,3 @@
-import "./index.css";
+import './index.css';
 
-export { QuizBuilder } from "./components/AdstiaQuiz/index.jsx";
+export { QuizBuilder } from './components/AdstiaQuiz/index.jsx';

@@ -1,27 +1,23 @@
-import React, { createContext, useEffect, useState } from "react";
-import {
-  JITSU_EVENT,
-  LOCAL_STORAGE_QUIZ_VALUES,
-  QUERY_PARAMS,
-} from "../../constants";
-import { appendLeadIdScript } from "../../utils/appendLeadIdScript";
-import { handleEndNodeRedirect } from "../../utils/handleEndNodeRedirect";
+import React, { createContext, useEffect, useState } from 'react';
+import { JITSU_EVENT, LOCAL_STORAGE_QUIZ_VALUES, QUERY_PARAMS } from '../../constants';
+import { appendLeadIdScript } from '../../utils/appendLeadIdScript';
+import { handleEndNodeRedirect } from '../../utils/handleEndNodeRedirect';
 import {
   sendDataToJitsuIdentifyEvent,
   sendJitsuEvent,
-} from "../../utils/saveToJitsuEventUrl";
-import RenderNodes from "../RenderNodes";
-import "./index.css";
-import { pushLocalDataToDataLayer } from "../../utils/gtmUtils";
-import LoadingScreen from "../ui/LoadingScreen";
-import { saveQuizModuleSubmission } from "../../utils/saveQuizModuleSubmission";
+  sendJitsuLeadSubmitEvent,
+} from '../../utils/saveToJitsuEventUrl';
+import RenderNodes from '../RenderNodes';
+import './index.css';
+import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
+import LoadingScreen from '../ui/LoadingScreen';
+import { saveQuizModuleSubmission } from '../../utils/saveQuizModuleSubmission';
+import { getLeadIdTokenValue } from '../../utils/getLeadIdTokenValue';
 
 export const QuizConfigContext = createContext();
 
 const QuizBuilder = ({ json, setQuizData }) => {
-  const startingNode = json.quizJson.find(
-    (element) => element.quizCardType === "start"
-  ).quizCardId;
+  const startingNode = json.quizJson.find((element) => element.quizCardType === 'start').quizCardId;
   const [currentSlide, setCurrentSlide] = useState(startingNode);
   const [formData, setFormData] = useState({});
   const [jitsuEventData, setJitsuEventData] = useState([]);
@@ -44,21 +40,22 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
     setQuizData(formData);
 
+    const leadId = getLeadIdTokenValue();
     const { email, phoneNumber } = formData;
 
     const isLongForm =
-      searchParams && searchParams.get(QUERY_PARAMS.FORM_TYPE) === "f"
-        ? true
-        : false;
+      searchParams && searchParams.get(QUERY_PARAMS.FORM_TYPE) === 'f' ? true : false;
 
-    if (
-      isLongForm &&
-      json.config &&
-      json.config.pabblyUrl &&
-      email &&
-      phoneNumber
-    ) {
-      await saveQuizModuleSubmission(json.config.pabblyUrl, formData);
+    if (isLongForm && json.config && json.config.pabblyUrl && email && phoneNumber) {
+      let dataJson = { ...formData };
+
+      if (leadId) {
+        dataJson = {
+          ...dataJson,
+          leadId,
+        };
+      }
+      await saveQuizModuleSubmission(json.config.pabblyUrl, dataJson);
     }
 
     setJitsuEventData((prev) => {
@@ -66,23 +63,29 @@ const QuizBuilder = ({ json, setQuizData }) => {
       return prev;
     });
 
-    const quizData = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || "{}"
-    );
+    const quizData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || '{}');
 
     // Jitus Identify Event
     sendDataToJitsuIdentifyEvent({
-      user_id: localStorage.getItem("user_id") || "",
-      session_id: sessionStorage.getItem("session_id") || "",
+      user_id: localStorage.getItem('user_id') || '',
+      session_id: sessionStorage.getItem('session_id') || '',
       ...quizData,
     });
 
-    // Jitsu Track Event
-    window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
-      user_id: localStorage.getItem("user_id") || "",
-      session_id: sessionStorage.getItem("session_id") || "",
+    let jsonData = {
+      user_id: localStorage.getItem('user_id') || '',
+      session_id: sessionStorage.getItem('session_id') || '',
       ...quizData,
-    });
+    };
+
+    if (leadId) {
+      jsonData = {
+        ...jsonData,
+        leadId,
+      };
+    }
+
+    sendJitsuLeadSubmitEvent(jsonData);
 
     // Push quiz data to GTM
     setTimeout(() => {
@@ -106,21 +109,21 @@ const QuizBuilder = ({ json, setQuizData }) => {
     }
 
     if (isLoading) {
-      document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     }
 
     return () => {
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [jitsuEventData, sendQuizEventData, isLoading]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       const pramas = new URLSearchParams(window.location.search);
       setSearchParams(pramas);
     }
@@ -129,9 +132,9 @@ const QuizBuilder = ({ json, setQuizData }) => {
       setIsLoading(false);
     };
 
-    window.addEventListener("pageshow", handlePageShow);
+    window.addEventListener('pageshow', handlePageShow);
     return () => {
-      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener('pageshow', handlePageShow);
     };
   }, []);
 
@@ -149,12 +152,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
           handleFormSubmit={handleFormSubmission}
         />
         {json.config && json.config.leadId && (
-          <input
-            type="hidden"
-            name="universal_leadid"
-            id="leadid_token"
-            value=""
-          />
+          <input type="hidden" name="universal_leadid" id="leadid_token" value="" />
         )}
       </form>
     </QuizConfigContext.Provider>

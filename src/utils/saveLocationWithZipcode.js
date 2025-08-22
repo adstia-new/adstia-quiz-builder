@@ -1,4 +1,4 @@
-import { ZIPCODE_API_URL } from "../constants";
+import { ZIPCODE_API_URL } from '../constants';
 
 // Utility to save user location with zipcode
 export async function saveLocationWithZipcode(zipcode) {
@@ -9,44 +9,36 @@ export async function saveLocationWithZipcode(zipcode) {
     const zipcodeResponse = await fetchZipcode.json();
 
     const formattedResponse = {
-      websiteZip:
-        zipcodeResponse?.postCode || localStorage.getItem("websiteZip") || "",
-      websiteCountry:
-        zipcodeResponse?.country ||
-        localStorage.getItem("websiteCountry") ||
-        "",
+      websiteZip: zipcodeResponse?.postCode || localStorage.getItem('websiteZip') || '',
+      websiteCountry: zipcodeResponse?.country || localStorage.getItem('websiteCountry') || '',
       websiteState:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.state
-          : localStorage.getItem("websiteState") || "",
+          : localStorage.getItem('websiteState') || '',
       stateCode:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.stateAbbreviation
-          : localStorage.getItem("stateCode") || "",
+          : localStorage.getItem('stateCode') || '',
       countryCode:
-        zipcodeResponse?.countryAbbreviation ||
-        localStorage.getItem("countryCode") ||
-        "",
+        zipcodeResponse?.countryAbbreviation || localStorage.getItem('countryCode') || '',
       websiteCity:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.placeName
-          : localStorage.getItem("websiteCity") || "",
+          : localStorage.getItem('websiteCity') || '',
       longitude:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.longitude
-          : localStorage.getItem("longitude") || "",
+          : localStorage.getItem('longitude') || '',
       latitude:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.latitude
-          : localStorage.getItem("latitude") || "",
+          : localStorage.getItem('latitude') || '',
     };
 
-    const storedQuizData = JSON.parse(
-      localStorage.getItem("quizValues") || "{}"
-    );
+    const storedQuizData = JSON.parse(localStorage.getItem('quizValues') || '{}');
 
     localStorage.setItem(
-      "quizValues",
+      'quizValues',
       JSON.stringify({
         ...storedQuizData,
         ...formattedResponse,

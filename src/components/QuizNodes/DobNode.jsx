@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import "./DobNode.css";
-import { DOB_FIELDS, LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
-import { QuizConfigContext } from "../AdstiaQuiz";
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import './DobNode.css';
+import { DOB_FIELDS, LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
+import { QuizConfigContext } from '../AdstiaQuiz';
 
 const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
@@ -12,7 +12,7 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const [errors, setErrors] = useState(() => {
     const initial = {};
     fields.forEach((f) => {
-      initial[f.fieldName] = "";
+      initial[f.fieldName] = '';
     });
     return initial;
   });
@@ -20,13 +20,12 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   useEffect(() => {
     const initial = {};
     fields.forEach((f) => {
-      initial[f.fieldName] = "";
+      initial[f.fieldName] = '';
     });
 
     // Prefill from localStorage if enabled
     if (quizConfig.prefillValues) {
-      const stored =
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       fields.forEach((f) => {
         if (stored[f.fieldName]) {
           initial[f.fieldName] = stored[f.fieldName];
@@ -43,21 +42,19 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
 
   useEffect(() => {
     const hasError = Object.values(errors).some(Boolean);
-    const hasEmpty = fields.some(
-      (f) => f.validation?.required && !values[f.fieldName]?.trim()
-    );
+    const hasEmpty = fields.some((f) => f.validation?.required && !values[f.fieldName]?.trim());
     setNextDisabled(hasError || hasEmpty);
   }, [errors, values, setNextDisabled, fields]);
 
   const validate = (field, value) => {
     const v = field.validation || {};
     if (v.required && !value.trim()) {
-      return "This field is required";
+      return 'This field is required';
     }
     if (v.pattern && value) {
       const regex = new RegExp(v.pattern);
       if (!regex.test(value)) {
-        return v.errorMessage || "Invalid value";
+        return v.errorMessage || 'Invalid value';
       }
     }
     if (v.minLength && value.length < v.minLength) {
@@ -66,13 +63,13 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
     if (v.maxLength && value.length > v.maxLength) {
       return `Maximum ${v.maxLength} characters allowed`;
     }
-    return "";
+    return '';
   };
 
   const handleChange = (field, e, idx) => {
     const value = e.target.value;
     setValues((prev) => ({ ...prev, [field.fieldName]: value }));
-    setErrors((prev) => ({ ...prev, [field.fieldName]: "" }));
+    setErrors((prev) => ({ ...prev, [field.fieldName]: '' }));
     const maxLength = field.validation?.maxLength;
     if (maxLength && value.length === maxLength) {
       if (inputRefs.current[idx + 1]) {
@@ -87,8 +84,7 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
       return { ...prev, [field.fieldName]: value };
     });
 
-    const prev =
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
       JSON.stringify({ ...prev, [field.fieldName]: value })
@@ -115,19 +111,18 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   return (
     <div className="dob-node">
       <label className="dob-node__label">
-        {data.inputLabel || "Date of Birth"}{" "}
-        <span className="dob-node__required">*</span>
+        {data.inputLabel || 'Date of Birth'} <span className="dob-node__required">*</span>
       </label>
       <div className="dob-node__fields">
         {fields.map((field, idx) => (
           <div className="dob-node__field" key={field.fieldName}>
             <input
               ref={(el) => (inputRefs.current[idx] = el)}
-              type={field.fieldType || "text"}
+              type={field.fieldType || 'text'}
               name={field.fieldName}
               placeholder={field.placeholder}
               className={`dob-node__input input ${
-                errors[field.fieldName] ? "dob-node__input--error" : ""
+                errors[field.fieldName] ? 'dob-node__input--error' : ''
               }`}
               value={values[field.fieldName]}
               onChange={(e) => handleChange(field, e, idx)}

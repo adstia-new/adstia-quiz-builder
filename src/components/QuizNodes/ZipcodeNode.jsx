@@ -1,33 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
-import "./ZipcodeNode.css";
-import { LOCAL_STORAGE_QUIZ_VALUES } from "../../constants";
-import { QuizConfigContext } from "../AdstiaQuiz";
-import { saveLocationWithZipcode } from "../../utils/saveLocationWithZipcode";
+import React, { useState, useEffect, useContext } from 'react';
+import './ZipcodeNode.css';
+import { LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
+import { QuizConfigContext } from '../AdstiaQuiz';
+import { saveLocationWithZipcode } from '../../utils/saveLocationWithZipcode';
 
-const ZipcodeNode = ({
-  data,
-  setNextDisabled,
-  setFormData,
-  handleJitsuData,
-}) => {
+const ZipcodeNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
-  const {
-    inputLabel,
-    inputName,
-    placeholder,
-    nodeName,
-    inputType,
-    validation,
-  } = data;
-  const { required, pattern, minLength, maxLength, errorMessage } =
-    validation || {};
-  const [error, setError] = useState("");
-  const [value, setValue] = useState("");
+  const { inputLabel, inputName, placeholder, nodeName, inputType, validation } = data;
+  const { required, pattern, minLength, maxLength, errorMessage } = validation || {};
+  const [error, setError] = useState('');
+  const [value, setValue] = useState('');
   // Prefill value from localStorage if enabled in quizConfig
   useEffect(() => {
     if (quizConfig.prefillValues) {
-      const stored =
-        JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       if (stored[nodeName]) {
         setValue(stored[nodeName]);
         setFormData((prev) => {
@@ -54,14 +40,14 @@ const ZipcodeNode = ({
 
   const validateInput = (inputValue) => {
     if (required && !inputValue.trim()) {
-      setError("This field is required");
+      setError('This field is required');
       return false;
     }
 
     if (pattern && inputValue) {
       const regex = new RegExp(pattern);
       if (!regex.test(inputValue)) {
-        setError(errorMessage || "Invalid format");
+        setError(errorMessage || 'Invalid format');
         return false;
       }
     }
@@ -76,7 +62,7 @@ const ZipcodeNode = ({
       return false;
     }
 
-    setError("");
+    setError('');
     return true;
   };
 
@@ -87,20 +73,16 @@ const ZipcodeNode = ({
       return { ...prev, [nodeName]: val };
     });
 
-    const prev =
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
-    localStorage.setItem(
-      LOCAL_STORAGE_QUIZ_VALUES,
-      JSON.stringify({ ...prev, [nodeName]: val })
-    );
+    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+    localStorage.setItem(LOCAL_STORAGE_QUIZ_VALUES, JSON.stringify({ ...prev, [nodeName]: val }));
   };
 
   const handleChange = (e) => {
-    let numericValue = e.target.value.replace(/\D/g, "");
+    let numericValue = e.target.value.replace(/\D/g, '');
     setValue(numericValue);
 
     if (error) {
-      setError("");
+      setError('');
     }
   };
 
@@ -118,9 +100,7 @@ const ZipcodeNode = ({
         inputMode="numeric"
         pattern="[0-9]*"
         maxLength={maxLength}
-        className={`zipcode-node__input input ${
-          error ? "zipcode-node__input--error" : ""
-        }`}
+        className={`zipcode-node__input input ${error ? 'zipcode-node__input--error' : ''}`}
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
