@@ -14,5 +14,8 @@ export function mergeUrlWithParams(baseUrl, extraParams) {
     }
   });
 
+  url.searchParams.set('user_id', localStorage.getItem('user_id') || '');
+  url.searchParams.set('referral_id', window.location.host || '');
+
   return decodeURIComponent(url.toString());
 }
