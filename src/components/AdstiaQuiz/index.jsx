@@ -55,6 +55,13 @@ const QuizBuilder = ({ json, setQuizData }) => {
           leadId,
         };
       }
+
+      if (json?.config?.includeQueryParams) {
+        searchParams?.forEach((value, key) => {
+          dataJson[key] = value;
+        });
+      }
+
       await saveQuizModuleSubmission(json.config.pabblyUrl, dataJson);
     }
 
