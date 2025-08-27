@@ -105,7 +105,7 @@ const RenderNodes = ({
           return {
             ...eventData,
             currentStep: currentSlide,
-            questionKey: `${currentSlide}_${eventData.nodeName}`,
+            questionKey: eventData.nodeName,
             nextStep: findNextSlideId,
           };
         });
@@ -118,7 +118,7 @@ const RenderNodes = ({
             previousStep,
             nodeName: node?.nodeName,
             currentStep: currentSlide,
-            questionKey: `${currentSlide}_${node?.nodeName}`,
+            questionKey: node?.nodeName,
             nextStep: findNextSlideId,
           });
         });
@@ -156,7 +156,7 @@ const RenderNodes = ({
         previousStep,
         answer,
         currentStep: currentSlide,
-        questionKey: `${currentSlide}_${prev.nodeName || nodeName}`,
+        questionKey: prev.nodeName || nodeName,
         nextStep: next,
       };
 
