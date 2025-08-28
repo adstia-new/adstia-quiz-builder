@@ -9,6 +9,7 @@ import {
 } from './windowUtils';
 
 export async function saveQuizModuleSubmission(pabblyUrl, data) {
+  console.log('pabblyUrl', pabblyUrl);
   if (typeof window === 'undefined') return null;
 
   try {
