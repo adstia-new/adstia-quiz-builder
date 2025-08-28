@@ -46,7 +46,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
     const isLongForm =
       searchParams && searchParams.get(QUERY_PARAMS.FORM_TYPE) === 'f' ? true : false;
 
-    if (isLongForm && json.config && json.config.pabblyUrl && email && phoneNumber) {
+    if (isLongForm && email && phoneNumber) {
       let dataJson = { ...formData };
 
       if (leadId) {
@@ -62,7 +62,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
         });
       }
 
-      await saveQuizModuleSubmission(json.config.pabblyUrl, dataJson);
+      await saveQuizModuleSubmission(json.config.pabblyUrl || '', dataJson);
     }
 
     setJitsuEventData((prev) => {
