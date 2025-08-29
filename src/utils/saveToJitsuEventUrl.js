@@ -66,12 +66,54 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
   }
 
   try {
-    const sessionId = sessionStorage.getItem('session_id') || '';
-    window?.jitsu?.identify(user_id, {
-      ...jsonData,
-      session_id: sessionId,
-      $insert_id: sessionId,
-    });
+    // const sessionId = sessionStorage.getItem('session_id') || '';
+    const {
+      user_id: _user_id,
+      os: _os,
+      osVersion: _os_version,
+      browser: _browser,
+      browserVersion: _browser_version,
+      device: _device,
+      deviceModel: _device_model,
+      longitude: _longitude,
+      latitude: _latitude,
+      connectionType: _connection_type,
+      countryCode: _country_code,
+      finalUrl: _final_url,
+      ipAddress: _ip_address,
+      screenResolution: _screen_resolution,
+      userAgent: _user_agent,
+      domainName: _domain_name,
+      domainSlug: _domain_slug,
+      stateCode: _state_code,
+      websiteCity: _website_city,
+      websiteState: _website_state,
+      websiteCountry: _website_country,
+      websiteZip: _website_zip,
+      session_id: _session_id,
+      ...dataToSendInIdentifyEvent
+    } = jsonData;
+
+    const sendThisDataInIdentify = {
+      ...dataToSendInIdentifyEvent,
+      $os_version: _os_version,
+      $brand: _device,
+      $model: _device_model,
+      $radio: _connection_type,
+      $current_url: _final_url,
+      ip: _ip_address,
+      $screen_width: window.screen.width,
+      $screen_height: window.screen.height,
+      $session_id: _session_id,
+      $user_agent: _user_agent,
+      $domain_slug: _domain_slug,
+      $host: _domain_name,
+      $state_code: _state_code,
+      $zip_code: _website_zip,
+      $insert_id: _session_id,
+    };
+
+    window?.jitsu?.identify(user_id, sendThisDataInIdentify);
   } catch (err) {
     console.error('Failed to send data to Jitsu identify:', err);
   }
