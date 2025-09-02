@@ -1,5 +1,4 @@
 import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_MODULE_SUBMISSION_URL } from '../constants';
-import { getLeadIdTokenValue } from './getLeadIdTokenValue';
 import {
   getConnectionType,
   getCurrentSlug,

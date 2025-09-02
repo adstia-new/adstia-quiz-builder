@@ -9,22 +9,22 @@ export async function saveLocationWithZipcode(zipcode) {
     const zipcodeResponse = await fetchZipcode.json();
 
     const formattedResponse = {
-      websiteZip: zipcodeResponse?.postCode || localStorage.getItem('websiteZip') || '',
-      websiteCountry: zipcodeResponse?.country || localStorage.getItem('websiteCountry') || '',
-      websiteState:
+      zipcode: zipcodeResponse?.postCode || localStorage.getItem('zipcode') || '',
+      country: zipcodeResponse?.country || localStorage.getItem('country') || '',
+      state:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.state
-          : localStorage.getItem('websiteState') || '',
+          : localStorage.getItem('state') || '',
       stateCode:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.stateAbbreviation
           : localStorage.getItem('stateCode') || '',
       countryCode:
         zipcodeResponse?.countryAbbreviation || localStorage.getItem('countryCode') || '',
-      websiteCity:
+      city:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.placeName
-          : localStorage.getItem('websiteCity') || '',
+          : localStorage.getItem('city') || '',
       longitude:
         zipcodeResponse?.places && zipcodeResponse?.places.length > 0
           ? zipcodeResponse?.places[0]?.longitude

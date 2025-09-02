@@ -86,10 +86,10 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
       domainName: _domain_name,
       domainSlug: _domain_slug,
       stateCode: _state_code,
-      websiteCity: _website_city,
-      websiteState: _website_state,
-      websiteCountry: _website_country,
-      websiteZip: _website_zip,
+      city: _website_city,
+      state: _website_state,
+      country: _website_country,
+      zipcode: _website_zip,
       session_id: _session_id,
       ...dataToSendInIdentifyEvent
     } = jsonData;

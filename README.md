@@ -65,7 +65,7 @@ Your quiz JSON should follow this structure:
       nodes: [
         {
           nodeType: "zipcode",
-          nodeName: "websiteZip",
+          nodeName: "zipcode",
           inputLabel: "Zip Code",
           validation: {
             required: true,
