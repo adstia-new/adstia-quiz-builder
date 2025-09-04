@@ -91,6 +91,7 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
       country: _website_country,
       zipcode: _website_zip,
       session_id: _session_id,
+      phoneNumber: _phoneNumber,
       ...dataToSendInIdentifyEvent
     } = jsonData;
 
@@ -111,6 +112,7 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
       $state_code: _state_code,
       $zip_code: _website_zip,
       $insert_id: _session_id,
+      $phone: _phoneNumber,
     };
 
     window?.jitsu?.identify(user_id, sendThisDataInIdentify);
