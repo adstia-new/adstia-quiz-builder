@@ -1,4 +1,10 @@
-import { LOCAL_STORAGE_QUIZ_VALUES, QUIZ_MODULE_SUBMISSION_URL } from '../constants';
+import {
+  COOKIE_ANONYMOUS_ID,
+  LOCAL_STORAGE_QUIZ_VALUES,
+  QUIZ_MODULE_SUBMISSION_URL,
+  SESSION_STORAGE_SESSION_ID_KEY,
+} from '../constants';
+import { getCookie } from './getCookie';
 import {
   getConnectionType,
   getCurrentSlug,
@@ -21,6 +27,8 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     const finalUrl = getCurrentUrl();
     const screenResolution = getScreenResolution();
     const connectionType = getConnectionType();
+    const sessionId = sessionStorage.getItem(SESSION_STORAGE_SESSION_ID_KEY);
+    const anonymousId = getCookie(COOKIE_ANONYMOUS_ID);
 
     let dataJSON = {
       ...storedData,
@@ -32,6 +40,8 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
       finalUrl,
       screenResolution,
       connectionType,
+      sessionId,
+      anonymousId,
     };
 
     const response = await fetch(QUIZ_MODULE_SUBMISSION_URL, {
