@@ -183,19 +183,19 @@ export const sendJitsuLeadSubmitEvent = async (jitsuEventData) => {
   });
 
   try {
-    const response = await fetch('https://server.adstiacms.com/api/save-lead-submit-data', {
+    const { user_id: userId, session_id: sessionId, ...data } = jsonData;
+    await fetch('https://server.adstiacms.com/api/save-lead-submit-data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         anonymousId: getCookie(COOKIE_ANONYMOUS_ID),
-        userId: localStorage.getItem('user_id') || '',
-        sessionId: sessionStorage.getItem(SESSION_STORAGE_SESSION_ID_KEY),
+        userId,
+        sessionId,
+        ...data,
       }),
     });
-
-    console.log('response', response.json());
   } catch (e) {
     console.error('Failed to save leads data');
   }
