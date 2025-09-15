@@ -1,5 +1,5 @@
 import React from 'react';
-import { JITSU_EVENT } from '../constants';
+import { COOKIE_ANONYMOUS_ID, JITSU_EVENT, SESSION_STORAGE_SESSION_ID_KEY } from '../constants';
 import { getESTISOString } from './dateTimeUtils';
 import {
   getConnectionType,
@@ -8,6 +8,7 @@ import {
   getDomainName,
   getScreenResolution,
 } from './windowUtils';
+import { getCookie } from './getCookie';
 
 export async function sendDataToJitsuEvent(data) {
   if (typeof window === 'undefined') return null;
@@ -149,7 +150,7 @@ export const sendJitsuEvent = (jitsuEventData) => {
   }
 };
 
-export const sendJitsuLeadSubmitEvent = (jitsuEventData) => {
+export const sendJitsuLeadSubmitEvent = async (jitsuEventData) => {
   if (typeof window === 'undefined') return null;
 
   const domainName = getDomainName();
@@ -180,4 +181,22 @@ export const sendJitsuLeadSubmitEvent = (jitsuEventData) => {
     session_id: sessionStorage.getItem('session_id') || '',
     ...jsonData,
   });
+
+  try {
+    const { user_id: userId, session_id: sessionId, ...data } = jsonData;
+    await fetch('https://server.adstiacms.com/api/save-lead-submit-data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        anonymousId: getCookie(COOKIE_ANONYMOUS_ID),
+        userId,
+        sessionId,
+        ...data,
+      }),
+    });
+  } catch (e) {
+    console.error('Failed to save leads data');
+  }
 };
