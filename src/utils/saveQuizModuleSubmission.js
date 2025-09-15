@@ -21,6 +21,7 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     const { phoneNumber: phone, ...storedData } = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || '{}'
     );
+    const searchParams = new URLSearchParams(window.location.search);
 
     const domainName = getDomainName();
     const domainSlug = getCurrentSlug();
@@ -31,6 +32,7 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     const anonymousId = getCookie(COOKIE_ANONYMOUS_ID);
 
     let dataJSON = {
+      ...Object.fromEntries(searchParams.entries()),
       ...storedData,
       ...formData,
       phoneNumber:
