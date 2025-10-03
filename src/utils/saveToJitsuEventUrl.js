@@ -1,6 +1,6 @@
-import React from 'react';
-import { COOKIE_ANONYMOUS_ID, JITSU_EVENT, SESSION_STORAGE_SESSION_ID_KEY } from '../constants';
+import { COOKIE_ANONYMOUS_ID, JITSU_EVENT } from '../constants';
 import { getESTISOString } from './dateTimeUtils';
+import { getCookie } from './getCookie';
 import {
   getConnectionType,
   getCurrentSlug,
@@ -8,7 +8,6 @@ import {
   getDomainName,
   getScreenResolution,
 } from './windowUtils';
-import { getCookie } from './getCookie';
 
 export async function sendDataToJitsuEvent(data) {
   if (typeof window === 'undefined') return null;
@@ -17,11 +16,7 @@ export async function sendDataToJitsuEvent(data) {
   let nodeName = EVENT_DATA.questionKey;
   nodeName = nodeName?.split('_')?.slice(1)?.join('_') || nodeName;
 
-  let answerValue = EVENT_DATA.answer;
-
-  if (nodeName === 'phoneNumber') {
-    answerValue = answerValue?.replace(/\D/g, '')?.slice(-10);
-  }
+  let answerValue = EVENT_DATA.answer || false;
 
   let user_id = localStorage.getItem('user_id');
   if (!user_id) {
