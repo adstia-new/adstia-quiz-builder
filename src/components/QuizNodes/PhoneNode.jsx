@@ -107,13 +107,13 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
       {tcpaConsent && (
         <div className="phone-node__tcpa">
           <label className="phone-node__tcpa-label">
-            <input
-              type="checkbox"
-              checked={true}
-              className="phone-node__tcpa-checkbox"
-              onChange={() => {}}
-            />
-            <span className="phone-node__tcpa-text">{tcpaConsent.text}</span>
+            <input type="hidden" checked={true} className="phone-node__tcpa-checkbox" />
+            <span
+              className="phone-node__tcpa-text"
+              dangerouslySetInnerHTML={{
+                __html: tcpaConsent.text,
+              }}
+            ></span>
           </label>
         </div>
       )}
