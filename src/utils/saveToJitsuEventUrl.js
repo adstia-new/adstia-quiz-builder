@@ -18,10 +18,6 @@ export async function sendDataToJitsuEvent(data) {
 
   let answerValue = EVENT_DATA.answer || false;
 
-  if (nodeName === 'phoneNumber') {
-    answerValue = answerValue?.replace(/\D/g, '')?.slice(-10);
-  }
-
   let user_id = localStorage.getItem('user_id');
   if (!user_id) {
     user_id = `user_id_${crypto.randomUUID()}`;

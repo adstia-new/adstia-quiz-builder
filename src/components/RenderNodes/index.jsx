@@ -127,6 +127,8 @@ const RenderNodes = ({
       if (currentNodeName) {
         newEventData = newEventData.map((eventData) => {
           if (eventData.nodeName === currentNodeName) {
+            console.log('eventData', eventData);
+            console.log('answer', answer);
             return {
               ...eventData,
               answer: answer
