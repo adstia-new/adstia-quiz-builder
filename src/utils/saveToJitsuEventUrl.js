@@ -111,7 +111,7 @@ export const sendDataToJitsuIdentifyEvent = (data) => {
       $phone: _phoneNumber,
     };
 
-    window?.jitsu?.identify(user_id, sendThisDataInIdentify);
+    // window?.jitsu?.identify(user_id, sendThisDataInIdentify);
   } catch (err) {
     console.error('Failed to send data to Jitsu identify:', err);
   }
