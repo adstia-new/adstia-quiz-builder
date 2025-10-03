@@ -124,12 +124,16 @@ const RenderNodes = ({
         });
       }
 
-      if (currentNodeName && answer) {
+      if (currentNodeName) {
         newEventData = newEventData.map((eventData) => {
           if (eventData.nodeName === currentNodeName) {
             return {
               ...eventData,
-              answer: answer,
+              answer: answer
+                ? currentNodeType === QUIZ_NODE_TYPES.DROPDOWN
+                  ? answer
+                  : true
+                : false,
             };
           }
           return eventData;
