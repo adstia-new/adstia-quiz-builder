@@ -2,11 +2,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import { LOCAL_STORAGE_QUIZ_VALUES, QUERY_PARAMS } from '../../constants';
 import { appendLeadIdScript } from '../../utils/appendLeadIdScript';
 import { handleEndNodeRedirect } from '../../utils/handleEndNodeRedirect';
-import {
-  sendDataToJitsuIdentifyEvent,
-  sendJitsuEvent,
-  sendJitsuLeadSubmitEvent,
-} from '../../utils/saveToJitsuEventUrl';
+import { sendJitsuEvent, sendJitsuLeadSubmitEvent } from '../../utils/saveToJitsuEventUrl';
 import RenderNodes from '../RenderNodes';
 import './index.css';
 import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
@@ -37,23 +33,21 @@ const QuizBuilder = ({ json, setQuizData }) => {
 
   const handleFormSubmission = async (e, next) => {
     e?.preventDefault();
-    setIsLoading(true);
 
+    setIsLoading(true);
     setQuizData(formData);
 
     const { email, phoneNumber } = formData;
-
     const isLongForm =
       searchParams && searchParams.get(QUERY_PARAMS.FORM_TYPE) === 'f' ? true : false;
+
+    const promises = [];
 
     if (isLongForm && email && phoneNumber) {
       let dataJson = { ...formData };
 
       if (leadId) {
-        dataJson = {
-          ...dataJson,
-          leadId,
-        };
+        dataJson = { ...dataJson, leadId };
       }
 
       if (json?.config?.includeQueryParams) {
@@ -62,22 +56,23 @@ const QuizBuilder = ({ json, setQuizData }) => {
         });
       }
 
-      await saveQuizModuleSubmission(json.config.pabblyUrl || '', dataJson);
+      promises.push(saveQuizModuleSubmission(json.config.pabblyUrl || '', dataJson));
     }
 
-    setJitsuEventData((prev) => {
-      sendJitsuEvent(prev);
-      return prev;
-    });
+    // Jitsu Event
+    promises.push(
+      new Promise((resolve) => {
+        setJitsuEventData((prev) => {
+          sendJitsuEvent(prev);
+          setTimeout(() => {
+            resolve();
+          }, 100);
+          return prev;
+        });
+      })
+    );
 
     const quizData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || '{}');
-
-    // Jitus Identify Event
-    sendDataToJitsuIdentifyEvent({
-      user_id: localStorage.getItem('user_id') || '',
-      session_id: sessionStorage.getItem('session_id') || '',
-      ...quizData,
-    });
 
     let jsonData = {
       user_id: localStorage.getItem('user_id') || '',
@@ -86,23 +81,35 @@ const QuizBuilder = ({ json, setQuizData }) => {
     };
 
     if (leadId) {
-      jsonData = {
-        ...jsonData,
-        leadId,
-      };
+      jsonData = { ...jsonData, leadId };
     }
 
-    sendJitsuLeadSubmitEvent(jsonData);
+    promises.push(
+      new Promise((resolve) => {
+        sendJitsuLeadSubmitEvent(jsonData);
+        setTimeout(() => {
+          resolve();
+        }, 100);
+      })
+    );
 
     // Push quiz data to GTM
-    setTimeout(() => {
-      pushLocalDataToDataLayer();
-    }, 500);
+    promises.push(
+      new Promise((resolve) => {
+        pushLocalDataToDataLayer();
+        setTimeout(() => {
+          resolve();
+        }, 100);
+      })
+    );
 
-    // Handle end node redirect logic
+    // Wait for all promises to settle before redirection
+    await Promise.allSettled(promises);
+
+    // Handle end node redirect logic after all async tasks
     setTimeout(() => {
       handleEndNodeRedirect(json.quizJson, currentSlide, next);
-    }, 1500);
+    }, 200);
   };
 
   useEffect(() => {
