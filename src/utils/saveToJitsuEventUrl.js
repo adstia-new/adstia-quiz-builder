@@ -95,10 +95,12 @@ export const sendJitsuLeadSubmitEvent = async (jitsuEventData) => {
     };
   }
 
+  const { user_id: userId, ...leadSubmitData } = jsonData;
+
   window?.jitsu?.track(JITSU_EVENT.LEAD_SUBMIT, {
-    user_id: localStorage.getItem('user_id') || '',
+    ...leadSubmitData,
+    userId: localStorage.getItem('user_id') || '',
     session_id: sessionStorage.getItem('session_id') || '',
-    ...jsonData,
   });
 
   try {
