@@ -1,0 +1,5 @@
+const DEFAULT_MESSAGE_TIME_INTERVAL = 1000;
+
+module.exports = {
+  DEFAULT_MESSAGE_TIME_INTERVAL,
+};
