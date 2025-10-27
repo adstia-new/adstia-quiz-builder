@@ -43,7 +43,7 @@ const newMessageBasedOnRole = async (chat, chatSectionElement) => {
   }
 };
 
-const insertNewMessage = async (chat, index) => {
+const insertNewMessage = async (chat, index, continueCallback) => {
   const chatSectionElement = document.getElementById('chats-section');
 
   if (chatSectionElement) {
@@ -61,6 +61,31 @@ const insertNewMessage = async (chat, index) => {
           buttonDiv.className = 'button-container';
           const button = document.createElement('button');
           button.textContent = chat.button.text;
+
+          // Add click handler to continue the chat sequence
+          button.addEventListener('click', () => {
+            // Execute the original button onClick if it exists
+            if (chat.button.onClick) {
+              chat.button.onClick();
+            }
+
+            // Remove the button after clicking
+            buttonDiv.remove();
+
+            // Add the user response message
+            const userChatDiv = document.createElement('div');
+            userChatDiv.className = 'user-chat-container';
+            const messageP = document.createElement('p');
+            messageP.textContent = chat.button.text;
+            userChatDiv.appendChild(messageP);
+            chatSectionElement.appendChild(userChatDiv);
+
+            // Continue the chat sequence, passing the button text
+            if (continueCallback) {
+              continueCallback(chat.button.text);
+            }
+          });
+
           buttonDiv.appendChild(button);
           lastElement.appendChild(buttonDiv);
         } else {
