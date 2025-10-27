@@ -3,9 +3,9 @@ import './AgentOnlineStatus.css';
 
 const AgentOnlineStatus = ({ agentName }) => {
   return (
-    <div className="agent-online-status">
-      <div className="online-indicator"></div>
-      <span className="agent-status">{`${agentName} is online`}</span>
+    <div className="chat-quiz__agent-status">
+      <div className="chat-quiz__status-indicator"></div>
+      <span className="chat-quiz__status-text">{`${agentName} is online`}</span>
     </div>
   );
 };

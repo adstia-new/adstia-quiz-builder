@@ -52,9 +52,9 @@ const ChatQuiz = () => {
   }, []);
 
   return (
-    <div className="chat-quiz-container">
+    <div className="chat-quiz__container">
       <AgentOnlineStatus agentName={chatJson.config.agent.name} />
-      <div className="chats-section" id="chats-section"></div>
+      <div className="chat-quiz__chats-section" id="chats-section"></div>
     </div>
   );
 };

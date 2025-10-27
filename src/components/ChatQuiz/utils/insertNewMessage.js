@@ -1,24 +1,24 @@
 const { DEFAULT_MESSAGE_TIME_INTERVAL } = require('../constants');
 
 const CSS_CLASSES = {
-  LOADER_CONTAINER: 'loader-container',
-  PROFILE_IMAGE: 'profile-image',
-  MESSAGE_WITH_PROFILE: 'message-with-profile',
-  MESSAGE_CONTENT: 'message-content',
-  AGENT_CHAT_CONTAINER: 'agent-chat-container',
-  USER_CHAT_CONTAINER: 'user-chat-container',
-  BUTTON_CONTAINER: 'button-container',
-  INPUT_CONTAINER: 'input-container',
-  CHAT_INPUT: 'chat-input',
-  SUBMIT_BUTTON: 'submit-button',
-  OPTIONS_CONTAINER: 'options-container',
-  OPTION_BUTTON: 'option-button',
-  DOT_LOADER: 'dot-loader',
-  DOT: 'dot',
-  DOT_1: 'dot-1',
-  DOT_2: 'dot-2',
-  DOT_3: 'dot-3',
-  CHAT_QUIZ_CONTAINER: 'chat-quiz-container',
+  LOADER_CONTAINER: 'chat-quiz__loader',
+  PROFILE_IMAGE: 'chat-quiz__profile-image',
+  MESSAGE_WITH_PROFILE: 'chat-quiz__message--with-profile',
+  MESSAGE_CONTENT: 'chat-quiz__message-content',
+  AGENT_CHAT_CONTAINER: 'chat-quiz__message--agent',
+  USER_CHAT_CONTAINER: 'chat-quiz__message--user',
+  BUTTON_CONTAINER: 'chat-quiz__button-container',
+  INPUT_CONTAINER: 'chat-quiz__input-container',
+  CHAT_INPUT: 'chat-quiz__input',
+  SUBMIT_BUTTON: 'chat-quiz__submit-button',
+  OPTIONS_CONTAINER: 'chat-quiz__options-container',
+  OPTION_BUTTON: 'chat-quiz__option-button',
+  DOT_LOADER: 'chat-quiz__dot-loader',
+  DOT: 'chat-quiz__dot',
+  DOT_1: 'chat-quiz__dot--1',
+  DOT_2: 'chat-quiz__dot--2',
+  DOT_3: 'chat-quiz__dot--3',
+  CHAT_QUIZ_CONTAINER: 'chat-quiz__container',
 };
 
 const ROLES = {
@@ -59,7 +59,7 @@ const createSpacer = () => {
 
 const createMessageWrapper = (role, config, isLastInSequence = true) => {
   const messageWrapper = document.createElement('div');
-  messageWrapper.className = `message-with-profile ${role}`;
+  messageWrapper.className = `${CSS_CLASSES.MESSAGE_WITH_PROFILE} chat-quiz__message--${role}`;
 
   if (isLastInSequence && config && config[role] && config[role].profileImage) {
     messageWrapper.appendChild(createProfileImage(config, role));
@@ -336,12 +336,12 @@ const insertNewMessage = async (chat, index, continueCallback, config) => {
       const lastWrapper = chatSectionElement.children[chatSectionElement.children.length - 1];
 
       if (lastWrapper.classList.contains(CSS_CLASSES.MESSAGE_WITH_PROFILE)) {
-        const isLastAgent = lastWrapper.classList.contains(ROLES.AGENT);
+        const isLastAgent = lastWrapper.classList.contains(`chat-quiz__message--${ROLES.AGENT}`);
         const isCurrentAgent = chat.role === ROLES.AGENT;
 
         if (isLastAgent === isCurrentAgent) {
           isConsecutiveMessage = true;
-          lastMessageContent = lastWrapper.querySelector('.message-content');
+          lastMessageContent = lastWrapper.querySelector('.chat-quiz__message-content');
         }
       }
     }
