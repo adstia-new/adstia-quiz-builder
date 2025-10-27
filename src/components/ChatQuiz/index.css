@@ -60,6 +60,58 @@
   }
 }
 
+.input-container {
+  background-color: #e2e8f0;
+  padding: 15px;
+  border-radius: 15px 15px 15px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 80%;
+
+  .chat-input {
+    padding: 12px 15px;
+    border: 2px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #2d3748;
+    background-color: #ffffff;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: #137dce;
+    }
+
+    &::placeholder {
+      color: #a0aec0;
+    }
+  }
+
+  .submit-button {
+    padding: 12px 20px;
+    background-color: #137dce;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    align-self: flex-start;
+    min-width: 100px;
+
+    &:hover {
+      background-color: #1e40af;
+    }
+
+    &:active {
+      background-color: #1d4ed8;
+    }
+  }
+}
+
 .loader-container {
   display: flex;
   justify-content: center;
@@ -143,5 +195,50 @@
     background-color: #374151;
     transform: scale(1.1);
     opacity: 0.9;
+  }
+}
+
+/* Options container and buttons */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #e2e8f0;
+  padding: 10px 15px;
+  border-radius: 15px 15px 15px 5px;
+}
+
+.option-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  min-height: 44px;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  }
+
+  &:active {
+    background-color: #1d4ed8;
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
   }
 }

@@ -88,6 +88,145 @@ const insertNewMessage = async (chat, index, continueCallback) => {
 
           buttonDiv.appendChild(button);
           lastElement.appendChild(buttonDiv);
+        } else if (chat.input) {
+          const inputContainer = document.createElement('div');
+          inputContainer.className = 'input-container';
+
+          const inputField = document.createElement('input');
+          inputField.type = 'text';
+          inputField.name = chat.input.name;
+          inputField.className = 'chat-input';
+          inputField.placeholder = `Enter ${chat.input.name}...`;
+
+          // Set fixed value if provided
+          if (chat.input.fixedValue) {
+            inputField.value = chat.input.fixedValue;
+          }
+
+          const submitButton = document.createElement('button');
+          submitButton.textContent = chat.input.buttonText || 'Submit';
+          submitButton.className = 'submit-button';
+
+          // Add submit handler
+          const handleSubmit = () => {
+            const inputValue = inputField.value.trim();
+
+            if (inputValue) {
+              let displayValue = inputValue;
+
+              // Only calculate age and save to localStorage if input name is 'age'
+              if (chat.input.name === 'age') {
+                // Calculate age and save to localStorage
+                const currentYear = new Date().getFullYear();
+                const birthYear = parseInt(inputValue);
+                const age = currentYear - birthYear;
+
+                // Get existing quizValues or create new object
+                let quizValues = {};
+                try {
+                  const existingValues = localStorage.getItem('quizValues');
+                  if (existingValues) {
+                    quizValues = JSON.parse(existingValues);
+                  }
+                } catch (error) {
+                  console.warn('Error parsing quizValues from localStorage:', error);
+                }
+
+                // Set the age value as string
+                quizValues.age = age.toString();
+
+                // Save back to localStorage
+                localStorage.setItem('quizValues', JSON.stringify(quizValues));
+
+                // Update display value to show age instead of birth year
+                displayValue = age.toString();
+              }
+
+              // Remove the input container
+              inputContainer.remove();
+
+              // Add the user response message with calculated age (if applicable) or input value
+              const userChatDiv = document.createElement('div');
+              userChatDiv.className = 'user-chat-container';
+              const messageP = document.createElement('p');
+              messageP.textContent = displayValue;
+              userChatDiv.appendChild(messageP);
+              chatSectionElement.appendChild(userChatDiv);
+
+              // Continue the chat sequence, passing the input value
+              if (continueCallback) {
+                continueCallback(inputValue);
+              }
+            }
+          };
+
+          // Add click handler to submit button
+          submitButton.addEventListener('click', handleSubmit);
+
+          // Add enter key handler to input field
+          inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              handleSubmit();
+            }
+          });
+
+          inputContainer.appendChild(inputField);
+          inputContainer.appendChild(submitButton);
+          lastElement.appendChild(inputContainer);
+
+          // Focus on the input field
+          setTimeout(() => inputField.focus(), 100);
+        } else if (chat.options) {
+          // Handle options message type
+          const optionsContainer = document.createElement('div');
+          optionsContainer.className = 'options-container';
+
+          chat.options.options.forEach((optionText) => {
+            const optionButton = document.createElement('button');
+            optionButton.className = 'option-button';
+            optionButton.textContent = optionText;
+
+            optionButton.addEventListener('click', () => {
+              // Save the selected option to localStorage if name is provided
+              if (chat.options.name) {
+                let quizValues = {};
+                try {
+                  const existingValues = localStorage.getItem('quizValues');
+                  if (existingValues) {
+                    quizValues = JSON.parse(existingValues);
+                  }
+                } catch (error) {
+                  console.warn('Error parsing quizValues from localStorage:', error);
+                }
+
+                // Set the selected option value
+                quizValues[chat.options.name] = optionText;
+
+                // Save back to localStorage
+                localStorage.setItem('quizValues', JSON.stringify(quizValues));
+              }
+
+              // Remove the options container
+              optionsContainer.remove();
+
+              // Add the user response message
+              const userChatDiv = document.createElement('div');
+              userChatDiv.className = 'user-chat-container';
+              const messageP = document.createElement('p');
+              messageP.textContent = optionText;
+              userChatDiv.appendChild(messageP);
+              chatSectionElement.appendChild(userChatDiv);
+
+              // Continue the chat sequence, passing the selected option
+              if (continueCallback) {
+                continueCallback(optionText);
+              }
+            });
+
+            optionsContainer.appendChild(optionButton);
+          });
+
+          lastElement.appendChild(optionsContainer);
         } else {
           const messageP = document.createElement('p');
           messageP.textContent = chat.text;

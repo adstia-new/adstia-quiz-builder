@@ -49,6 +49,56 @@ const chatJson = {
       role: 'agent',
       text: 'What year were you born?',
     },
+    {
+      role: 'agent',
+      input: {
+        buttonText: 'confirm',
+        name: 'age',
+        fixedValue: '19',
+      },
+    },
+    {
+      role: 'agent',
+      text: 'Do you currently live in Delhi?',
+    },
+    {
+      role: 'agent',
+      options: {
+        name: 'liveInDelhi',
+        options: ['Yes', 'No'],
+      },
+    },
+    {
+      role: 'agent',
+      text: 'Last question:',
+    },
+    {
+      role: 'agent',
+      text: 'Do you take any special medications for a chronic or rare medical condition?',
+    },
+    {
+      role: 'agent',
+      text: 'Either way, you can still qualify',
+    },
+    {
+      role: 'agent',
+      options: {
+        name: 'specialMedications',
+        options: ['No', 'Yes'],
+      },
+    },
+    {
+      role: 'agent',
+      text: '🎉 Congratulations! 🎁',
+    },
+    {
+      role: 'agent',
+      text: 'Calculating your benefits...',
+    },
+    {
+      role: 'agent',
+      text: 'It looks like you may qualify for a Spending Allowance Card!',
+    },
   ],
 };
 
