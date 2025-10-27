@@ -266,6 +266,13 @@ const insertNewMessage = async (chat, index, continueCallback, config) => {
             optionButton.textContent = optionText;
 
             optionButton.addEventListener('click', () => {
+              // Check for Medicare Part A and Part B "No" redirect
+              if (chat.options.name === 'medicarePartAB' && optionText === 'No') {
+                // Redirect to the specified URL
+                window.location.href = 'https://lander8ert.benefits-advisor.org/blogs';
+                return;
+              }
+
               // Save the selected option to localStorage if name is provided
               if (chat.options.name) {
                 let quizValues = {};

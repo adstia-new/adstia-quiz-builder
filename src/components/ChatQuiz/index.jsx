@@ -2,6 +2,7 @@ import './index.css';
 import React, { useEffect } from 'react';
 import chatJson from './data/chatJson';
 import insertNewMessage from './utils/insertNewMessage';
+import AgentOnlineStatus from './components/AgentOnlineStatus';
 
 const ChatQuiz = () => {
   useEffect(() => {
@@ -77,6 +78,7 @@ const ChatQuiz = () => {
 
   return (
     <div className="chat-quiz-container">
+      <AgentOnlineStatus agentName={chatJson.config.agent.name} />
       <div className="chats-section" id="chats-section"></div>
     </div>
   );
