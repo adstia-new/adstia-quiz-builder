@@ -7,7 +7,6 @@ import AgentOnlineStatus from './components/AgentOnlineStatus';
 const ChatQuiz = () => {
   useEffect(() => {
     const { chats, config } = chatJson;
-    console.log(chats);
 
     const processChatSequence = async (startIndex = 0, skipNextUserMessage = false) => {
       for (let i = startIndex; i < chats.length; i++) {
