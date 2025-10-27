@@ -1,5 +1,15 @@
 const { DEFAULT_MESSAGE_TIME_INTERVAL } = require('../constants');
 
+const scrollToBottom = () => {
+  // Use requestAnimationFrame to ensure DOM is updated before scrolling
+  requestAnimationFrame(() => {
+    const chatContainer = document.querySelector('.chat-quiz-container');
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  });
+};
+
 const createLoaderElement = () => {
   const loadingDiv = document.createElement('div');
   loadingDiv.className = 'loader-container';
@@ -13,48 +23,127 @@ const createLoaderElement = () => {
   return loadingDiv;
 };
 
-const newMessageBasedOnRole = async (chat, chatSectionElement) => {
+const newMessageBasedOnRole = async (chat, chatSectionElement, config, isLastInSequence = true) => {
   if (chat.role === 'agent') {
+    // Create wrapper for profile image and message content
+    const messageWrapper = document.createElement('div');
+    messageWrapper.className = 'message-with-profile agent';
+
+    // Create profile image (only if it's the last message in sequence)
+    if (isLastInSequence && config && config.agent && config.agent.profileImage) {
+      const profileImg = document.createElement('img');
+      profileImg.src = config.agent.profileImage;
+      profileImg.className = 'profile-image';
+      profileImg.alt = config.agent.name || 'Agent';
+      messageWrapper.appendChild(profileImg);
+    } else if (isLastInSequence) {
+      // Add spacer div to maintain alignment when no profile image
+      const spacer = document.createElement('div');
+      spacer.style.width = '30px';
+      spacer.style.height = '30px';
+      messageWrapper.appendChild(spacer);
+    }
+
+    // Create message content container
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+
     const agentChatDiv = document.createElement('div');
     agentChatDiv.className = 'agent-chat-container';
 
     const loadingP = createLoaderElement();
     agentChatDiv.appendChild(loadingP);
-    chatSectionElement.appendChild(agentChatDiv);
+    messageContent.appendChild(agentChatDiv);
+    messageWrapper.appendChild(messageContent);
+    chatSectionElement.appendChild(messageWrapper);
+
+    // Scroll to bottom when loading appears
+    scrollToBottom();
+
     await new Promise((resolve) => setTimeout(resolve, DEFAULT_MESSAGE_TIME_INTERVAL));
     agentChatDiv.removeChild(loadingP);
 
     const messageP = document.createElement('p');
-    messageP.textContent = chat.text;
+    messageP.innerHTML = chat.text;
     agentChatDiv.appendChild(messageP);
+
+    // Scroll to bottom when message is complete
+    scrollToBottom();
   } else if (chat.role === 'user') {
+    // Create wrapper for profile image and message content
+    const messageWrapper = document.createElement('div');
+    messageWrapper.className = 'message-with-profile user';
+
+    // Create profile image (only if it's the last message in sequence)
+    if (isLastInSequence && config && config.user && config.user.profileImage) {
+      const profileImg = document.createElement('img');
+      profileImg.src = config.user.profileImage;
+      profileImg.className = 'profile-image';
+      profileImg.alt = config.user.name || 'User';
+      messageWrapper.appendChild(profileImg);
+    } else if (isLastInSequence) {
+      // Add spacer div to maintain alignment when no profile image
+      const spacer = document.createElement('div');
+      spacer.style.width = '30px';
+      spacer.style.height = '30px';
+      messageWrapper.appendChild(spacer);
+    }
+
+    // Create message content container
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+
     const userChatDiv = document.createElement('div');
     userChatDiv.className = 'user-chat-container';
 
     const loadingP = createLoaderElement();
     userChatDiv.appendChild(loadingP);
-    chatSectionElement.appendChild(userChatDiv);
+    messageContent.appendChild(userChatDiv);
+    messageWrapper.appendChild(messageContent);
+    chatSectionElement.appendChild(messageWrapper);
+
+    // Scroll to bottom when loading appears
+    scrollToBottom();
+
     await new Promise((resolve) => setTimeout(resolve, DEFAULT_MESSAGE_TIME_INTERVAL));
     userChatDiv.removeChild(loadingP);
 
     const messageP = document.createElement('p');
-    messageP.textContent = chat.text;
+    messageP.innerHTML = chat.text;
     userChatDiv.appendChild(messageP);
+
+    // Scroll to bottom when message is complete
+    scrollToBottom();
   }
 };
 
-const insertNewMessage = async (chat, index, continueCallback) => {
+const insertNewMessage = async (chat, index, continueCallback, config) => {
   const chatSectionElement = document.getElementById('chats-section');
 
   if (chatSectionElement) {
-    if (chatSectionElement.children.length > 0) {
-      const lastElement = chatSectionElement.children[chatSectionElement.children.length - 1];
+    let isConsecutiveMessage = false;
+    let lastMessageContent = null;
 
-      if (lastElement.classList.contains('agent-chat-container') && chat.role === 'agent') {
-        const loadingP = createLoaderElement();
-        lastElement.appendChild(loadingP);
-        await new Promise((resolve) => setTimeout(resolve, DEFAULT_MESSAGE_TIME_INTERVAL));
-        lastElement.removeChild(loadingP);
+    // Check if this is a consecutive message from the same role
+    if (chatSectionElement.children.length > 0) {
+      const lastWrapper = chatSectionElement.children[chatSectionElement.children.length - 1];
+
+      if (lastWrapper.classList.contains('message-with-profile')) {
+        const isLastAgent = lastWrapper.classList.contains('agent');
+        const isCurrentAgent = chat.role === 'agent';
+
+        if (isLastAgent === isCurrentAgent) {
+          isConsecutiveMessage = true;
+          lastMessageContent = lastWrapper.querySelector('.message-content');
+        }
+      }
+    }
+
+    if (isConsecutiveMessage && lastMessageContent) {
+      // Add to existing message content container (no profile image)
+      if (chat.role === 'agent') {
+        const agentChatDiv = document.createElement('div');
+        agentChatDiv.className = 'agent-chat-container';
 
         if (chat.button) {
           const buttonDiv = document.createElement('div');
@@ -72,13 +161,8 @@ const insertNewMessage = async (chat, index, continueCallback) => {
             // Remove the button after clicking
             buttonDiv.remove();
 
-            // Add the user response message
-            const userChatDiv = document.createElement('div');
-            userChatDiv.className = 'user-chat-container';
-            const messageP = document.createElement('p');
-            messageP.textContent = chat.button.text;
-            userChatDiv.appendChild(messageP);
-            chatSectionElement.appendChild(userChatDiv);
+            // Create user response with profile image
+            createUserResponseMessage(chatSectionElement, chat.button.text, config);
 
             // Continue the chat sequence, passing the button text
             if (continueCallback) {
@@ -87,7 +171,7 @@ const insertNewMessage = async (chat, index, continueCallback) => {
           });
 
           buttonDiv.appendChild(button);
-          lastElement.appendChild(buttonDiv);
+          agentChatDiv.appendChild(buttonDiv);
         } else if (chat.input) {
           const inputContainer = document.createElement('div');
           inputContainer.className = 'input-container';
@@ -145,13 +229,8 @@ const insertNewMessage = async (chat, index, continueCallback) => {
               // Remove the input container
               inputContainer.remove();
 
-              // Add the user response message with calculated age (if applicable) or input value
-              const userChatDiv = document.createElement('div');
-              userChatDiv.className = 'user-chat-container';
-              const messageP = document.createElement('p');
-              messageP.textContent = displayValue;
-              userChatDiv.appendChild(messageP);
-              chatSectionElement.appendChild(userChatDiv);
+              // Create user response with profile image
+              createUserResponseMessage(chatSectionElement, displayValue, config);
 
               // Continue the chat sequence, passing the input value
               if (continueCallback) {
@@ -172,7 +251,7 @@ const insertNewMessage = async (chat, index, continueCallback) => {
 
           inputContainer.appendChild(inputField);
           inputContainer.appendChild(submitButton);
-          lastElement.appendChild(inputContainer);
+          agentChatDiv.appendChild(inputContainer);
 
           // Focus on the input field
           setTimeout(() => inputField.focus(), 100);
@@ -209,13 +288,8 @@ const insertNewMessage = async (chat, index, continueCallback) => {
               // Remove the options container
               optionsContainer.remove();
 
-              // Add the user response message
-              const userChatDiv = document.createElement('div');
-              userChatDiv.className = 'user-chat-container';
-              const messageP = document.createElement('p');
-              messageP.textContent = optionText;
-              userChatDiv.appendChild(messageP);
-              chatSectionElement.appendChild(userChatDiv);
+              // Create user response with profile image
+              createUserResponseMessage(chatSectionElement, optionText, config);
 
               // Continue the chat sequence, passing the selected option
               if (continueCallback) {
@@ -226,19 +300,77 @@ const insertNewMessage = async (chat, index, continueCallback) => {
             optionsContainer.appendChild(optionButton);
           });
 
-          lastElement.appendChild(optionsContainer);
+          agentChatDiv.appendChild(optionsContainer);
         } else {
+          const loadingP = createLoaderElement();
+          agentChatDiv.appendChild(loadingP);
+          lastMessageContent.appendChild(agentChatDiv);
+
+          // Scroll to bottom when loading appears
+          scrollToBottom();
+
+          await new Promise((resolve) => setTimeout(resolve, DEFAULT_MESSAGE_TIME_INTERVAL));
+          agentChatDiv.removeChild(loadingP);
+
           const messageP = document.createElement('p');
-          messageP.textContent = chat.text;
-          lastElement.appendChild(messageP);
+          messageP.innerHTML = chat.text;
+          agentChatDiv.appendChild(messageP);
+
+          // Scroll to bottom when message is complete
+          scrollToBottom();
         }
-      } else {
-        await newMessageBasedOnRole(chat, chatSectionElement);
+
+        if (chat.button || chat.input || chat.options) {
+          lastMessageContent.appendChild(agentChatDiv);
+
+          // Scroll to bottom when interactive elements are added
+          scrollToBottom();
+        }
       }
     } else {
-      await newMessageBasedOnRole(chat, chatSectionElement);
+      // Create new message wrapper with profile image
+      await newMessageBasedOnRole(chat, chatSectionElement, config, true);
     }
   }
+};
+
+// Helper function to create user response messages with profile images
+const createUserResponseMessage = (chatSectionElement, text, config) => {
+  // Create wrapper for profile image and message content
+  const messageWrapper = document.createElement('div');
+  messageWrapper.className = 'message-with-profile user';
+
+  // Create profile image
+  if (config && config.user && config.user.profileImage) {
+    const profileImg = document.createElement('img');
+    profileImg.src = config.user.profileImage;
+    profileImg.className = 'profile-image';
+    profileImg.alt = config.user.name || 'User';
+    messageWrapper.appendChild(profileImg);
+  } else {
+    // Add spacer div to maintain alignment when no profile image
+    const spacer = document.createElement('div');
+    spacer.style.width = '30px';
+    spacer.style.height = '30px';
+    messageWrapper.appendChild(spacer);
+  }
+
+  // Create message content container
+  const messageContent = document.createElement('div');
+  messageContent.className = 'message-content';
+
+  const userChatDiv = document.createElement('div');
+  userChatDiv.className = 'user-chat-container';
+  const messageP = document.createElement('p');
+  messageP.textContent = text;
+  userChatDiv.appendChild(messageP);
+
+  messageContent.appendChild(userChatDiv);
+  messageWrapper.appendChild(messageContent);
+  chatSectionElement.appendChild(messageWrapper);
+
+  // Scroll to bottom when user response is added
+  scrollToBottom();
 };
 
 module.exports = insertNewMessage;

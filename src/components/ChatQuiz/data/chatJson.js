@@ -43,48 +43,41 @@ const chatJson = {
     },
     {
       role: 'agent',
-      text: 'Great, let me ask you two quick questions',
+      text: 'Great, let me ask you quick questions',
     },
     {
       role: 'agent',
-      text: 'What year were you born?',
+      text: 'What is your age?',
     },
     {
       role: 'agent',
       input: {
-        buttonText: 'confirm',
+        buttonText: 'Submit',
         name: 'age',
-        fixedValue: '19',
+        placeholder: 'Enter your age',
       },
     },
     {
       role: 'agent',
-      text: 'Do you currently live in Delhi?',
+      text: 'Do you have Medicare Part A and Part B?',
     },
     {
       role: 'agent',
       options: {
-        name: 'liveInDelhi',
+        name: 'medicarePartAB',
         options: ['Yes', 'No'],
       },
     },
     {
       role: 'agent',
-      text: 'Last question:',
+      text: 'What is your zipcode?',
     },
     {
       role: 'agent',
-      text: 'Do you take any special medications for a chronic or rare medical condition?',
-    },
-    {
-      role: 'agent',
-      text: 'Either way, you can still qualify',
-    },
-    {
-      role: 'agent',
-      options: {
-        name: 'specialMedications',
-        options: ['No', 'Yes'],
+      input: {
+        buttonText: 'Submit',
+        name: 'zipcode',
+        placeholder: 'Enter your zipcode',
       },
     },
     {
@@ -98,6 +91,23 @@ const chatJson = {
     {
       role: 'agent',
       text: 'It looks like you may qualify for a Spending Allowance Card!',
+    },
+    {
+      role: 'agent',
+      text: 'Your spot is being held for 2:00',
+    },
+    {
+      role: 'agent',
+      text: '<a href="tel:18002223333">+1 (800) 222 3333</a>',
+    },
+    {
+      role: 'agent',
+      button: {
+        text: 'Call Now',
+        onClick: () => {
+          window.location.href = 'tel:18002223333';
+        },
+      },
     },
   ],
 };

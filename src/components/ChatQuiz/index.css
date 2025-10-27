@@ -1,8 +1,9 @@
 .chat-quiz-container {
-  width: 100%;
-  height: 100%;
-  padding: 20px;
+  max-height: 80dvh;
+  min-height: 400px;
+  padding: 5px 0px;
   border: 1px solid white;
+  overflow-y: auto;
 }
 
 .agent-chat-container {
@@ -20,7 +21,6 @@
   border-radius: 15px 15px 15px 5px;
   font-weight: 500;
   font-size: 16px;
-  max-width: 80%;
 }
 
 .agent-chat-container .loader-container {
@@ -67,7 +67,6 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 80%;
 
   .chat-input {
     padding: 12px 15px;
@@ -219,7 +218,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
-  min-height: 44px;
   min-width: 120px;
   display: flex;
   align-items: center;
@@ -241,4 +239,38 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
   }
+}
+
+/* Profile Image Styles */
+.profile-image {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.message-with-profile {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.message-with-profile.agent {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.message-with-profile.user {
+  flex-direction: row-reverse;
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 80%;
 }
