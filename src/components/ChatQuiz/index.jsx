@@ -8,64 +8,40 @@ const ChatQuiz = () => {
   useEffect(() => {
     const { chats, config } = chatJson;
 
+    const createInteractionCallback = (chats, currentIndex, processChatSequence) => {
+      return (userResponse) => {
+        const nextChat = chats[currentIndex + 1];
+        const shouldSkipNext =
+          nextChat && nextChat.role === 'user' && nextChat.text === userResponse;
+        processChatSequence(currentIndex + 1, shouldSkipNext);
+      };
+    };
+
+    const handleInteractiveMessage = async (chat, index) => {
+      await insertNewMessage(
+        chat,
+        index,
+        createInteractionCallback(chats, index, processChatSequence),
+        config
+      );
+    };
+
+    const shouldSkipUserMessage = (chat, skipNextUserMessage) => {
+      return skipNextUserMessage && chat.role === 'user';
+    };
+
     const processChatSequence = async (startIndex = 0, skipNextUserMessage = false) => {
       for (let i = startIndex; i < chats.length; i++) {
         const chat = chats[i];
 
-        // Skip user message if it matches the button text that was just clicked
-        if (skipNextUserMessage && chat.role === 'user') {
+        if (shouldSkipUserMessage(chat, skipNextUserMessage)) {
           skipNextUserMessage = false;
           continue;
         }
 
-        if (chat.button) {
-          // For button chats, wait for user interaction before continuing
-          await insertNewMessage(
-            chat,
-            i,
-            (buttonText) => {
-              // Check if next message is a user message with same text as button
-              const nextChat = chats[i + 1];
-              const shouldSkipNext =
-                nextChat && nextChat.role === 'user' && nextChat.text === buttonText;
-
-              processChatSequence(i + 1, shouldSkipNext);
-            },
-            config
-          );
-          return; // Exit the loop, will be resumed by button click
-        } else if (chat.input) {
-          // For input chats, wait for user input before continuing
-          await insertNewMessage(
-            chat,
-            i,
-            (inputValue) => {
-              // Check if next message is a user message with same text as input
-              const nextChat = chats[i + 1];
-              const shouldSkipNext =
-                nextChat && nextChat.role === 'user' && nextChat.text === inputValue;
-
-              processChatSequence(i + 1, shouldSkipNext);
-            },
-            config
-          );
-          return; // Exit the loop, will be resumed by input submission
-        } else if (chat.options) {
-          // For options chats, wait for user selection before continuing
-          await insertNewMessage(
-            chat,
-            i,
-            (selectedOption) => {
-              // Check if next message is a user message with same text as selected option
-              const nextChat = chats[i + 1];
-              const shouldSkipNext =
-                nextChat && nextChat.role === 'user' && nextChat.text === selectedOption;
-
-              processChatSequence(i + 1, shouldSkipNext);
-            },
-            config
-          );
-          return; // Exit the loop, will be resumed by option selection
+        if (chat.button || chat.input || chat.options) {
+          await handleInteractiveMessage(chat, i);
+          return;
         } else {
           await insertNewMessage(chat, i, undefined, config);
         }
