@@ -140,13 +140,20 @@ const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCal
     if (chat.button.onClick) {
       chat.button.onClick();
     }
-    handleInteractionCleanup(
-      buttonDiv,
-      chatSectionElement,
-      chat.button.text,
-      config,
-      continueCallback
-    );
+
+    if (chat.button.type === 'ringba') {
+      if (continueCallback) {
+        continueCallback();
+      }
+    } else {
+      handleInteractionCleanup(
+        buttonDiv,
+        chatSectionElement,
+        chat.button.text,
+        config,
+        continueCallback
+      );
+    }
   });
 
   buttonDiv.appendChild(button);

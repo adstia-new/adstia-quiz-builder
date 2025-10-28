@@ -104,6 +104,7 @@ const chatJson = {
       role: 'agent',
       button: {
         text: 'Call Now',
+        type: 'ringba',
         onClick: () => {
           window.location.href = 'tel:18002223333';
         },
