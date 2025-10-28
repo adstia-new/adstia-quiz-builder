@@ -2,8 +2,9 @@ const { saveQuizValues } = require('./storageUtils');
 const { createElement, createMessageWrapper, scrollToBottom } = require('./domUtils');
 const { displayMessageWithLoading } = require('./messageUtils');
 const { handleInteractionCleanup } = require('./interactionUtils');
-const { validateYear } = require('./validationUtils');
+const { validateYear, validateZipcode } = require('./validationUtils');
 const { CSS_CLASSES, ROLES } = require('../constants');
+const { saveLocationWithZipcode } = require('../../../utils/saveLocationWithZipcode');
 
 const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
   const buttonDiv = createElement('div', CSS_CLASSES.BUTTON_CONTAINER);
@@ -42,6 +43,20 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
   inputField.placeholder = chat.input.placeholder || `Enter ${chat.input.name}...`;
 
   const fixedValue = chat.input.fixedValue || '';
+
+  if (inputField?.name === 'zipcode') {
+    inputField.addEventListener('input', (e) => {
+      const currentValue = inputField?.value?.trim();
+
+      if (currentValue?.trim()?.length === 5) {
+        saveLocationWithZipcode(currentValue);
+      }
+
+      if (currentValue?.trim()?.length > 5) {
+        inputField.value = currentValue.slice(0, 5);
+      }
+    });
+  }
 
   if (fixedValue) {
     inputField.value = fixedValue;
@@ -121,6 +136,10 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
         saveQuizValues('age', age.toString());
 
         displayValue = age.toString();
+      }
+
+      if (chat.input.name === 'zipcode' && !validateZipcode(inputValue, inputContainer)) {
+        return;
       }
 
       handleInteractionCleanup(
