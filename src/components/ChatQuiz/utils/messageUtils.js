@@ -1,5 +1,5 @@
 const { DEFAULT_MESSAGE_TIME_INTERVAL } = require('../constants');
-const { CSS_CLASSES, ROLES } = require('./constants');
+const { CSS_CLASSES, ROLES } = require('../constants');
 const {
   createElement,
   createMessageWrapper,

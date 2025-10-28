@@ -1,4 +1,4 @@
-const { CSS_CLASSES, ROLES } = require('./constants');
+const { CSS_CLASSES, ROLES } = require('../constants');
 
 const createElement = (tagName, className, textContent = '') => {
   const element = document.createElement(tagName);

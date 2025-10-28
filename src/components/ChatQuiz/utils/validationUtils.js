@@ -1,4 +1,4 @@
-const { CSS_CLASSES } = require('./constants');
+const { CSS_CLASSES } = require('../constants');
 const { createElement } = require('./domUtils');
 
 const showErrorMessage = (message, inputContainer) => {

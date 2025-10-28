@@ -324,7 +324,6 @@
 @media (max-width: 768px) {
   .chat-quiz__container {
     margin: 20px 0px 50px;
-    max-height: 75dvh;
   }
 
   .chat-quiz__message-content {
@@ -366,7 +365,6 @@
 @media (max-width: 480px) {
   .chat-quiz__container {
     margin: 15px 0px 40px;
-    max-height: 70dvh;
   }
 
   .chat-quiz__message-content {

@@ -1,17 +1,9 @@
-const { DEFAULT_MESSAGE_TIME_INTERVAL } = require('../constants');
-const { CSS_CLASSES, ROLES } = require('./constants');
-const { getQuizValues, saveQuizValues } = require('./storageUtils');
-const {
-  createElement,
-  createProfileImage,
-  createSpacer,
-  createMessageWrapper,
-  createLoaderElement,
-  scrollToBottom,
-} = require('./domUtils');
-const { displayMessageWithLoading, createUserResponseMessage } = require('./messageUtils');
+const { saveQuizValues } = require('./storageUtils');
+const { createElement, createMessageWrapper, scrollToBottom } = require('./domUtils');
+const { displayMessageWithLoading } = require('./messageUtils');
 const { handleInteractionCleanup } = require('./interactionUtils');
 const { validateYear } = require('./validationUtils');
+const { CSS_CLASSES, ROLES } = require('../constants');
 
 const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
   const buttonDiv = createElement('div', CSS_CLASSES.BUTTON_CONTAINER);
