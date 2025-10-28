@@ -20,7 +20,7 @@ const chatJson = {
     },
     {
       role: 'agent',
-      text: 'I’m {{config.agent.name}}. This will only take a minute.',
+      text: 'I’m Mary. This will only take a minute.',
       messageTimeInterval: 1200,
     },
     {
@@ -47,14 +47,15 @@ const chatJson = {
     },
     {
       role: 'agent',
-      text: 'What is your age?',
+      text: 'What year were you born?',
     },
     {
       role: 'agent',
       input: {
         buttonText: 'Submit',
         name: 'age',
-        placeholder: 'Enter your age',
+        placeholder: 'Year',
+        fixedValue: '19',
       },
     },
     {

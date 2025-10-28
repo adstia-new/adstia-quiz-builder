@@ -1,136 +1,17 @@
 const { DEFAULT_MESSAGE_TIME_INTERVAL } = require('../constants');
-
-const CSS_CLASSES = {
-  LOADER_CONTAINER: 'chat-quiz__loader',
-  PROFILE_IMAGE: 'chat-quiz__profile-image',
-  MESSAGE_WITH_PROFILE: 'chat-quiz__message--with-profile',
-  MESSAGE_CONTENT: 'chat-quiz__message-content',
-  AGENT_CHAT_CONTAINER: 'chat-quiz__message--agent',
-  USER_CHAT_CONTAINER: 'chat-quiz__message--user',
-  BUTTON_CONTAINER: 'chat-quiz__button-container',
-  INPUT_CONTAINER: 'chat-quiz__input-container',
-  CHAT_INPUT: 'chat-quiz__input',
-  SUBMIT_BUTTON: 'chat-quiz__submit-button',
-  OPTIONS_CONTAINER: 'chat-quiz__options-container',
-  OPTION_BUTTON: 'chat-quiz__option-button',
-  DOT_LOADER: 'chat-quiz__dot-loader',
-  DOT: 'chat-quiz__dot',
-  DOT_1: 'chat-quiz__dot--1',
-  DOT_2: 'chat-quiz__dot--2',
-  DOT_3: 'chat-quiz__dot--3',
-  CHAT_QUIZ_CONTAINER: 'chat-quiz__container',
-};
-
-const ROLES = {
-  AGENT: 'agent',
-  USER: 'user',
-};
-
-const getQuizValues = () => {
-  try {
-    const existingValues = localStorage.getItem('quizValues');
-    return existingValues ? JSON.parse(existingValues) : {};
-  } catch (error) {
-    console.warn('Error parsing quizValues from localStorage:', error);
-    return {};
-  }
-};
-
-const saveQuizValues = (key, value) => {
-  const quizValues = getQuizValues();
-  quizValues[key] = value;
-  localStorage.setItem('quizValues', JSON.stringify(quizValues));
-};
-
-const createProfileImage = (config, role) => {
-  const profileImg = document.createElement('img');
-  profileImg.src = config[role].profileImage;
-  profileImg.className = CSS_CLASSES.PROFILE_IMAGE;
-  profileImg.alt = config[role].name || (role === ROLES.AGENT ? 'Agent' : 'User');
-  return profileImg;
-};
-
-const createSpacer = () => {
-  const spacer = document.createElement('div');
-  spacer.style.width = '30px';
-  spacer.style.height = '30px';
-  return spacer;
-};
-
-const createMessageWrapper = (role, config, isLastInSequence = true) => {
-  const messageWrapper = document.createElement('div');
-  messageWrapper.className = `${CSS_CLASSES.MESSAGE_WITH_PROFILE} chat-quiz__message--${role}`;
-
-  if (isLastInSequence && config && config[role] && config[role].profileImage) {
-    messageWrapper.appendChild(createProfileImage(config, role));
-  } else if (isLastInSequence) {
-    messageWrapper.appendChild(createSpacer());
-  }
-
-  const messageContent = createElement('div', CSS_CLASSES.MESSAGE_CONTENT);
-
-  return { messageWrapper, messageContent };
-};
-
-const handleInteractionCleanup = (
-  elementToRemove,
-  chatSectionElement,
-  responseText,
-  config,
-  continueCallback,
-  callbackValue
-) => {
-  elementToRemove.remove();
-  createUserResponseMessage(chatSectionElement, responseText, config);
-  if (continueCallback) {
-    continueCallback(callbackValue || responseText);
-  }
-};
-
-const createElement = (tagName, className, textContent = '') => {
-  const element = document.createElement(tagName);
-  if (className) element.className = className;
-  if (textContent) element.textContent = textContent;
-  return element;
-};
-
-const displayMessageWithLoading = async (chatDiv, messageText) => {
-  const loadingElement = createLoaderElement();
-  chatDiv.appendChild(loadingElement);
-  scrollToBottom();
-
-  await new Promise((resolve) => setTimeout(resolve, DEFAULT_MESSAGE_TIME_INTERVAL));
-  chatDiv.removeChild(loadingElement);
-
-  const messageP = document.createElement('p');
-  messageP.innerHTML = messageText;
-  chatDiv.appendChild(messageP);
-  scrollToBottom();
-};
-
-const scrollToBottom = () => {
-  requestAnimationFrame(() => {
-    const chatContainer = document.querySelector('.chat-quiz-container');
-    if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-  });
-};
-
-const createLoaderElement = () => {
-  const loaderContainer = createElement('div', CSS_CLASSES.LOADER_CONTAINER);
-  const dotLoader = createElement('div', CSS_CLASSES.DOT_LOADER);
-  const dot1 = createElement('div', `${CSS_CLASSES.DOT} ${CSS_CLASSES.DOT_1}`);
-  const dot2 = createElement('div', `${CSS_CLASSES.DOT} ${CSS_CLASSES.DOT_2}`);
-  const dot3 = createElement('div', `${CSS_CLASSES.DOT} ${CSS_CLASSES.DOT_3}`);
-
-  dotLoader.appendChild(dot1);
-  dotLoader.appendChild(dot2);
-  dotLoader.appendChild(dot3);
-  loaderContainer.appendChild(dotLoader);
-
-  return loaderContainer;
-};
+const { CSS_CLASSES, ROLES } = require('./constants');
+const { getQuizValues, saveQuizValues } = require('./storageUtils');
+const {
+  createElement,
+  createProfileImage,
+  createSpacer,
+  createMessageWrapper,
+  createLoaderElement,
+  scrollToBottom,
+} = require('./domUtils');
+const { displayMessageWithLoading, createUserResponseMessage } = require('./messageUtils');
+const { handleInteractionCleanup } = require('./interactionUtils');
+const { validateYear } = require('./validationUtils');
 
 const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
   const buttonDiv = createElement('div', CSS_CLASSES.BUTTON_CONTAINER);
@@ -166,10 +47,62 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
 
   inputField.type = 'text';
   inputField.name = chat.input.name;
-  inputField.placeholder = `Enter ${chat.input.name}...`;
+  inputField.placeholder = chat.input.placeholder || `Enter ${chat.input.name}...`;
 
-  if (chat.input.fixedValue) {
-    inputField.value = chat.input.fixedValue;
+  const fixedValue = chat.input.fixedValue || '';
+
+  if (fixedValue) {
+    inputField.value = fixedValue;
+
+    const enforceFixedValue = () => {
+      const currentValue = inputField.value;
+
+      if (!currentValue.startsWith(fixedValue)) {
+        inputField.value = fixedValue;
+      }
+
+      const cursorPosition = Math.max(fixedValue.length, inputField.selectionStart);
+      inputField.setSelectionRange(cursorPosition, cursorPosition);
+    };
+
+    inputField.addEventListener('input', (e) => {
+      const currentValue = inputField.value;
+
+      if (!currentValue.startsWith(fixedValue)) {
+        inputField.value = fixedValue;
+        inputField.setSelectionRange(fixedValue.length, fixedValue.length);
+        return;
+      }
+
+      const userInput = currentValue.substring(fixedValue.length);
+      const digitsOnly = userInput.replace(/\D/g, '');
+
+      if (userInput !== digitsOnly) {
+        inputField.value = fixedValue + digitsOnly;
+        inputField.setSelectionRange(inputField.value.length, inputField.value.length);
+      }
+    });
+
+    inputField.addEventListener('keydown', (e) => {
+      const cursorPosition = inputField.selectionStart;
+      if ((e.key === 'Backspace' || e.key === 'Delete') && cursorPosition <= fixedValue.length) {
+        e.preventDefault();
+        inputField.setSelectionRange(fixedValue.length, fixedValue.length);
+      }
+
+      if (e.key === 'ArrowLeft' && cursorPosition <= fixedValue.length) {
+        e.preventDefault();
+        inputField.setSelectionRange(fixedValue.length, fixedValue.length);
+      }
+
+      if (e.key === 'Home') {
+        e.preventDefault();
+        inputField.setSelectionRange(fixedValue.length, fixedValue.length);
+      }
+    });
+
+    inputField.addEventListener('click', enforceFixedValue);
+    inputField.addEventListener('focus', enforceFixedValue);
   }
 
   const submitButton = createElement(
@@ -182,6 +115,10 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
     const inputValue = inputField.value.trim();
 
     if (inputValue) {
+      if (chat.input.name === 'age' && !validateYear(inputValue, inputContainer)) {
+        return;
+      }
+
       let displayValue = inputValue;
 
       if (chat.input.name === 'age') {
@@ -217,7 +154,12 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
   inputContainer.appendChild(submitButton);
   agentChatDiv.appendChild(inputContainer);
 
-  setTimeout(() => inputField.focus(), 100);
+  setTimeout(() => {
+    inputField.focus();
+    if (fixedValue) {
+      inputField.setSelectionRange(fixedValue.length, fixedValue.length);
+    }
+  }, 100);
 };
 
 const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
@@ -336,6 +278,10 @@ const insertNewMessage = async (chat, index, continueCallback, config) => {
   const chatSectionElement = document.getElementById('chats-section');
 
   if (chatSectionElement) {
+    if (index === 0) {
+      chatSectionElement.innerHTML = '';
+    }
+
     let isConsecutiveMessage = false;
     let lastMessageContent = null;
 
@@ -365,19 +311,6 @@ const insertNewMessage = async (chat, index, continueCallback, config) => {
       await newMessageBasedOnRole(chat, chatSectionElement, config, true, continueCallback);
     }
   }
-};
-
-const createUserResponseMessage = (chatSectionElement, text, config) => {
-  const { messageWrapper, messageContent } = createMessageWrapper(ROLES.USER, config);
-  const userChatDiv = createElement('div', CSS_CLASSES.USER_CHAT_CONTAINER);
-  const messageP = createElement('p', '', text);
-  userChatDiv.appendChild(messageP);
-
-  messageContent.appendChild(userChatDiv);
-  messageWrapper.appendChild(messageContent);
-  chatSectionElement.appendChild(messageWrapper);
-
-  scrollToBottom();
 };
 
 module.exports = insertNewMessage;
