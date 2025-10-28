@@ -40,7 +40,6 @@ const validateYear = (yearValue, inputContainer) => {
 };
 
 const validateZipcode = (zipcode, inputContainer) => {
-  console.log('zipcode', zipcode);
   if (zipcode?.trim()?.length !== 5) {
     showErrorMessage('Please enter a valid zipcode', inputContainer);
     return false;

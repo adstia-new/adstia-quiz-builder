@@ -5,6 +5,11 @@ const { handleInteractionCleanup } = require('./interactionUtils');
 const { validateYear, validateZipcode } = require('./validationUtils');
 const { CSS_CLASSES, ROLES } = require('../constants');
 const { saveLocationWithZipcode } = require('../../../utils/saveLocationWithZipcode');
+const {
+  sendDataToJitsuEvent,
+  sendJitsuLeadSubmitEvent,
+} = require('../../../utils/saveToJitsuEventUrl');
+const { LOCAL_STORAGE_QUIZ_VALUES } = require('../../../constants');
 
 const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
   const buttonDiv = createElement('div', CSS_CLASSES.BUTTON_CONTAINER);
@@ -142,6 +147,30 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
         return;
       }
 
+      const currentStepId = chat.input.id;
+
+      const inputJitsuData = {
+        questionKey: chat.input.name,
+        answer: inputValue?.length > 0 ? true : false,
+        currentStep: `${currentStepId}`,
+        previousStep: currentStepId && currentStepId > 1 ? `${currentStepId - 1}` : '-',
+        nextStep: `${currentStepId + 1}`,
+      };
+
+      sendDataToJitsuEvent(JSON.stringify(inputJitsuData));
+
+      if (chat?.input?.isFinalQue) {
+        const quizData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || '{}');
+
+        let jsonData = {
+          user_id: localStorage.getItem('user_id') || '',
+          session_id: sessionStorage.getItem('session_id') || '',
+          ...quizData,
+        };
+
+        sendJitsuLeadSubmitEvent(jsonData);
+      }
+
       handleInteractionCleanup(
         inputContainer,
         chatSectionElement,
@@ -180,6 +209,17 @@ const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCa
     const optionButton = createElement('button', CSS_CLASSES.OPTION_BUTTON, optionText);
 
     optionButton.addEventListener('click', () => {
+      const currentStepId = chat.options.id;
+
+      const optionJitsuData = {
+        questionKey: `${chat.options.name}`,
+        answer: `${optionText?.trim()}`,
+        currentStep: `${currentStepId}`,
+        previousStep: currentStepId && currentStepId > 1 ? `${currentStepId - 1}` : '-',
+        nextStep: `${currentStepId + 1}`,
+      };
+      sendDataToJitsuEvent(JSON.stringify(optionJitsuData));
+
       if (chat.options.name === 'medicarePartAB' && optionText === 'No') {
         window.location.href = 'https://lander8ert.benefits-advisor.org/blogs';
         return;

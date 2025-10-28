@@ -52,6 +52,7 @@ const chatJson = {
     {
       role: 'agent',
       input: {
+        id: 1,
         buttonText: 'Submit',
         name: 'age',
         placeholder: 'Year',
@@ -65,6 +66,7 @@ const chatJson = {
     {
       role: 'agent',
       options: {
+        id: 2,
         name: 'medicarePartAB',
         options: ['Yes', 'No'],
       },
@@ -76,7 +78,9 @@ const chatJson = {
     {
       role: 'agent',
       input: {
+        id: 3,
         buttonText: 'Submit',
+        isFinalQue: true,
         name: 'zipcode',
         placeholder: 'Enter your zipcode',
       },
