@@ -14,7 +14,6 @@ const { pushLocalDataToDataLayer } = require('../../../utils/gtmUtils');
 const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
 
 const handlePhoneClick = async (e) => {
-  console.log('e', e.currentTarget);
   const phoneText = e.currentTarget.href || '';
   const phoneNumber = phoneText.replace(/[^\d]/g, '').slice(-10);
   if (typeof trackPhoneButtonClick === 'function') {
@@ -287,7 +286,7 @@ const handleConsecutiveMessage = async (
       handleOptionsMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else {
       lastMessageContent.appendChild(agentChatDiv);
-      await displayMessageWithLoading(agentChatDiv, chat.text);
+      await displayMessageWithLoading(agentChatDiv, chat.text, chat.timer);
     }
 
     if (chat.button || chat.input || chat.options) {

@@ -32,9 +32,6 @@ const chatJson = {
       role: 'agent',
       button: {
         text: 'Yes',
-        onClick: () => {
-          console.log('Yes button clicked');
-        },
       },
     },
     {
@@ -99,7 +96,10 @@ const chatJson = {
     },
     {
       role: 'agent',
-      text: 'Your spot is being held for 2:00',
+      text: 'Your spot is being held for <span style="color:red;">{{timer}}</span>',
+      timer: {
+        count: 120,
+      },
     },
     {
       role: 'agent',
