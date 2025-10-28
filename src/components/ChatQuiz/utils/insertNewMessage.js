@@ -10,21 +10,43 @@ const {
   sendJitsuLeadSubmitEvent,
 } = require('../../../utils/saveToJitsuEventUrl');
 const { LOCAL_STORAGE_QUIZ_VALUES } = require('../../../constants');
+const { pushLocalDataToDataLayer } = require('../../../utils/gtmUtils');
+const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
+
+const handlePhoneClick = async (e) => {
+  console.log('e', e.currentTarget);
+  const phoneText = e.currentTarget.href || '';
+  const phoneNumber = phoneText.replace(/[^\d]/g, '').slice(-10);
+  if (typeof trackPhoneButtonClick === 'function') {
+    await trackPhoneButtonClick(phoneNumber);
+  }
+  window.location.href = e?.target?.href;
+};
 
 const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
   const buttonDiv = createElement('div', CSS_CLASSES.BUTTON_CONTAINER);
-  const button = createElement('button', '', chat.button.text);
+  const button = createElement(
+    chat.button.type === 'ringba' ? 'a' : 'button',
+    '',
+    chat.button.text
+  );
+
+  if (chat.button.type === 'ringba') {
+    button.href = chat.button.href;
+    button.addEventListener('click', (e) => {
+      handlePhoneClick(e);
+      if (continueCallback) {
+        continueCallback();
+      }
+    });
+  }
 
   button.addEventListener('click', () => {
     if (chat.button.onClick) {
       chat.button.onClick();
     }
 
-    if (chat.button.type === 'ringba') {
-      if (continueCallback) {
-        continueCallback();
-      }
-    } else {
+    if (chat.button.type !== 'ringba') {
       handleInteractionCleanup(
         buttonDiv,
         chatSectionElement,
@@ -158,6 +180,7 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
       };
 
       sendDataToJitsuEvent(JSON.stringify(inputJitsuData));
+      pushLocalDataToDataLayer();
 
       if (chat?.input?.isFinalQue) {
         const quizData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || '{}');
@@ -228,6 +251,8 @@ const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCa
       if (chat.options.name) {
         saveQuizValues(chat.options.name, optionText);
       }
+
+      pushLocalDataToDataLayer();
 
       handleInteractionCleanup(
         optionsContainer,

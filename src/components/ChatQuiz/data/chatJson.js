@@ -110,9 +110,7 @@ const chatJson = {
       button: {
         text: 'Call Now',
         type: 'ringba',
-        onClick: () => {
-          window.location.href = 'tel:18002223333';
-        },
+        href: 'tel:+18002223333',
       },
     },
   ],

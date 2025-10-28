@@ -100,6 +100,19 @@
   transition: all 0.2s ease;
 }
 
+.chat-quiz__button-container a {
+  padding: 10px 15px;
+  background-color: #137dce;
+  color: #e2e8f0;
+  border: none;
+  border-radius: 50px;
+  min-width: 120px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
 .chat-quiz__button-container button:hover {
   background-color: #1e40af;
   transform: translateY(-1px);
