@@ -32,6 +32,7 @@ const chatJson = {
       role: 'agent',
       button: {
         text: 'Yes',
+        name: 'cta',
       },
     },
     {
