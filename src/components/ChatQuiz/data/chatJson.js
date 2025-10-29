@@ -107,7 +107,7 @@ const createChatJson = (phoneNumber = '9999999999') => {
       },
       {
         role: 'agent',
-        text: `<a style="color: #0e348dff; text-decoration: underline;" href="tel:${phoneNumber}">+1 ${formattedPhone}</a>`,
+        text: `<a style="color: #0e348dff; text-decoration: underline;" href="tel:+1${phoneNumber}">+1 ${formattedPhone}</a>`,
       },
       {
         role: 'agent',
