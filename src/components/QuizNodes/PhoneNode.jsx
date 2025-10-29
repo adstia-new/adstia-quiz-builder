@@ -47,11 +47,11 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
 
   const validatePhone = (val) => {
-    const digits = val?.replace(/\D/g, '');
+    const digits = val?.replace(/\D/g, '').slice(-10);
     if (required && !digits) {
       return 'This field is required';
     }
-    if (digits.length !== 11) {
+    if (digits.length !== 10) {
       return errorMessage || 'Invalid Phone Number';
     }
     return '';
@@ -75,11 +75,12 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
     const val = e.target.value;
     const err = validatePhone(val);
     setError(err);
-    setFormData && setFormData((prev) => ({ ...prev, [nodeName]: val?.replace(/\D/g, '') }));
+    setFormData &&
+      setFormData((prev) => ({ ...prev, [nodeName]: val?.replace(/\D/g, '').slice(-10) }));
     const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
     localStorage.setItem(
       LOCAL_STORAGE_QUIZ_VALUES,
-      JSON.stringify({ ...prev, [nodeName]: val?.replace(/\D/g, '') })
+      JSON.stringify({ ...prev, [nodeName]: val?.replace(/\D/g, '').slice(-10) })
     );
   };
 
