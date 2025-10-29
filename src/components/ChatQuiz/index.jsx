@@ -1,13 +1,12 @@
 import './index.css';
 import React, { useEffect } from 'react';
-import chatJson from './data/chatJson';
+import createChatJson from './data/chatJson';
 import insertNewMessage from './utils/insertNewMessage';
 import AgentOnlineStatus from './components/AgentOnlineStatus';
 
-const ChatQuiz = () => {
+const ChatQuiz = ({ phoneNumber = '9999999999' }) => {
+  const { chats, config } = createChatJson(phoneNumber);
   useEffect(() => {
-    const { chats, config } = chatJson;
-
     const createInteractionCallback = (chats, currentIndex, processChatSequence) => {
       return (userResponse) => {
         const nextChat = chats[currentIndex + 1];
@@ -53,7 +52,7 @@ const ChatQuiz = () => {
 
   return (
     <div className="chat-quiz__container">
-      <AgentOnlineStatus agentName={chatJson.config.agent.name} />
+      <AgentOnlineStatus agentName={config.agent.name} />
       <div className="chat-quiz__chats-section" id="chats-section"></div>
     </div>
   );
