@@ -12,6 +12,7 @@ const {
 const { LOCAL_STORAGE_QUIZ_VALUES } = require('../../../constants');
 const { pushLocalDataToDataLayer } = require('../../../utils/gtmUtils');
 const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
+const { trackCtaButtonClick } = require('./trackCtaButtonClick');
 
 const handlePhoneClick = async (e) => {
   const phoneText = e.currentTarget.href || '';
@@ -20,6 +21,12 @@ const handlePhoneClick = async (e) => {
     await trackPhoneButtonClick(phoneNumber);
   }
   window.location.href = e?.target?.href;
+};
+
+const handleCtaClick = async (e) => {
+  const text = e.target.textContent;
+
+  await trackCtaButtonClick(text);
 };
 
 const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
@@ -40,12 +47,14 @@ const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCal
     });
   }
 
-  button.addEventListener('click', () => {
+  button.addEventListener('click', (e) => {
     if (chat.button.onClick) {
       chat.button.onClick();
     }
 
     if (chat.button.type !== 'ringba') {
+      handleCtaClick(e);
+
       handleInteractionCleanup(
         buttonDiv,
         chatSectionElement,

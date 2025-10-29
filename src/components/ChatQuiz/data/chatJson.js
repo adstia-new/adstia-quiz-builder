@@ -40,6 +40,7 @@ const createChatJson = (phoneNumber = '9999999999') => {
       {
         role: 'user',
         text: 'Yes',
+        name: 'cta',
       },
       {
         role: 'agent',
