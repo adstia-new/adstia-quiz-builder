@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from '../../constants';
 import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
+import { sortAndRemoveDuplicate } from '../../utils/sortAndRemoveDuplicate';
 import { QuizConfigContext } from '../AdstiaQuiz';
 import DobNode from '../QuizNodes/DobNode';
 import EmailNode from '../QuizNodes/EmailNode';
@@ -10,7 +11,6 @@ import PhoneNode from '../QuizNodes/PhoneNode';
 import SelectNode from '../QuizNodes/SelectNode';
 import ZipcodeNode from '../QuizNodes/ZipcodeNode';
 import './index.css';
-import { sortAndRemoveDuplicate } from '../../utils/sortAndRemoveDuplicate';
 
 const RenderNodes = ({
   quizNodes,
@@ -24,7 +24,7 @@ const RenderNodes = ({
   const searchParams =
     typeof window !== 'undefined' ? new URLSearchParams(window?.location?.search || '') : '';
   const quizConfig = useContext(QuizConfigContext);
-  const [nextDisabled, setNextDisabled] = useState(false);
+  const [nextDisabled, setNextDisabled] = useState({});
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
@@ -44,6 +44,10 @@ const RenderNodes = ({
       return [];
     }
   };
+
+  function anyValueTrue(obj) {
+    return Object.entries(obj).some(([key, value]) => Boolean(value));
+  }
 
   const setSlideHistory = (history) => {
     sessionStorage.setItem(
@@ -206,6 +210,9 @@ const RenderNodes = ({
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
+  console.log('nextDisbaled', nextDisabled);
+  console.log('anyValueTrue(nextDisabled)', anyValueTrue(nextDisabled));
+
   return (
     <div className="render-nodes">
       <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
@@ -302,7 +309,7 @@ const RenderNodes = ({
           <button
             className="render-nodes__button render-nodes__button--next"
             onClick={handleNextButtonClick}
-            disabled={nextDisabled}
+            disabled={anyValueTrue(nextDisabled)}
             type="button"
           >
             {quizConfig.nextButtonText}
@@ -320,7 +327,11 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button className="quiz-builder__submit button" type="submit" disabled={nextDisabled}>
+          <button
+            className="quiz-builder__submit button"
+            type="submit"
+            disabled={anyValueTrue(nextDisabled)}
+          >
             {quizConfig.submitButtonText}
           </button>
         </div>

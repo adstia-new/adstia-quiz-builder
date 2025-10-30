@@ -43,7 +43,7 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   useEffect(() => {
     const hasError = Object.values(errors).some(Boolean);
     const hasEmpty = fields.some((f) => f.validation?.required && !values[f.fieldName]?.trim());
-    setNextDisabled(hasError || hasEmpty);
+    setNextDisabled((prev) => ({ ...prev, [nodeName]: hasError || hasEmpty }));
   }, [errors, values, setNextDisabled, fields]);
 
   const validate = (field, value) => {

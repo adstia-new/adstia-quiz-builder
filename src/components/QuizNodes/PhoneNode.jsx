@@ -37,10 +37,10 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   }, [quizConfig.prefillValues, nodeName]);
 
   useEffect(() => {
-    if (error || (required && !value.trim()) || (tcpaConsent && !consentChecked)) {
-      setNextDisabled(true);
+    if (error || (required && !value.trim())) {
+      setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
     } else {
-      setNextDisabled(false);
+      setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
       handleJitsuData(nodeName, value?.replace(/\D/g, ''));
     }
