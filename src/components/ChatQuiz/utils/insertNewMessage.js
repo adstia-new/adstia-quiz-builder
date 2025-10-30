@@ -2,23 +2,64 @@ const { saveQuizValues } = require('./storageUtils');
 const { createElement, createMessageWrapper, scrollToBottom } = require('./domUtils');
 const { displayMessageWithLoading } = require('./messageUtils');
 const { handleInteractionCleanup } = require('./interactionUtils');
-const { validateYear } = require('./validationUtils');
+const { validateYear, validateZipcode } = require('./validationUtils');
 const { CSS_CLASSES, ROLES } = require('../constants');
+const { saveLocationWithZipcode } = require('../../../utils/saveLocationWithZipcode');
+const {
+  sendDataToJitsuEvent,
+  sendJitsuLeadSubmitEvent,
+} = require('../../../utils/saveToJitsuEventUrl');
+const { LOCAL_STORAGE_QUIZ_VALUES } = require('../../../constants');
+const { pushLocalDataToDataLayer } = require('../../../utils/gtmUtils');
+const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
+const { trackCtaButtonClick } = require('./trackCtaButtonClick');
+const { injectRingbaScript } = require('./ringbaUtils');
+
+const handlePhoneClick = async (e) => {
+  const phoneText = e.currentTarget.href || '';
+  const phoneNumber = phoneText.replace(/[^\d]/g, '').slice(-10);
+  if (typeof trackPhoneButtonClick === 'function') {
+    await trackPhoneButtonClick(phoneNumber);
+  }
+  window.location.href = e?.target?.href;
+};
+
+const handleCtaClick = async (e) => {
+  const text = e.target.textContent;
+
+  await trackCtaButtonClick(text);
+};
 
 const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
   const buttonDiv = createElement('div', CSS_CLASSES.BUTTON_CONTAINER);
-  const button = createElement('button', '', chat.button.text);
+  const button = createElement(
+    chat.button.type === 'ringba' ? 'a' : 'button',
+    '',
+    chat.button.text
+  );
 
-  button.addEventListener('click', () => {
+  if (chat.button.type === 'ringba') {
+    button.href = chat.button.href;
+    button.addEventListener('click', (e) => {
+      handlePhoneClick(e);
+      if (continueCallback) {
+        continueCallback();
+      }
+    });
+  }
+
+  button.addEventListener('click', (e) => {
     if (chat.button.onClick) {
       chat.button.onClick();
     }
 
-    if (chat.button.type === 'ringba') {
-      if (continueCallback) {
-        continueCallback();
-      }
-    } else {
+    if (chat.button.callRingba === true) {
+      injectRingbaScript(config.ringbaScriptId);
+    }
+
+    if (chat.button.type !== 'ringba') {
+      handleCtaClick(e);
+
       handleInteractionCleanup(
         buttonDiv,
         chatSectionElement,
@@ -42,6 +83,20 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
   inputField.placeholder = chat.input.placeholder || `Enter ${chat.input.name}...`;
 
   const fixedValue = chat.input.fixedValue || '';
+
+  if (inputField?.name === 'zipcode') {
+    inputField.addEventListener('input', (e) => {
+      const currentValue = inputField?.value?.trim();
+
+      if (currentValue?.trim()?.length === 5) {
+        saveLocationWithZipcode(currentValue);
+      }
+
+      if (currentValue?.trim()?.length > 5) {
+        inputField.value = currentValue.slice(0, 5);
+      }
+    });
+  }
 
   if (fixedValue) {
     inputField.value = fixedValue;
@@ -123,6 +178,35 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
         displayValue = age.toString();
       }
 
+      if (chat.input.name === 'zipcode' && !validateZipcode(inputValue, inputContainer)) {
+        return;
+      }
+
+      const currentStepId = chat.input.id;
+
+      const inputJitsuData = {
+        questionKey: chat.input.name,
+        answer: inputValue?.length > 0 ? true : false,
+        currentStep: `${currentStepId}`,
+        previousStep: currentStepId && currentStepId > 1 ? `${currentStepId - 1}` : '-',
+        nextStep: `${currentStepId + 1}`,
+      };
+
+      sendDataToJitsuEvent(JSON.stringify(inputJitsuData));
+      pushLocalDataToDataLayer();
+
+      if (chat?.input?.isFinalQue) {
+        const quizData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || '{}');
+
+        let jsonData = {
+          user_id: localStorage.getItem('user_id') || '',
+          session_id: sessionStorage.getItem('session_id') || '',
+          ...quizData,
+        };
+
+        sendJitsuLeadSubmitEvent(jsonData);
+      }
+
       handleInteractionCleanup(
         inputContainer,
         chatSectionElement,
@@ -161,6 +245,17 @@ const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCa
     const optionButton = createElement('button', CSS_CLASSES.OPTION_BUTTON, optionText);
 
     optionButton.addEventListener('click', () => {
+      const currentStepId = chat.options.id;
+
+      const optionJitsuData = {
+        questionKey: `${chat.options.name}`,
+        answer: `${optionText?.trim()}`,
+        currentStep: `${currentStepId}`,
+        previousStep: currentStepId && currentStepId > 1 ? `${currentStepId - 1}` : '-',
+        nextStep: `${currentStepId + 1}`,
+      };
+      sendDataToJitsuEvent(JSON.stringify(optionJitsuData));
+
       if (chat.options.name === 'medicarePartAB' && optionText === 'No') {
         window.location.href = 'https://lander8ert.benefits-advisor.org/blogs';
         return;
@@ -169,6 +264,8 @@ const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCa
       if (chat.options.name) {
         saveQuizValues(chat.options.name, optionText);
       }
+
+      pushLocalDataToDataLayer();
 
       handleInteractionCleanup(
         optionsContainer,
@@ -203,7 +300,7 @@ const handleConsecutiveMessage = async (
       handleOptionsMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else {
       lastMessageContent.appendChild(agentChatDiv);
-      await displayMessageWithLoading(agentChatDiv, chat.text);
+      await displayMessageWithLoading(agentChatDiv, chat.text, chat.timer);
     }
 
     if (chat.button || chat.input || chat.options) {

@@ -39,7 +39,17 @@ const validateYear = (yearValue, inputContainer) => {
   return true;
 };
 
+const validateZipcode = (zipcode, inputContainer) => {
+  if (zipcode?.trim()?.length !== 5) {
+    showErrorMessage('Please enter a valid zipcode', inputContainer);
+    return false;
+  }
+
+  return true;
+};
+
 module.exports = {
   showErrorMessage,
   validateYear,
+  validateZipcode,
 };
