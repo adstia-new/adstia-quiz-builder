@@ -1,5 +1,5 @@
 import './index.css';
-import { React, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import insertNewMessage from './utils/insertNewMessage';
 import AgentOnlineStatus from './components/AgentOnlineStatus';
 
