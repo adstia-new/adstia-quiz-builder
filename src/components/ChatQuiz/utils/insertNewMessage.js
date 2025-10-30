@@ -13,6 +13,7 @@ const { LOCAL_STORAGE_QUIZ_VALUES } = require('../../../constants');
 const { pushLocalDataToDataLayer } = require('../../../utils/gtmUtils');
 const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
 const { trackCtaButtonClick } = require('./trackCtaButtonClick');
+const { injectRingbaScript } = require('./ringbaUtils');
 
 const handlePhoneClick = async (e) => {
   const phoneText = e.currentTarget.href || '';
@@ -50,6 +51,10 @@ const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCal
   button.addEventListener('click', (e) => {
     if (chat.button.onClick) {
       chat.button.onClick();
+    }
+
+    if (chat.button.callRingba === true) {
+      injectRingbaScript(config.ringbaScriptId);
     }
 
     if (chat.button.type !== 'ringba') {

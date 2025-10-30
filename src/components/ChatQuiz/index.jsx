@@ -1,11 +1,11 @@
 import './index.css';
-import React, { useEffect } from 'react';
-import createChatJson from './data/chatJson';
+import { React, useEffect } from 'react';
 import insertNewMessage from './utils/insertNewMessage';
 import AgentOnlineStatus from './components/AgentOnlineStatus';
 
-const ChatQuiz = ({ phoneNumber = '9999999999' }) => {
-  const { chats, config } = createChatJson(phoneNumber);
+const ChatQuiz = ({ json }) => {
+  const { chats, config } = json;
+
   useEffect(() => {
     const createInteractionCallback = (chats, currentIndex, processChatSequence) => {
       return (userResponse) => {
