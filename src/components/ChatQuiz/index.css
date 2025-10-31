@@ -49,6 +49,7 @@
 }
 
 .chat-quiz__message--agent p,
+.chat-quiz__message--agent a,
 .chat-quiz__message--agent .chat-quiz__loader {
   background-color: #e2e8f0;
   color: #2d3748;
