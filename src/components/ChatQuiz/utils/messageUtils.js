@@ -6,8 +6,18 @@ const {
   createLoaderElement,
   scrollToBottom,
 } = require('./domUtils');
+const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
 
-const displayMessageWithLoading = async (chatDiv, messageText, timer) => {
+const handlePhoneClick = async (e) => {
+  const phoneText = e.currentTarget.href || '';
+  const phoneNumber = phoneText.replace(/[^\d]/g, '').slice(-10);
+  if (typeof trackPhoneButtonClick === 'function') {
+    await trackPhoneButtonClick(phoneNumber);
+  }
+  window.location.href = e?.target?.href;
+};
+
+const displayMessageWithLoading = async (chatDiv, chat, timer) => {
   const loadingElement = createLoaderElement();
   chatDiv.appendChild(loadingElement);
   scrollToBottom();
@@ -15,16 +25,28 @@ const displayMessageWithLoading = async (chatDiv, messageText, timer) => {
   await new Promise((resolve) => setTimeout(resolve, DEFAULT_MESSAGE_TIME_INTERVAL));
   chatDiv.removeChild(loadingElement);
 
-  const messageP = document.createElement('p');
+  const messageTag = document.createElement(chat?.type === 'ringba' ? 'a' : 'p');
 
-  if (messageText && messageText.includes('{{timer}}') && timer?.count) {
+  if (chat?.text && chat?.type === 'ringba') {
+    const ringbaNumber = chat?.text?.replace(/[^\d]/g, '').slice(-10);
+    messageTag.href = `tel:+1${ringbaNumber}`;
+    messageTag.style = 'color: #0e348dff; text-decoration: underline;';
+    messageTag.addEventListener('click', (e) => {
+      handlePhoneClick(e);
+      if (continueCallback) {
+        continueCallback();
+      }
+    });
+  }
+
+  if (chat?.text && chat?.text.includes('{{timer}}') && timer?.count) {
     let timeLeft = timer.count;
     const initialMinutes = Math.floor(timeLeft / 60);
     const initialSeconds = timeLeft % 60;
 
     const initialTime = `${initialMinutes}:${initialSeconds.toString().padStart(2, '0')}`;
-    messageP.innerHTML = messageText.replace('{{timer}}', initialTime);
-    chatDiv.appendChild(messageP);
+    messageTag.innerHTML = chat?.text.replace('{{timer}}', initialTime);
+    chatDiv.appendChild(messageTag);
     scrollToBottom();
 
     const timerInterval = setInterval(() => {
@@ -33,7 +55,7 @@ const displayMessageWithLoading = async (chatDiv, messageText, timer) => {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
         const time = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        const span = messageP.querySelector('span');
+        const span = messageTag.querySelector('span');
         if (span) {
           span.innerHTML = time;
         }
@@ -45,8 +67,8 @@ const displayMessageWithLoading = async (chatDiv, messageText, timer) => {
     return;
   }
 
-  messageP.innerHTML = messageText;
-  chatDiv.appendChild(messageP);
+  messageTag.innerHTML = chat?.text;
+  chatDiv.appendChild(messageTag);
   scrollToBottom();
 };
 

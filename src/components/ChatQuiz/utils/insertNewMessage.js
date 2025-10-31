@@ -307,7 +307,7 @@ const handleConsecutiveMessage = async (
       handleOptionsMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else {
       lastMessageContent.appendChild(agentChatDiv);
-      await displayMessageWithLoading(agentChatDiv, chat.text, chat.timer);
+      await displayMessageWithLoading(agentChatDiv, chat, chat.timer);
     }
 
     if (chat.button || chat.input || chat.optionsData) {
@@ -344,7 +344,7 @@ const newMessageBasedOnRole = async (
       messageWrapper.appendChild(messageContent);
       chatSectionElement.appendChild(messageWrapper);
 
-      await displayMessageWithLoading(agentChatDiv, chat.text);
+      await displayMessageWithLoading(agentChatDiv, chat);
     }
 
     if (chat.button || chat.input || chat.optionsData) {
@@ -366,7 +366,7 @@ const newMessageBasedOnRole = async (
     messageWrapper.appendChild(messageContent);
     chatSectionElement.appendChild(messageWrapper);
 
-    await displayMessageWithLoading(userChatDiv, chat.text);
+    await displayMessageWithLoading(userChatDiv, chat);
   }
 };
 
