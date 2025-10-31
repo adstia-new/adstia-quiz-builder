@@ -17,7 +17,7 @@ const displayMessageWithLoading = async (chatDiv, messageText, timer) => {
 
   const messageP = document.createElement('p');
 
-  if (messageText.includes('{{timer}}') && timer?.count) {
+  if (messageText && messageText.includes('{{timer}}') && timer?.count) {
     let timeLeft = timer.count;
     const initialMinutes = Math.floor(timeLeft / 60);
     const initialSeconds = timeLeft % 60;

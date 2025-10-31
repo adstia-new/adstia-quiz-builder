@@ -38,7 +38,7 @@ const ChatQuiz = ({ json }) => {
           continue;
         }
 
-        if (chat.button || chat.input || chat.options) {
+        if (chat.button || chat.input || chat.optionsData) {
           await handleInteractiveMessage(chat, i);
           return;
         } else {

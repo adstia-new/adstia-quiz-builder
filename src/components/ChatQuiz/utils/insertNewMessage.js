@@ -241,28 +241,33 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
 const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
   const optionsContainer = createElement('div', CSS_CLASSES.OPTIONS_CONTAINER);
 
-  chat.options.options.forEach((optionText) => {
+  const optionsData = chat.optionsData;
+  const optionsList = optionsData.options;
+
+  optionsList.forEach((option) => {
+    const optionText = typeof option === 'string' ? option : option.label;
+    const optionValue = typeof option === 'string' ? option : option.value;
     const optionButton = createElement('button', CSS_CLASSES.OPTION_BUTTON, optionText);
 
     optionButton.addEventListener('click', () => {
-      const currentStepId = chat.options.id;
+      const currentStepId = optionsData.id;
 
       const optionJitsuData = {
-        questionKey: `${chat.options.name}`,
-        answer: `${optionText?.trim()}`,
+        questionKey: `${optionsData.name}`,
+        answer: `${optionValue?.trim()}`,
         currentStep: `${currentStepId}`,
         previousStep: currentStepId && currentStepId > 1 ? `${currentStepId - 1}` : '-',
         nextStep: `${currentStepId + 1}`,
       };
       sendDataToJitsuEvent(JSON.stringify(optionJitsuData));
 
-      if (chat.options.name === 'medicarePartAB' && optionText === 'No') {
+      if (optionsData.name === 'medicarePartAB' && optionValue === 'No') {
         window.location.href = 'https://lander8ert.benefits-advisor.org/blogs';
         return;
       }
 
-      if (chat.options.name) {
-        saveQuizValues(chat.options.name, optionText);
+      if (optionsData.name) {
+        saveQuizValues(optionsData.name, optionValue);
       }
 
       pushLocalDataToDataLayer();
@@ -275,7 +280,6 @@ const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCa
         continueCallback
       );
     });
-
     optionsContainer.appendChild(optionButton);
   });
 
@@ -296,14 +300,15 @@ const handleConsecutiveMessage = async (
       handleButtonMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else if (chat.input) {
       handleInputMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
-    } else if (chat.options) {
+    } else if (chat.optionsData) {
+      console.log('handle options node', chat.optionsData, chat);
       handleOptionsMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else {
       lastMessageContent.appendChild(agentChatDiv);
       await displayMessageWithLoading(agentChatDiv, chat.text, chat.timer);
     }
 
-    if (chat.button || chat.input || chat.options) {
+    if (chat.button || chat.input || chat.optionsData) {
       lastMessageContent.appendChild(agentChatDiv);
 
       scrollToBottom();
@@ -330,7 +335,7 @@ const newMessageBasedOnRole = async (
       handleButtonMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else if (chat.input) {
       handleInputMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
-    } else if (chat.options) {
+    } else if (chat.optionsData) {
       handleOptionsMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else {
       messageContent.appendChild(agentChatDiv);
@@ -340,7 +345,7 @@ const newMessageBasedOnRole = async (
       await displayMessageWithLoading(agentChatDiv, chat.text);
     }
 
-    if (chat.button || chat.input || chat.options) {
+    if (chat.button || chat.input || chat.optionsData) {
       messageContent.appendChild(agentChatDiv);
       messageWrapper.appendChild(messageContent);
       chatSectionElement.appendChild(messageWrapper);
