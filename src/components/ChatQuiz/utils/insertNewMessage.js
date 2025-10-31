@@ -14,6 +14,7 @@ const { pushLocalDataToDataLayer } = require('../../../utils/gtmUtils');
 const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
 const { trackCtaButtonClick } = require('./trackCtaButtonClick');
 const { injectRingbaScript } = require('./ringbaUtils');
+const { pushDataToRingbaTags } = require('./pushDataToRgbaTags');
 
 const handlePhoneClick = async (e) => {
   const phoneText = e.currentTarget.href || '';
@@ -205,6 +206,7 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
         };
 
         sendJitsuLeadSubmitEvent(jsonData);
+        pushDataToRingbaTags();
       }
 
       handleInteractionCleanup(
