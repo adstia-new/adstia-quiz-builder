@@ -47,8 +47,6 @@ const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCal
         continueCallback();
       }
     });
-
-    pushDataToRingbaTags();
   }
 
   button.addEventListener('click', (e) => {
@@ -208,6 +206,7 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
         };
 
         sendJitsuLeadSubmitEvent(jsonData);
+        pushDataToRingbaTags();
       }
 
       handleInteractionCleanup(
