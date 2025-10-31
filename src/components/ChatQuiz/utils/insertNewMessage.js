@@ -303,7 +303,6 @@ const handleConsecutiveMessage = async (
     } else if (chat.input) {
       handleInputMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else if (chat.optionsData) {
-      console.log('handle options node', chat.optionsData, chat);
       handleOptionsMessage(chat, agentChatDiv, chatSectionElement, continueCallback, config);
     } else {
       lastMessageContent.appendChild(agentChatDiv);
