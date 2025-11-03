@@ -54,7 +54,7 @@ const createLoaderElement = () => {
 
 const scrollToBottom = () => {
   requestAnimationFrame(() => {
-    const chatContainer = document.querySelector('.chat-quiz-container');
+    const chatContainer = document.querySelector('.chat-quiz__container');
     if (chatContainer) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
