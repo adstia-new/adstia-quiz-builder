@@ -390,14 +390,16 @@
   }
 
   .chat-quiz__profile-image {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
   }
 
   .chat-quiz__message--agent p,
-  .chat-quiz__message--user p {
+  .chat-quiz__message--user p,
+  .chat-quiz__message--agent a {
     font-size: 14px;
-    padding: 6px 12px;
+    padding: 10px 14px;
+    max-width: 85%;
   }
 
   .chat-quiz__input-container {
@@ -415,8 +417,12 @@
   }
 
   .chat-quiz__option-button {
-    font-size: 12px;
-    padding: 6px 10px;
+    font-size: 14px;
+    padding: 12px 10px;
     min-width: 150px;
+  }
+
+  .chat-quiz__message--agent .chat-quiz__loader {
+    padding: 14px;
   }
 }
