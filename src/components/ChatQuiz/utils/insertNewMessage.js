@@ -263,7 +263,7 @@ const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCa
       };
       sendDataToJitsuEvent(JSON.stringify(optionJitsuData));
 
-      if (optionsData.name === 'medicarePartAB' && optionValue === 'No') {
+      if (optionsData.name === 'medicarePartAB' && optionValue?.toLowerCase() === 'no') {
         window.location.href = 'https://lander8ert.benefits-advisor.org/blogs';
         return;
       }
