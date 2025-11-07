@@ -4,6 +4,7 @@ import LoadingMsg from './ChatNodes/LoadingMsg/LoadingMsg';
 import TextMsg from './ChatNodes/TextMsg/TextMsg';
 import CtaButton from './ChatNodes/CtaButton/CtaButton';
 import InputNode from './ChatNodes/InputNode/InputNode';
+import DobNode from './ChatNodes/DobNode/DobNode';
 // import { createRoot } from 'react-dom/client';
 
 const ChatQuizV2 = ({ json }) => {
@@ -30,18 +31,31 @@ const ChatQuizV2 = ({ json }) => {
     } else if (currentChat?.input) {
       const input = currentChat?.input;
 
-      setCurrentChat((prev) => [
-        ...prev,
-        <InputNode
-          key={currentIndex}
-          id={input?.id}
-          name={input?.name}
-          placeholder={input?.placeholder}
-          fixedValue={input?.fixedValue}
-          buttonText={input?.buttonText}
-          handleNext={handleNext}
-        />,
-      ]);
+      if (input?.type === 'age') {
+        setCurrentChat((prev) => [
+          ...prev,
+          <DobNode
+            key={currentIndex}
+            id={input?.id}
+            name={input?.name}
+            placeholder={input?.placeholder}
+            buttonText={input?.buttonText}
+            handleNext={handleNext}
+          />,
+        ]);
+      } else {
+        setCurrentChat((prev) => [
+          ...prev,
+          <InputNode
+            key={currentIndex}
+            id={input?.id}
+            name={input?.name}
+            placeholder={input?.placeholder}
+            buttonText={input?.buttonText}
+            handleNext={handleNext}
+          />,
+        ]);
+      }
     } else if (currentChat?.text) {
       // Insert Simple Text Message for user as well as for agent
       setCurrentChat((prev) => [

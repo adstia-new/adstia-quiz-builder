@@ -1,19 +1,27 @@
-import React from 'react';
-import { validateTextInput } from '../../utils/validationUtils';
+import React, { useState } from 'react';
+import { validateDob } from '../../utils/validationUtils';
+import { getCurrentAge } from '../../utils/dobUtils';
+import TextMsg from '../TextMsg/TextMsg';
 
-const InputNode = ({ id, name, placeholder, buttonText, type = 'text', handleNext }) => {
+const DobNode = ({ id, name, placeholder, buttonText, type = 'text', handleNext }) => {
   const [value, setValue] = useState('19');
 
   const handleChange = (e) => {
     const currentValue = e?.target?.value;
 
-    setValue(currentValue);
+    if (currentValue < 2) {
+      setValue('19');
+    } else {
+      setValue(currentValue?.slice(0, 4));
+    }
   };
 
   const handleSubmit = (e) => {
     e?.preventDefault();
-    if (validateTextInput(value)) {
-      handleNext(<TextMsg role="user" text={value} />);
+    if (validateDob(value)) {
+      const currentAge = getCurrentAge(value);
+
+      handleNext(<TextMsg role="user" text={currentAge} />);
     }
   };
 
@@ -26,6 +34,7 @@ const InputNode = ({ id, name, placeholder, buttonText, type = 'text', handleNex
           name={name}
           placeholder={placeholder}
           onInput={handleChange}
+          value={value}
         />
 
         <button className="chat-quiz__submit-button" type="submit">
@@ -36,4 +45,4 @@ const InputNode = ({ id, name, placeholder, buttonText, type = 'text', handleNex
   );
 };
 
-export default InputNode;
+export default DobNode;
