@@ -13,7 +13,10 @@ const ChatQuizV2 = ({ json }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentChat, setCurrentChat] = useState([]);
 
-  const handleNext = () => {
+  const handleNext = (newElm) => {
+    if (newElm) {
+      setCurrentChat((prev) => [...prev, newElm]);
+    }
     setCurrentIndex((prev) => prev + 1);
   };
 
