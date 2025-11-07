@@ -5,6 +5,8 @@ import TextMsg from './ChatNodes/TextMsg/TextMsg';
 import CtaButton from './ChatNodes/CtaButton/CtaButton';
 import InputNode from './ChatNodes/InputNode/InputNode';
 import DobNode from './ChatNodes/DobNode/DobNode';
+import ZipcodeNode from './ChatNodes/ZipcodeNode/ZipcodeNode';
+import OptionsNode from './ChatNodes/OptionsNode/OptionsNode';
 
 const ChatQuizV2 = ({ json }) => {
   const { chats, config } = json;
@@ -30,6 +32,11 @@ const ChatQuizV2 = ({ json }) => {
         ...prev,
         <CtaButton key={currentIndex} text={currentChat?.button?.text} handleNext={handleNext} />,
       ]);
+    } else if (currentChat?.optionsData) {
+      setCurrentChat((prev) => [
+        ...prev,
+        <OptionsNode optionsData={currentChat?.optionsData} handleNext={handleNext} />,
+      ]);
     } else if (currentChat?.input) {
       const input = currentChat?.input;
 
@@ -37,6 +44,18 @@ const ChatQuizV2 = ({ json }) => {
         setCurrentChat((prev) => [
           ...prev,
           <DobNode
+            key={currentIndex}
+            id={input?.id}
+            name={input?.name}
+            placeholder={input?.placeholder}
+            buttonText={input?.buttonText}
+            handleNext={handleNext}
+          />,
+        ]);
+      } else if (input?.name?.toLowerCase() === 'zipcode') {
+        setCurrentChat((prev) => [
+          ...prev,
+          <ZipcodeNode
             key={currentIndex}
             id={input?.id}
             name={input?.name}

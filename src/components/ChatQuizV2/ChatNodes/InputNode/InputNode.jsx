@@ -1,5 +1,6 @@
 import React from 'react';
 import { validateTextInput } from '../../utils/validationUtils';
+import TextMsg from '../TextMsg/TextMsg';
 
 const InputNode = ({ id, name, placeholder, buttonText, type = 'text', handleNext }) => {
   const [value, setValue] = useState('19');
