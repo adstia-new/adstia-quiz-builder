@@ -1,14 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AgentOnlineStatus from './components/AgentOnlineStatus';
 import LoadingMsg from './ChatNodes/LoadingMsg/LoadingMsg';
 import TextMsg from './ChatNodes/TextMsg/TextMsg';
+import CtaButton from './ChatNodes/CtaButton/CtaButton';
+// import { createRoot } from 'react-dom/client';
 
 const ChatQuizV2 = ({ json }) => {
   const { chats, config } = json;
   const [showLoadingMsg, setShowLoadingMsg] = useState(false);
   const [isAgentMsg, setIsAgentMsg] = useState(true);
-  const [visibleMessages, setVisibleMessages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentChat, setCurrentChat] = useState([]);
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const handleInsertElm = (currentChat) => {
+    if (currentChat?.button?.type === 'cta') {
+      // Insert a cta button
+      setCurrentChat((prev) => [
+        ...prev,
+        <CtaButton text={currentChat?.button?.text} handleNext={handleNext} />,
+      ]);
+    } else if (currentChat?.text) {
+      // Insert Simple Text Message for user as well as for agent
+      setCurrentChat((prev) => [
+        ...prev,
+        <TextMsg role={currentChat?.role} text={currentChat?.text} />,
+      ]);
+
+      handleNext();
+    }
+  };
 
   useEffect(() => {
     if (currentIndex < chats.length) {
@@ -24,9 +48,8 @@ const ChatQuizV2 = ({ json }) => {
       setShowLoadingMsg(true);
 
       const timer = setTimeout(() => {
-        setVisibleMessages((prev) => [...prev, currentChat]);
+        handleInsertElm(currentChat);
         setShowLoadingMsg(false);
-        setCurrentIndex((prev) => prev + 1);
       }, interval);
 
       return () => clearTimeout(timer);
@@ -34,37 +57,17 @@ const ChatQuizV2 = ({ json }) => {
   }, [currentIndex, chats, config.messageTimeInterval]);
 
   return (
-    <>
+    <div>
       <AgentOnlineStatus agentName={config.agent.name} />
-      {visibleMessages.map((chat, index) => {
-        if (chat.role === 'agent') {
-          // for agent text message
-          if (chat.text) {
-            return (
-              <div className="chat-quiz__message--agent">
-                <TextMsg key={index} msg={chat.text} />
-              </div>
-            );
-          }
 
-          return null;
-        }
+      {currentChat}
 
-        // for user Text message
-        if (chat.text && chat.role === 'user') {
-          return (
-            <div className="chat-quiz__message--user">
-              <TextMsg key={index} msg={chat.text} />
-            </div>
-          );
-        }
-      })}
       {showLoadingMsg && (
         <div className={isAgentMsg ? 'chat-quiz__message--agent' : 'chat-quiz__message--user'}>
           <LoadingMsg />
         </div>
       )}
-    </>
+    </div>
   );
 };
 
