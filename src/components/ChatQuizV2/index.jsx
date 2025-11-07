@@ -3,6 +3,7 @@ import AgentOnlineStatus from './components/AgentOnlineStatus';
 import LoadingMsg from './ChatNodes/LoadingMsg/LoadingMsg';
 import TextMsg from './ChatNodes/TextMsg/TextMsg';
 import CtaButton from './ChatNodes/CtaButton/CtaButton';
+import InputNode from './ChatNodes/InputNode/InputNode';
 // import { createRoot } from 'react-dom/client';
 
 const ChatQuizV2 = ({ json }) => {
@@ -21,13 +22,28 @@ const ChatQuizV2 = ({ json }) => {
       // Insert a cta button
       setCurrentChat((prev) => [
         ...prev,
-        <CtaButton text={currentChat?.button?.text} handleNext={handleNext} />,
+        <CtaButton key={currentIndex} text={currentChat?.button?.text} handleNext={handleNext} />,
+      ]);
+    } else if (currentChat?.input) {
+      const input = currentChat?.input;
+
+      setCurrentChat((prev) => [
+        ...prev,
+        <InputNode
+          key={currentIndex}
+          id={input?.id}
+          name={input?.name}
+          placeholder={input?.placeholder}
+          fixedValue={input?.fixedValue}
+          buttonText={input?.buttonText}
+          handleNext={handleNext}
+        />,
       ]);
     } else if (currentChat?.text) {
       // Insert Simple Text Message for user as well as for agent
       setCurrentChat((prev) => [
         ...prev,
-        <TextMsg role={currentChat?.role} text={currentChat?.text} />,
+        <TextMsg key={currentIndex} role={currentChat?.role} text={currentChat?.text} />,
       ]);
 
       handleNext();
