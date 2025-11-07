@@ -21,7 +21,7 @@ const DobNode = ({ id, name, placeholder, buttonText, type = 'text', handleNext 
     if (validateDob(value)) {
       const currentAge = getCurrentAge(value);
 
-      handleNext(<TextMsg role="user" text={currentAge} />);
+      handleNext(<TextMsg role="user" text={currentAge} />, true);
     }
   };
 

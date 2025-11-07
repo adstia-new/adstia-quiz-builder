@@ -5,7 +5,6 @@ import TextMsg from './ChatNodes/TextMsg/TextMsg';
 import CtaButton from './ChatNodes/CtaButton/CtaButton';
 import InputNode from './ChatNodes/InputNode/InputNode';
 import DobNode from './ChatNodes/DobNode/DobNode';
-// import { createRoot } from 'react-dom/client';
 
 const ChatQuizV2 = ({ json }) => {
   const { chats, config } = json;
@@ -14,7 +13,10 @@ const ChatQuizV2 = ({ json }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentChat, setCurrentChat] = useState([]);
 
-  const handleNext = (newElm) => {
+  const handleNext = (newElm, removeLastElm) => {
+    if (removeLastElm) {
+      setCurrentChat((prev) => [...prev.slice(0, [prev.length - 1])]);
+    }
     if (newElm) {
       setCurrentChat((prev) => [...prev, newElm]);
     }
@@ -31,7 +33,7 @@ const ChatQuizV2 = ({ json }) => {
     } else if (currentChat?.input) {
       const input = currentChat?.input;
 
-      if (input?.type === 'age') {
+      if (input?.name?.toLowerCase() === 'age') {
         setCurrentChat((prev) => [
           ...prev,
           <DobNode

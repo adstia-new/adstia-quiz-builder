@@ -5,7 +5,7 @@ import { trackCtaButtonClick } from '../../utils/trackCtaButtonClick';
 const CtaButton = ({ text, handleNext }) => {
   const handleCtaClick = (e) => {
     trackCtaButtonClick(text);
-    handleNext(<TextMsg role="user" text={text} />);
+    handleNext(<TextMsg role="user" text={text} />, true);
   };
 
   return (

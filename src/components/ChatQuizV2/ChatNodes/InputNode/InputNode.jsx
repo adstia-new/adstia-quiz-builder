@@ -13,7 +13,7 @@ const InputNode = ({ id, name, placeholder, buttonText, type = 'text', handleNex
   const handleSubmit = (e) => {
     e?.preventDefault();
     if (validateTextInput(value)) {
-      handleNext(<TextMsg role="user" text={value} />);
+      handleNext(<TextMsg role="user" text={value} />, true);
     }
   };
 
