@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AgentOnlineStatus from './components/AgentOnlineStatus';
 import LoadingMsg from './ChatNodes/LoadingMsg/LoadingMsg';
 import TextMsg from './ChatNodes/TextMsg/TextMsg';
@@ -81,7 +81,13 @@ const ChatQuizV2 = ({ json }) => {
       // Insert Simple Text Message for user as well as for agent
       setCurrentChat((prev) => [
         ...prev,
-        <TextMsg key={currentIndex} role={currentChat?.role} text={currentChat?.text} />,
+        <TextMsg
+          key={currentIndex}
+          role={currentChat?.role}
+          text={currentChat?.text}
+          timer={currentChat?.timer?.count}
+          type={currentChat?.type}
+        />,
       ]);
 
       handleNext();
