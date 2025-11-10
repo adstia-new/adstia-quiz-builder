@@ -7,6 +7,7 @@ import InputNode from './ChatNodes/InputNode/InputNode';
 import DobNode from './ChatNodes/DobNode/DobNode';
 import ZipcodeNode from './ChatNodes/ZipcodeNode/ZipcodeNode';
 import OptionsNode from './ChatNodes/OptionsNode/OptionsNode';
+import RingbaBtn from './ChatNodes/RingbaBtn/RingbaBtn';
 
 const ChatQuizV2 = ({ json }) => {
   const { chats, config } = json;
@@ -26,11 +27,16 @@ const ChatQuizV2 = ({ json }) => {
   };
 
   const handleInsertElm = (currentChat) => {
-    if (currentChat?.button?.type === 'cta') {
+    if (currentChat?.button?.type?.toLowerCase() === 'cta') {
       // Insert a cta button
       setCurrentChat((prev) => [
         ...prev,
         <CtaButton key={currentIndex} text={currentChat?.button?.text} handleNext={handleNext} />,
+      ]);
+    } else if (currentChat?.button?.type?.toLowerCase() === 'ringba') {
+      setCurrentChat((prev) => [
+        ...prev,
+        <RingbaBtn text={currentChat?.button?.text} href={currentChat?.button?.href} />,
       ]);
     } else if (currentChat?.optionsData) {
       setCurrentChat((prev) => [
