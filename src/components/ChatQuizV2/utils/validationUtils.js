@@ -9,3 +9,7 @@ export const validateDob = (year) => {
 export const validateTextInput = (input) => {
   return input?.length > 0;
 };
+
+export const validateZipcode = (zipcode) => {
+  return /^\d+$/.test(zipcode) && zipcode?.toString()?.length === 5;
+};
