@@ -1,10 +1,14 @@
 import React from 'react';
 import TextMsg from '../TextMsg/TextMsg';
 import { trackCtaButtonClick } from '../../utils/trackCtaButtonClick';
+import { addRingbaScript } from '../../utils/ringbaUtils';
 
-const CtaButton = ({ text, handleNext }) => {
+const CtaButton = ({ role, text, handleNext, ringbaScriptId }) => {
   const handleCtaClick = (e) => {
     trackCtaButtonClick(text);
+    if (ringbaScriptId) {
+      addRingbaScript(ringbaScriptId);
+    }
     handleNext(<TextMsg role="user" text={text} />, true);
   };
 

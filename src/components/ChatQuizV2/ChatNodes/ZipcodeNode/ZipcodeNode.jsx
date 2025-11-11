@@ -3,7 +3,7 @@ import { validateZipcode } from '../../utils/validationUtils';
 import { saveLocationWithZipcode } from '../../../../utils/saveLocationWithZipcode';
 import TextMsg from '../TextMsg/TextMsg';
 
-const ZipcodeNode = ({ id, name, placeholder, buttonText, type = 'text', handleNext }) => {
+const ZipcodeNode = ({ id, role, name, placeholder, buttonText, type = 'text', handleNext }) => {
   const [value, setValue] = useState('');
 
   const handleChange = (e) => {

@@ -3,7 +3,7 @@ import { validateDob } from '../../utils/validationUtils';
 import { getCurrentAge } from '../../utils/dobUtils';
 import TextMsg from '../TextMsg/TextMsg';
 
-const DobNode = ({ id, name, placeholder, buttonText, type = 'text', handleNext }) => {
+const DobNode = ({ id, role, name, placeholder, buttonText, type = 'text', handleNext }) => {
   const [value, setValue] = useState('19');
 
   const handleChange = (e) => {

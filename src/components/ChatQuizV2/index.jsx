@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import AgentOnlineStatus from './components/AgentOnlineStatus';
-import LoadingMsg from './ChatNodes/LoadingMsg/LoadingMsg';
-import TextMsg from './ChatNodes/TextMsg/TextMsg';
 import CtaButton from './ChatNodes/CtaButton/CtaButton';
-import InputNode from './ChatNodes/InputNode/InputNode';
 import DobNode from './ChatNodes/DobNode/DobNode';
-import ZipcodeNode from './ChatNodes/ZipcodeNode/ZipcodeNode';
+import InputNode from './ChatNodes/InputNode/InputNode';
+import LoadingMsg from './ChatNodes/LoadingMsg/LoadingMsg';
 import OptionsNode from './ChatNodes/OptionsNode/OptionsNode';
 import RingbaBtn from './ChatNodes/RingbaBtn/RingbaBtn';
+import TextMsg from './ChatNodes/TextMsg/TextMsg';
+import ZipcodeNode from './ChatNodes/ZipcodeNode/ZipcodeNode';
+import AgentOnlineStatus from './components/AgentOnlineStatus';
+import './index.css';
 
 const ChatQuizV2 = ({ json }) => {
   const { chats, config } = json;
@@ -17,87 +18,124 @@ const ChatQuizV2 = ({ json }) => {
   const [currentChat, setCurrentChat] = useState([]);
 
   const handleNext = (newElm, removeLastElm) => {
+    // Remove last element if removeLastElm is true
     if (removeLastElm) {
-      setCurrentChat((prev) => [...prev.slice(0, [prev.length - 1])]);
+      setCurrentChat((prev) => {
+        const prevChatObj = prev[prev.length - 1];
+        return [
+          ...prev.slice(0, prev.length - 1),
+          {
+            role: prevChatObj?.role,
+            chats: prevChatObj?.chats?.slice(0, [prevChatObj?.chats?.length - 1]),
+          },
+        ];
+      });
     }
+
+    // Insert new Chat to their respective chat obj
     if (newElm) {
-      setCurrentChat((prev) => [...prev, newElm]);
+      setCurrentChat((prev) => {
+        const chat = prev[prev.length - 1];
+        const isInsertInLastElm = chat?.role === newElm?.props?.role;
+
+        if (isInsertInLastElm) {
+          return [
+            ...prev.slice(0, prev.length - 1),
+            { role: chat?.role, chats: [...prev[prev.length - 1]?.chats, newElm] },
+          ];
+        }
+        return [...prev, { role: newElm?.props?.role, chats: [newElm] }];
+      });
     }
     setCurrentIndex((prev) => prev + 1);
   };
 
-  const handleInsertElm = (currentChat) => {
-    if (currentChat?.button?.type?.toLowerCase() === 'cta') {
-      // Insert a cta button
-      setCurrentChat((prev) => [
-        ...prev,
-        <CtaButton key={currentIndex} text={currentChat?.button?.text} handleNext={handleNext} />,
-      ]);
-    } else if (currentChat?.button?.type?.toLowerCase() === 'ringba') {
-      setCurrentChat((prev) => [
-        ...prev,
-        <RingbaBtn text={currentChat?.button?.text} href={currentChat?.button?.href} />,
-      ]);
-    } else if (currentChat?.optionsData) {
-      setCurrentChat((prev) => [
-        ...prev,
-        <OptionsNode optionsData={currentChat?.optionsData} handleNext={handleNext} />,
-      ]);
-    } else if (currentChat?.input) {
-      const input = currentChat?.input;
+  // Function to handle Insertion of element in currentChat
+  const handleInsertElm = (chat) => {
+    let newChat = {};
+    const isInsertInLastElm =
+      currentChat?.length > 0 && chat?.role === currentChat[currentChat?.length - 1]?.role;
+
+    if (chat?.button?.type?.toLowerCase() === 'cta') {
+      newChat = (
+        <CtaButton
+          role={chat?.role}
+          text={chat?.button?.text}
+          handleNext={handleNext}
+          ringbaScriptId={config?.ringbaScriptId}
+        />
+      );
+    } else if (chat?.button?.type?.toLowerCase() === 'ringba') {
+      newChat = <RingbaBtn role={chat?.role} text={chat?.button?.text} href={chat?.button?.href} />;
+    } else if (chat?.optionsData) {
+      newChat = (
+        <OptionsNode role={chat?.role} optionsData={chat?.optionsData} handleNext={handleNext} />
+      );
+    } else if (chat?.input) {
+      const input = chat?.input;
 
       if (input?.name?.toLowerCase() === 'age') {
-        setCurrentChat((prev) => [
-          ...prev,
+        newChat = (
           <DobNode
-            key={currentIndex}
             id={input?.id}
+            role={chat?.role}
             name={input?.name}
             placeholder={input?.placeholder}
             buttonText={input?.buttonText}
             handleNext={handleNext}
-          />,
-        ]);
+          />
+        );
       } else if (input?.name?.toLowerCase() === 'zipcode') {
-        setCurrentChat((prev) => [
-          ...prev,
+        newChat = (
           <ZipcodeNode
-            key={currentIndex}
             id={input?.id}
+            role={chat?.role}
             name={input?.name}
             placeholder={input?.placeholder}
             buttonText={input?.buttonText}
             handleNext={handleNext}
-          />,
-        ]);
+          />
+        );
       } else {
-        setCurrentChat((prev) => [
-          ...prev,
+        newChat = (
           <InputNode
-            key={currentIndex}
             id={input?.id}
+            role={chat?.role}
             name={input?.name}
             placeholder={input?.placeholder}
             buttonText={input?.buttonText}
             handleNext={handleNext}
-          />,
-        ]);
+          />
+        );
       }
-    } else if (currentChat?.text) {
-      // Insert Simple Text Message for user as well as for agent
-      setCurrentChat((prev) => [
-        ...prev,
-        <TextMsg
-          key={currentIndex}
-          role={currentChat?.role}
-          text={currentChat?.text}
-          timer={currentChat?.timer?.count}
-          type={currentChat?.type}
-        />,
-      ]);
+    } else if (chat?.text) {
+      newChat = (
+        <TextMsg role={chat?.role} text={chat?.text} timer={chat?.timer?.count} type={chat?.type} />
+      );
+
+      setCurrentChat((prev) => {
+        if (isInsertInLastElm) {
+          return [
+            ...prev.slice(0, prev.length - 1),
+            { role: chat?.role, chats: [...prev[prev.length - 1]?.chats, newChat] },
+          ];
+        }
+        return [...prev, { role: chat?.role, chats: [newChat] }];
+      });
 
       handleNext();
+      return;
     }
+
+    setCurrentChat((prev) => {
+      if (isInsertInLastElm) {
+        return [
+          ...prev.slice(0, prev.length - 1),
+          { role: chat?.role, chats: [...prev[prev.length - 1]?.chats, newChat] },
+        ];
+      }
+      return [...prev, { role: chat?.role, chats: [newChat] }];
+    });
   };
 
   useEffect(() => {
@@ -126,11 +164,63 @@ const ChatQuizV2 = ({ json }) => {
     <div>
       <AgentOnlineStatus agentName={config.agent.name} />
 
-      {currentChat}
+      {currentChat?.length > 0 &&
+        currentChat.map((chatObj, chatArrIdx) => {
+          if (chatObj?.role === 'agent') {
+            return (
+              <div
+                key={chatArrIdx}
+                className="chat-quiz__message--with-profile chat-quiz__message--agent"
+              >
+                <img
+                  className={`chat-quiz__profile-image ${showLoadingMsg ? 'hide_img' : ''}`}
+                  src={config?.agent?.profileImage}
+                  alt={config.agent?.name}
+                />
+                <div className="chat-quiz__message-content">
+                  {chatObj?.chats.length > 0 &&
+                    chatObj?.chats.map((chat, chatIdx) => {
+                      return <div key={`${chatArrIdx}_${chatIdx}`}>{chat}</div>;
+                    })}
+                </div>
+              </div>
+            );
+          } else {
+            return (
+              <div
+                key={chatArrIdx}
+                className="chat-quiz__message--with-profile chat-quiz__message--user"
+              >
+                <img
+                  className={`chat-quiz__profile-image`}
+                  src={config?.user?.profileImage}
+                  alt={config.user?.name}
+                />
+                <div className="chat-quiz__message-content">
+                  {chatObj?.chats.length > 0 &&
+                    chatObj?.chats.map((chat, chatIdx) => {
+                      return <div key={`${chatArrIdx}_${chatIdx}`}>{chat}</div>;
+                    })}
+                </div>
+              </div>
+            );
+          }
+        })}
 
       {showLoadingMsg && (
-        <div className={isAgentMsg ? 'chat-quiz__message--agent' : 'chat-quiz__message--user'}>
-          <LoadingMsg />
+        <div
+          className={`chat-quiz__message--with-profile ${isAgentMsg ? 'chat-quiz__message--agent' : 'chat-quiz__message--user'}`}
+        >
+          <img
+            className="chat-quiz__profile-image"
+            src={config?.agent?.profileImage}
+            alt={config.agent?.name}
+          />
+          <div className="chat-quiz__message-content">
+            <div className={isAgentMsg ? 'chat-quiz__message--agent' : 'chat-quiz__message--user'}>
+              <LoadingMsg />
+            </div>
+          </div>
         </div>
       )}
     </div>

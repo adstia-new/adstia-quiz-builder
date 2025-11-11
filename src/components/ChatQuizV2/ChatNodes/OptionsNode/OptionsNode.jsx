@@ -1,7 +1,7 @@
 import React from 'react';
 import TextMsg from '../TextMsg/TextMsg';
 
-const OptionsNode = ({ optionsData, handleNext }) => {
+const OptionsNode = ({ role, optionsData, handleNext }) => {
   const handleOptionClick = (e) => {
     const label = e?.target?.textContent;
     const value = e?.target?.value;
