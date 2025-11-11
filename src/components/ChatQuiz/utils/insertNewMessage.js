@@ -263,6 +263,19 @@ const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCa
       };
       sendDataToJitsuEvent(JSON.stringify(optionJitsuData));
 
+      if (chat?.isFinalQue) {
+        const quizData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES) || '{}');
+
+        let jsonData = {
+          user_id: localStorage.getItem('user_id') || '',
+          session_id: sessionStorage.getItem('session_id') || '',
+          ...quizData,
+        };
+
+        sendJitsuLeadSubmitEvent(jsonData);
+        pushDataToRingbaTags();
+      }
+
       if (optionsData.name === 'medicarePartAB' && optionValue?.toLowerCase() === 'no') {
         window.location.href = 'https://lander8ert.benefits-advisor.org/blogs';
         return;
