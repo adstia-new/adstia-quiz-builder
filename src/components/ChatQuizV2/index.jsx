@@ -9,6 +9,8 @@ import TextMsg from './ChatNodes/TextMsg/TextMsg';
 import ZipcodeNode from './ChatNodes/ZipcodeNode/ZipcodeNode';
 import AgentOnlineStatus from './components/AgentOnlineStatus';
 import './index.css';
+import { sendJitsuLeadSubmitEvent } from './utils/saveToJitsuEventUrl';
+import { LOCAL_STORAGE_QUIZ_VALUES } from './constants';
 
 const ChatQuizV2 = ({ json }) => {
   const { chats, config } = json;
@@ -18,6 +20,13 @@ const ChatQuizV2 = ({ json }) => {
   const [currentChat, setCurrentChat] = useState([]);
 
   const handleNext = (newElm, removeLastElm) => {
+    // if current chat is final que send a lead submit event
+    if (chats[currentIndex]?.isFinalQue) {
+      const storedQuizValues = localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES);
+
+      sendJitsuLeadSubmitEvent(JSON.parse(storedQuizValues || '{}'));
+    }
+
     // Remove last element if removeLastElm is true
     if (removeLastElm) {
       setCurrentChat((prev) => {
