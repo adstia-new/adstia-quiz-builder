@@ -2,6 +2,7 @@ import React from 'react';
 import TextMsg from '../TextMsg/TextMsg';
 import { sendDataToJitsuEvent } from '../../utils/saveToJitsuEventUrl';
 import { LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
+import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
 
 const OptionsNode = ({ role, optionsData, handleNext }) => {
   const handleOptionClick = (e) => {
@@ -24,6 +25,7 @@ const OptionsNode = ({ role, optionsData, handleNext }) => {
     };
 
     sendDataToJitsuEvent(JSON.stringify(jitsuData));
+    pushLocalDataToDataLayer();
 
     handleNext(<TextMsg role="user" text={label} />, true);
   };

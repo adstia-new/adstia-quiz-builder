@@ -2,6 +2,7 @@ import React from 'react';
 import { validateTextInput } from '../../utils/validationUtils';
 import TextMsg from '../TextMsg/TextMsg';
 import { LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
+import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
 
 const InputNode = ({ id, role, name, placeholder, buttonText, type = 'text', handleNext }) => {
   const [value, setValue] = useState('19');
@@ -33,6 +34,8 @@ const InputNode = ({ id, role, name, placeholder, buttonText, type = 'text', han
       };
 
       sendDataToJitsuEvent(JSON.stringify(jitsuData));
+
+      pushLocalDataToDataLayer();
 
       handleNext(<TextMsg role="user" text={value} />, true);
     } else {

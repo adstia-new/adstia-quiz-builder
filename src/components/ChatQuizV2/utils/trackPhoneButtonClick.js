@@ -7,6 +7,8 @@ export async function trackPhoneButtonClick(phone) {
     userId: localStorage.getItem('user_id') || '',
   });
 
+  window.dataLayer.push({ data: null });
+
   window?.dataLayer?.push({
     event: 'phoneNumberClick',
     data: {

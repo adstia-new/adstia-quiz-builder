@@ -4,6 +4,7 @@ import { saveLocationWithZipcode } from '../../../../utils/saveLocationWithZipco
 import TextMsg from '../TextMsg/TextMsg';
 import { sendDataToJitsuEvent } from '../../utils/saveToJitsuEventUrl';
 import { LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
+import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
 
 const ZipcodeNode = ({ id, role, name, placeholder, buttonText, type = 'text', handleNext }) => {
   const [value, setValue] = useState('');
@@ -43,6 +44,8 @@ const ZipcodeNode = ({ id, role, name, placeholder, buttonText, type = 'text', h
       };
 
       sendDataToJitsuEvent(JSON.stringify(jitsuData));
+
+      pushLocalDataToDataLayer();
 
       handleNext(<TextMsg role="user" text={value} />, true);
     } else {
