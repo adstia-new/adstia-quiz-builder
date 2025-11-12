@@ -19,6 +19,8 @@ const ChatQuizV2 = ({ json }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentChat, setCurrentChat] = useState([]);
 
+  console.log('currentChat', currentChat);
+
   const handleNext = (newElm, removeLastElm) => {
     // if current chat is final que send a lead submit event
     if (chats[currentIndex]?.isFinalQue) {
@@ -53,7 +55,15 @@ const ChatQuizV2 = ({ json }) => {
             { role: chat?.role, chats: [...prev[prev.length - 1]?.chats, newElm] },
           ];
         }
-        return [...prev, { role: newElm?.props?.role, chats: [newElm] }];
+
+        return [
+          ...prev.slice(0, prev.length - 1),
+          {
+            ...prev.slice(prev.length - 1, prev.length)[0],
+            showProfileImg: true,
+          },
+          { role: newElm?.props?.role, chats: [newElm] },
+        ];
       });
     }
     setCurrentIndex((prev) => prev + 1);
@@ -182,7 +192,7 @@ const ChatQuizV2 = ({ json }) => {
                 className="chat-quiz-v2__message--with-profile chat-quiz-v2__message--agent"
               >
                 <img
-                  className={`chat-quiz-v2__profile-image ${showLoadingMsg ? 'hide_img' : ''}`}
+                  className={`chat-quiz-v2__profile-image ${showLoadingMsg && !chatObj?.showProfileImg ? 'hide_img' : ''}`}
                   src={config?.agent?.profileImage}
                   alt={config.agent?.name}
                 />
