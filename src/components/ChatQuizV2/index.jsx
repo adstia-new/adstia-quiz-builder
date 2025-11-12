@@ -19,8 +19,6 @@ const ChatQuizV2 = ({ json }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentChat, setCurrentChat] = useState([]);
 
-  console.log('currentChat', currentChat);
-
   const handleNext = (newElm, removeLastElm) => {
     // if current chat is final que send a lead submit event
     if (chats[currentIndex]?.isFinalQue) {
