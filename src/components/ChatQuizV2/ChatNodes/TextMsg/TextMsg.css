@@ -2,7 +2,7 @@
   color: red;
 }
 
-.chat-quiz-v2__message--agent a {
+.chat-quiz-v2__message--agent a.ringbaText {
   color: rgb(14, 52, 141);
   text-decoration: underline;
 }

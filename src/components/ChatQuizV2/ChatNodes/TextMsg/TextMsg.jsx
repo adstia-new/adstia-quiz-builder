@@ -54,7 +54,11 @@ const TextMsg = ({ role = 'agent', text, timer, type }) => {
           {splittedText[1]}
         </p>
       ) : type === 'ringba' ? (
-        <a href={`tel:+1${text?.replace(/[^\d]/g, '')?.slice(-10)}`} onClick={handlePhoneClick}>
+        <a
+          className="ringbaText"
+          href={`tel:+1${text?.replace(/[^\d]/g, '')?.slice(-10)}`}
+          onClick={handlePhoneClick}
+        >
           {text}
         </a>
       ) : (
