@@ -112,8 +112,8 @@ export const sendJitsuLeadSubmitEvent = async (jitsuEventData) => {
       },
       body: JSON.stringify({
         anonymousId: getCookie(COOKIE_ANONYMOUS_ID),
-        userId,
-        sessionId,
+        userId: userId || localStorage.getItem('user_id') || '',
+        sessionId: sessionId || sessionStorage.getItem('session_id') || '',
         ...data,
       }),
     });

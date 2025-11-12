@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './TextMsg.css';
+import { trackPhoneButtonClick } from '../../utils/trackPhoneButtonClick';
 
 const TextMsg = ({ role = 'agent', text, timer, type }) => {
   const initialMinutes = timer
@@ -10,6 +11,12 @@ const TextMsg = ({ role = 'agent', text, timer, type }) => {
   const initialSeconds = timer ? (timer % 60)?.toString()?.padStart(2, '0') : '';
   const [timeLeft, setTimeLeft] = useState(`${initialMinutes}:${initialSeconds}`);
   const splittedText = timer ? text?.split('[[timer]]') : '';
+
+  const handlePhoneClick = (e) => {
+    const phoneHref = e.currentTarget.href || '';
+    const phoneNumber = phoneHref.replace(/[^\d]/g, '').slice(-10);
+    trackPhoneButtonClick(phoneNumber);
+  };
 
   useEffect(() => {
     if (timer) {
@@ -45,7 +52,9 @@ const TextMsg = ({ role = 'agent', text, timer, type }) => {
           {splittedText[1]}
         </p>
       ) : type === 'ringba' ? (
-        <a href={`tel:+1${text?.replace(/[^\d]/g, '')?.slice(-10)}`}>{text}</a>
+        <a href={`tel:+1${text?.replace(/[^\d]/g, '')?.slice(-10)}`} onClick={handlePhoneClick}>
+          {text}
+        </a>
       ) : (
         <p>{text}</p>
       )}
