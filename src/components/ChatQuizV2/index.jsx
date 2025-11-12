@@ -179,14 +179,14 @@ const ChatQuizV2 = ({ json }) => {
             return (
               <div
                 key={chatArrIdx}
-                className="chat-quiz__message--with-profile chat-quiz__message--agent"
+                className="chat-quiz-v2__message--with-profile chat-quiz-v2__message--agent"
               >
                 <img
-                  className={`chat-quiz__profile-image ${showLoadingMsg ? 'hide_img' : ''}`}
+                  className={`chat-quiz-v2__profile-image ${showLoadingMsg ? 'hide_img' : ''}`}
                   src={config?.agent?.profileImage}
                   alt={config.agent?.name}
                 />
-                <div className="chat-quiz__message-content">
+                <div className="chat-quiz-v2__message-content">
                   {chatObj?.chats.length > 0 &&
                     chatObj?.chats.map((chat, chatIdx) => {
                       return <div key={`${chatArrIdx}_${chatIdx}`}>{chat}</div>;
@@ -198,14 +198,14 @@ const ChatQuizV2 = ({ json }) => {
             return (
               <div
                 key={chatArrIdx}
-                className="chat-quiz__message--with-profile chat-quiz__message--user"
+                className="chat-quiz-v2__message--with-profile chat-quiz-v2__message--user"
               >
                 <img
-                  className={`chat-quiz__profile-image`}
+                  className={`chat-quiz-v2__profile-image`}
                   src={config?.user?.profileImage}
                   alt={config.user?.name}
                 />
-                <div className="chat-quiz__message-content">
+                <div className="chat-quiz-v2__message-content">
                   {chatObj?.chats.length > 0 &&
                     chatObj?.chats.map((chat, chatIdx) => {
                       return <div key={`${chatArrIdx}_${chatIdx}`}>{chat}</div>;
@@ -218,15 +218,19 @@ const ChatQuizV2 = ({ json }) => {
 
       {showLoadingMsg && (
         <div
-          className={`chat-quiz__message--with-profile ${isAgentMsg ? 'chat-quiz__message--agent' : 'chat-quiz__message--user'}`}
+          className={`chat-quiz-v2__message--with-profile ${isAgentMsg ? 'chat-quiz-v2__message--agent' : 'chat-quiz-v2__message--user'}`}
         >
           <img
-            className="chat-quiz__profile-image"
+            className="chat-quiz-v2__profile-image"
             src={config?.agent?.profileImage}
             alt={config.agent?.name}
           />
-          <div className="chat-quiz__message-content">
-            <div className={isAgentMsg ? 'chat-quiz__message--agent' : 'chat-quiz__message--user'}>
+          <div className="chat-quiz-v2__message-content">
+            <div
+              className={
+                isAgentMsg ? 'chat-quiz-v2__message--agent' : 'chat-quiz-v2__message--user'
+              }
+            >
               <LoadingMsg />
             </div>
           </div>

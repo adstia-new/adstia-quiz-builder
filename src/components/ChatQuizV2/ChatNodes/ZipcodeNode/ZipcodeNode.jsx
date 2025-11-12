@@ -7,10 +7,13 @@ import { LOCAL_STORAGE_QUIZ_VALUES } from '../../constants';
 
 const ZipcodeNode = ({ id, role, name, placeholder, buttonText, type = 'text', handleNext }) => {
   const [value, setValue] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     // Filter only number upto 5 digits from input value
     const currentValue = e?.target?.value?.replace(/[^\d]/g, '')?.slice(0, 5);
+
+    setError('');
 
     // if input value is correct zipcode value,
     // fetch zipcode info and save it to local storage
@@ -42,14 +45,16 @@ const ZipcodeNode = ({ id, role, name, placeholder, buttonText, type = 'text', h
       sendDataToJitsuEvent(JSON.stringify(jitsuData));
 
       handleNext(<TextMsg role="user" text={value} />, true);
+    } else {
+      setError('Please enter a valid zipcode.');
     }
   };
 
   return (
-    <div className="chat-quiz__message--agent">
-      <form className="chat-quiz__input-container" onSubmit={handleSubmit}>
+    <div className="chat-quiz-v2__message--agent">
+      <form className="chat-quiz-v2__input-container" onSubmit={handleSubmit}>
         <input
-          className="chat-quiz__input"
+          className="chat-quiz-v2__input"
           type={type}
           name={name}
           placeholder={placeholder}
@@ -57,7 +62,9 @@ const ZipcodeNode = ({ id, role, name, placeholder, buttonText, type = 'text', h
           value={value}
         />
 
-        <button className="chat-quiz__submit-button" type="submit">
+        {error && <span className="chat-quiz-v2__error-message">{error}</span>}
+
+        <button className="chat-quiz-v2__submit-button" type="submit">
           {buttonText}
         </button>
       </form>

@@ -44,7 +44,9 @@ const TextMsg = ({ role = 'agent', text, timer, type }) => {
   }, []);
 
   return (
-    <div className={role === 'agent' ? 'chat-quiz__message--agent' : 'chat-quiz__message--user'}>
+    <div
+      className={role === 'agent' ? 'chat-quiz-v2__message--agent' : 'chat-quiz-v2__message--user'}
+    >
       {timer ? (
         <p>
           {splittedText[0]}

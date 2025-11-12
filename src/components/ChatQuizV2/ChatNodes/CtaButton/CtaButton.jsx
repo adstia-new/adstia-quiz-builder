@@ -13,8 +13,8 @@ const CtaButton = ({ role, text, handleNext, ringbaScriptId }) => {
   };
 
   return (
-    <div className="chat-quiz__message--agent">
-      <div className="chat-quiz__button-container">
+    <div className="chat-quiz-v2__message--agent">
+      <div className="chat-quiz-v2__button-container">
         <button onClick={handleCtaClick}>{text}</button>
       </div>
     </div>

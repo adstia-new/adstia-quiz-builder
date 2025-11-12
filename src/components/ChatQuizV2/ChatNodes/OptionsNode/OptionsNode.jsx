@@ -28,13 +28,13 @@ const OptionsNode = ({ role, optionsData, handleNext }) => {
     handleNext(<TextMsg role="user" text={label} />, true);
   };
   return (
-    <div className="chat-quiz__message--agent">
-      <div className="chat-quiz__options-container">
+    <div className="chat-quiz-v2__message--agent">
+      <div className="chat-quiz-v2__options-container">
         {optionsData?.options?.map((option, idx) => (
           <button
             key={idx}
             value={option?.value}
-            className="chat-quiz__option-button"
+            className="chat-quiz-v2__option-button"
             onClick={handleOptionClick}
           >
             {option.label}

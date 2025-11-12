@@ -1,10 +1,10 @@
-.chat-quiz__button-container {
+.chat-quiz-v2__button-container {
   background-color: #e2e8f0;
   padding: 10px 15px;
   border-radius: 15px 15px 15px 5px;
 }
 
-.chat-quiz__button-container a.ringba {
+.chat-quiz-v2__button-container a.ringba {
   padding: 12px 15px;
   background-color: #137dce;
   color: #e2e8f0;
@@ -20,7 +20,7 @@
   text-decoration: none;
 }
 
-.chat-quiz__button-container a.ringba:hover {
+.chat-quiz-v2__button-container a.ringba:hover {
   background-color: #1d4ed8;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(19, 125, 206, 0.3);
