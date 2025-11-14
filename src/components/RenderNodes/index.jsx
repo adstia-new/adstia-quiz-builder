@@ -36,6 +36,9 @@ const RenderNodes = ({
     null;
   const currentNodeType = findCurrentSlideNodes.nodes[0].nodeType;
   const showNextPreviousButtons = currentNodeType === QUIZ_NODE_TYPES.OPTIONS;
+  const tcpaConsent = findCurrentSlideNodes?.nodes?.find(
+    (node) => node.nodeType === QUIZ_NODE_TYPES.PHONE
+  )?.tcpaConsent;
 
   const getSlideHistory = () => {
     try {
@@ -323,6 +326,19 @@ const RenderNodes = ({
           <button className="quiz-builder__submit button" type="submit" disabled={nextDisabled}>
             {quizConfig.submitButtonText}
           </button>
+        </div>
+      )}
+      {tcpaConsent && (
+        <div className="phone-node__tcpa">
+          <label className="phone-node__tcpa-label">
+            <input type="hidden" checked={true} className="phone-node__tcpa-checkbox" />
+            <span
+              className="phone-node__tcpa-text"
+              dangerouslySetInnerHTML={{
+                __html: tcpaConsent.text,
+              }}
+            ></span>
+          </label>
         </div>
       )}
     </div>
