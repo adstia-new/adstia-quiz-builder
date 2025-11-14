@@ -15,7 +15,7 @@ const formatPhone = (value) => {
 
 const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   const quizConfig = useContext(QuizConfigContext);
-  const { inputLabel, nodeName, placeholder, validation, tcpaConsent } = data;
+  const { inputLabel, nodeName, placeholder, validation } = data;
   const { required, errorMessage } = validation || {};
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
@@ -37,14 +37,14 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   }, [quizConfig.prefillValues, nodeName]);
 
   useEffect(() => {
-    if (error || (required && !value.trim()) || (tcpaConsent && !consentChecked)) {
+    if (error || (required && !value.trim()) || !consentChecked) {
       setNextDisabled(true);
     } else {
       setNextDisabled(false);
 
       handleJitsuData(nodeName, value?.replace(/\D/g, ''));
     }
-  }, [error, value, required, setNextDisabled, tcpaConsent, consentChecked]);
+  }, [error, value, required, setNextDisabled, consentChecked]);
 
   const validatePhone = (val) => {
     const digits = val?.replace(/\D/g, '').slice(-10);
@@ -105,19 +105,6 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
         />
         {error && <span className="phone-node__error">{error}</span>}
       </div>
-      {tcpaConsent && (
-        <div className="phone-node__tcpa">
-          <label className="phone-node__tcpa-label">
-            <input type="hidden" checked={true} className="phone-node__tcpa-checkbox" />
-            <span
-              className="phone-node__tcpa-text"
-              dangerouslySetInnerHTML={{
-                __html: tcpaConsent.text,
-              }}
-            ></span>
-          </label>
-        </div>
-      )}
     </div>
   );
 };
