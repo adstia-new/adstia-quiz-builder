@@ -75,18 +75,6 @@
   margin-top: 5px;
 }
 
-.chat-quiz-v2__message--user p,
-.chat-quiz-v2__message--user .chat-quiz-v2__loader {
-  background-color: #137dce;
-  color: #e2e8f0;
-  padding: 10px 18px;
-  border-radius: 15px 15px 5px 15px;
-}
-
-.chat-quiz-v2__message--user .chat-quiz-v2__loader {
-  padding: 18px;
-}
-
 .chat-quiz-v2__button-container {
   background-color: #e2e8f0;
   padding: 10px 15px;
@@ -121,6 +109,18 @@
 .chat-quiz-v2__button-container button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(19, 125, 206, 0.3);
+}
+
+.chat-quiz-v2__message--user p,
+.chat-quiz-v2__message--user .chat-quiz-v2__loader {
+  background-color: #137dce;
+  color: #e2e8f0;
+  padding: 10px 18px;
+  border-radius: 15px 15px 5px 15px;
+}
+
+.chat-quiz-v2__message--user .chat-quiz-v2__loader {
+  padding: 18px;
 }
 
 .chat-quiz-v2__input-container {
