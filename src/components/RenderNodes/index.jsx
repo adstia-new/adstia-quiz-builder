@@ -24,7 +24,7 @@ const RenderNodes = ({
   const searchParams =
     typeof window !== 'undefined' ? new URLSearchParams(window?.location?.search || '') : '';
   const quizConfig = useContext(QuizConfigContext);
-  const [nextDisabled, setNextDisabled] = useState(false);
+  const [nextDisabled, setNextDisabled] = useState({});
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
@@ -39,6 +39,9 @@ const RenderNodes = ({
   const tcpaConsent = findCurrentSlideNodes?.nodes?.find(
     (node) => node.nodeType === QUIZ_NODE_TYPES.PHONE
   )?.tcpaConsent;
+
+  // Compute actual disabled state: disabled only if any validation value is true
+  const isNextButtonDisabled = Object.values(nextDisabled).some((isInvalid) => isInvalid === true);
 
   const getSlideHistory = () => {
     try {
@@ -178,6 +181,19 @@ const RenderNodes = ({
     }
   };
 
+  // Initialize nextDisabled object based on current slide's required nodes
+  useEffect(() => {
+    const validationState = {};
+    findCurrentSlideNodes.nodes.forEach((node) => {
+      const isRequired = node.validation?.required;
+      if (isRequired) {
+        // Set to true initially for required nodes (invalid until validated)
+        validationState[node.nodeName] = true;
+      }
+    });
+    setNextDisabled(validationState);
+  }, [currentSlide]);
+
   useEffect(() => {
     if (isStartingNode) {
       setSlideHistory([]);
@@ -305,7 +321,7 @@ const RenderNodes = ({
           <button
             className="render-nodes__button render-nodes__button--next"
             onClick={handleNextButtonClick}
-            disabled={nextDisabled}
+            disabled={isNextButtonDisabled}
             type="button"
           >
             {quizConfig.nextButtonText}
@@ -323,7 +339,11 @@ const RenderNodes = ({
               {quizConfig.previousButtonText}
             </button>
           )}
-          <button className="quiz-builder__submit button" type="submit" disabled={nextDisabled}>
+          <button
+            className="quiz-builder__submit button"
+            type="submit"
+            disabled={isNextButtonDisabled}
+          >
             {quizConfig.submitButtonText}
           </button>
         </div>

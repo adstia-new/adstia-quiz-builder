@@ -26,17 +26,17 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) =>
   // Update Next button state whenever error or value changes
   useEffect(() => {
     if (error || (required && !value.trim()) || value.trim().length < 5) {
-      setNextDisabled(true);
+      setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
     } else {
       (async () => {
         await saveLocationWithZipcode(value);
-        setNextDisabled(false);
+        setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
         // Update Jitsu event data
         handleJitsuData(nodeName, value);
       })();
     }
-  }, [error, value, required, setNextDisabled]);
+  }, [error, value, required, setNextDisabled, nodeName]);
 
   const validateInput = (inputValue) => {
     if (required && !inputValue.trim()) {

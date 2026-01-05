@@ -24,13 +24,13 @@ const EmailNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
 
   useEffect(() => {
     if (error || (required && !value.trim())) {
-      setNextDisabled(true);
+      setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
     } else {
-      setNextDisabled(false);
+      setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
       handleJitsuData(nodeName, value);
     }
-  }, [error, value, required, setNextDisabled]);
+  }, [error, value, required, setNextDisabled, nodeName]);
 
   const validateEmail = (val) => {
     if (required && !val.trim()) {
