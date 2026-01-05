@@ -72,6 +72,25 @@ const RenderNodes = ({
   };
 
   const handleNextButtonClick = () => {
+    // If validation fails, trigger blur on all inputs to show error messages
+    if (isNextButtonDisabled) {
+      // Find all input, select, and textarea elements in the current slide
+      const inputs = document.querySelectorAll(
+        '.input-node__input, .email-node__input, .phone-node__input, .zipcode-node__input, .dob-node__input'
+      );
+
+      // Trigger blur event on each input to show validation errors
+      // Note: We must focus first, then blur, because blur events only fire on focused elements
+      inputs.forEach((input) => {
+        input.focus();
+        input.blur();
+        // Dispatch blur event to trigger validation
+        input.dispatchEvent(new Event('blur', { bubbles: true }));
+      });
+
+      return;
+    }
+
     const history = getSlideHistory();
     history.push(String(currentSlide));
     setSlideHistory(history);
@@ -89,6 +108,29 @@ const RenderNodes = ({
     setTimeout(() => {
       pushLocalDataToDataLayer();
     }, 500);
+  };
+
+  const handleSubmitButtonClick = (e) => {
+    // If validation fails, trigger blur on all inputs to show error messages
+    if (isNextButtonDisabled) {
+      e.preventDefault(); // Prevent form submission
+
+      // Find all input, select, and textarea elements in the current slide
+      const inputs = document.querySelectorAll(
+        '.input-node__input, .email-node__input, .phone-node__input, .zipcode-node__input, .dob-node__input'
+      );
+
+      // Trigger blur event on each input to show validation errors
+      // Note: We must focus first, then blur, because blur events only fire on focused elements
+      inputs.forEach((input) => {
+        input.focus();
+        input.blur();
+        input.dispatchEvent(new Event('blur', { bubbles: true }));
+      });
+
+      return false;
+    }
+    // If validation passes, allow form submission
   };
 
   const handlePreviousButtonClick = () => {
@@ -319,9 +361,8 @@ const RenderNodes = ({
             </button>
           )}
           <button
-            className="render-nodes__button render-nodes__button--next"
+            className={`${isNextButtonDisabled ? 'render-nodes__button--disabled' : ''} render-nodes__button render-nodes__button--next`}
             onClick={handleNextButtonClick}
-            disabled={isNextButtonDisabled}
             type="button"
           >
             {quizConfig.nextButtonText}
@@ -342,7 +383,7 @@ const RenderNodes = ({
           <button
             className="quiz-builder__submit button"
             type="submit"
-            disabled={isNextButtonDisabled}
+            onClick={handleSubmitButtonClick}
           >
             {quizConfig.submitButtonText}
           </button>
