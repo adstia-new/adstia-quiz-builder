@@ -38,20 +38,25 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
 
   useEffect(() => {
     if (error || (required && !value.trim()) || !consentChecked) {
-      setNextDisabled(true);
+      setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
     } else {
-      setNextDisabled(false);
+      setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
       handleJitsuData(nodeName, value?.replace(/\D/g, ''));
     }
-  }, [error, value, required, setNextDisabled, consentChecked]);
+  }, [error, value, required, setNextDisabled, consentChecked, nodeName]);
 
   const validatePhone = (val) => {
-    const digits = val?.replace(/\D/g, '').slice(-10);
-    if (required && !digits) {
+    // Extract all digits from the value
+    let allDigits = val?.replace(/\D/g, '') || '';
+    // Remove leading 1 (country code) if present
+    allDigits = allDigits.replace(/^1+/, '');
+
+    if (required && !allDigits) {
       return 'This field is required';
     }
-    if (digits.length !== 10) {
+    // Must have exactly 10 digits (US phone number without country code)
+    if (allDigits.length !== 10) {
       return errorMessage || 'Invalid Phone Number';
     }
     return '';

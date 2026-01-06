@@ -52,6 +52,10 @@
   outline: none;
 }
 
+.render-nodes__button--disabled {
+  opacity: 0.8;
+}
+
 .render-nodes__button--previous {
   background-color: #6b7280;
 }
@@ -111,6 +115,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
