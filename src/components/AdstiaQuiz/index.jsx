@@ -97,6 +97,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
     promises.push(
       new Promise((resolve) => {
         pushLocalDataToDataLayer();
+        pushLocalDataToDataLayer('Lead');
         setTimeout(() => {
           resolve();
         }, 100);
