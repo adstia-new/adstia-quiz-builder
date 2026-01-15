@@ -67,8 +67,8 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
     if (field.fieldName === DOB_FIELDS.DOB_YEAR && value) {
       const year = parseInt(value, 10);
       const currentYear = new Date().getFullYear();
-      if (isNaN(year) || year < 1920 || year > currentYear) {
-        return `Year must be between 1920 and ${currentYear}`;
+      if (isNaN(year) || year < 1900 || year > currentYear) {
+        return `Year must be between 1900 and ${currentYear}`;
       }
     }
 
