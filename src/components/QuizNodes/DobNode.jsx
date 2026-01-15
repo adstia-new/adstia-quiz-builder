@@ -63,6 +63,37 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
     if (v.maxLength && value.length > v.maxLength) {
       return `Maximum ${v.maxLength} characters allowed`;
     }
+
+    if (field.fieldName === DOB_FIELDS.DOB_YEAR && value) {
+      const year = parseInt(value, 10);
+      const currentYear = new Date().getFullYear();
+      if (isNaN(year) || year < 1920 || year > currentYear) {
+        return `Year must be between 1920 and ${currentYear}`;
+      }
+    }
+
+    // Check if full date is in the future
+    const dayVal = field.fieldName === DOB_FIELDS.DOB_DAY ? value : values[DOB_FIELDS.DOB_DAY];
+    const monthVal =
+      field.fieldName === DOB_FIELDS.DOB_MONTH ? value : values[DOB_FIELDS.DOB_MONTH];
+    const yearVal = field.fieldName === DOB_FIELDS.DOB_YEAR ? value : values[DOB_FIELDS.DOB_YEAR];
+
+    if (dayVal && monthVal && yearVal) {
+      const d = parseInt(dayVal, 10);
+      const m = parseInt(monthVal, 10);
+      const y = parseInt(yearVal, 10);
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1; // 0-indexed
+      const currentDay = now.getDate();
+
+      if (y === currentYear) {
+        if (m > currentMonth || (m === currentMonth && d > currentDay)) {
+          return 'Date cannot be in the future';
+        }
+      }
+    }
+
     return '';
   };
 

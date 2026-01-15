@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { LOCAL_STORAGE_QUIZ_HISTORY, QUIZ_NODE_TYPES } from '../../constants';
 import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
 import { QuizConfigContext } from '../AdstiaQuiz';
@@ -25,6 +25,7 @@ const RenderNodes = ({
     typeof window !== 'undefined' ? new URLSearchParams(window?.location?.search || '') : '';
   const quizConfig = useContext(QuizConfigContext);
   const [nextDisabled, setNextDisabled] = useState({});
+  const containerRef = useRef(null);
 
   const findCurrentSlideNodes = quizNodes.find(
     (element) => element.quizCardId === String(currentSlide)
@@ -263,12 +264,19 @@ const RenderNodes = ({
       }
     };
 
-    window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
+  // Scroll to top whenever the slide changes
+  useEffect(() => {
+    // Add a slight delay to ensure DOM update and browser rendering doesn't override scroll
+    setTimeout(() => {
+      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }, [currentSlide]);
+
   return (
-    <div className="render-nodes">
+    <div className="render-nodes" ref={containerRef}>
       <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
       <p className="render-nodes__subtext">{findCurrentSlideNodes.subText}</p>
       {findCurrentSlideNodes.nodes.map((quizElement, index) => {
