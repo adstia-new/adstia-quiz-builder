@@ -267,13 +267,13 @@ const RenderNodes = ({
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Scroll to top whenever the slide changes
-  useEffect(() => {
-    // Add a slight delay to ensure DOM update and browser rendering doesn't override scroll
-    setTimeout(() => {
-      containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
-  }, [currentSlide]);
+  // // Scroll to top whenever the slide changes
+  // useEffect(() => {
+  //   // Add a slight delay to ensure DOM update and browser rendering doesn't override scroll
+  //   setTimeout(() => {
+  //     containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  //   }, 100);
+  // }, [currentSlide]);
 
   return (
     <div className="render-nodes" ref={containerRef}>
