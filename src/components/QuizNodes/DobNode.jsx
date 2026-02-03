@@ -139,6 +139,34 @@ const DobNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
     }
   }, [values]);
 
+  // Calculate and save age in localStorage on successful validation
+  useEffect(() => {
+    const hasError = Object.values(errors).some(Boolean);
+    const allFieldsFilled =
+      values[DOB_FIELDS.DOB_MONTH] && values[DOB_FIELDS.DOB_DAY] && values[DOB_FIELDS.DOB_YEAR];
+
+    if (!hasError && allFieldsFilled) {
+      const month = parseInt(values[DOB_FIELDS.DOB_MONTH], 10);
+      const day = parseInt(values[DOB_FIELDS.DOB_DAY], 10);
+      const year = parseInt(values[DOB_FIELDS.DOB_YEAR], 10);
+
+      // Calculate age
+      const today = new Date();
+      const birthDate = new Date(year, month - 1, day); // month is 0-indexed in Date
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+
+      // Adjust age if birthday hasn't occurred yet this year
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+
+      // Save age to localStorage
+      const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      localStorage.setItem(LOCAL_STORAGE_QUIZ_VALUES, JSON.stringify({ ...prev, age }));
+    }
+  }, [values, errors]);
+
   return (
     <div className="dob-node">
       <label className="dob-node__label">
