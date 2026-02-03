@@ -107,6 +107,37 @@ const QuizBuilder = ({ json, setQuizData }) => {
     // Wait for all promises to settle before redirection
     await Promise.allSettled(promises);
 
+    // Send quiz event for final submission with redirect URL
+    const currentNode = json.quizJson.find(
+      (element) => element.quizCardId === String(currentSlide)
+    );
+    const findNextSlideId = next || currentNode?.next;
+    const nextSlideData =
+      json.quizJson.find((element) => element.quizCardId === String(findNextSlideId)) || {};
+    const endNode = nextSlideData.nodes?.[0];
+
+    if (endNode && endNode.redirectUrl) {
+      const redirectEventData = {
+        previousStep: currentSlide, // The step before submission becomes previous_step
+        answer: endNode.redirectUrl,
+        currentStep: findNextSlideId, // The end node becomes current_step
+        questionKey: endNode.nodeName || 'redirect',
+        nextStep: '-',
+      };
+
+      promises.push(
+        new Promise((resolve) => {
+          sendJitsuEvent([redirectEventData]);
+          setTimeout(() => {
+            resolve();
+          }, 100);
+        })
+      );
+
+      // Wait for redirect event to be sent
+      await Promise.allSettled(promises);
+    }
+
     // Handle end node redirect logic after all async tasks
     setTimeout(() => {
       handleEndNodeRedirect(json.quizJson, currentSlide, next);
