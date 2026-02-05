@@ -43,6 +43,12 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
       setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
       handleJitsuData(nodeName, value?.replace(/\D/g, ''));
+
+      const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      localStorage.setItem(
+        LOCAL_STORAGE_QUIZ_VALUES,
+        JSON.stringify({ ...prev, [nodeName]: value?.replace(/\D/g, '').slice(-10) })
+      );
     }
   }, [error, value, required, setNextDisabled, consentChecked, nodeName]);
 
@@ -82,11 +88,6 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
     setError(err);
     setFormData &&
       setFormData((prev) => ({ ...prev, [nodeName]: val?.replace(/\D/g, '').slice(-10) }));
-    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
-    localStorage.setItem(
-      LOCAL_STORAGE_QUIZ_VALUES,
-      JSON.stringify({ ...prev, [nodeName]: val?.replace(/\D/g, '').slice(-10) })
-    );
   };
 
   return (
