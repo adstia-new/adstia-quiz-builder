@@ -29,6 +29,12 @@ const EmailNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
       setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
       handleJitsuData(nodeName, value);
+
+      const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+      localStorage.setItem(
+        LOCAL_STORAGE_QUIZ_VALUES,
+        JSON.stringify({ ...prev, [nodeName]: value })
+      );
     }
   }, [error, value, required, setNextDisabled, nodeName]);
 
@@ -56,8 +62,6 @@ const EmailNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
     const err = validateEmail(val);
     setError(err);
     setFormData && setFormData((prev) => ({ ...prev, [nodeName]: val }));
-    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
-    localStorage.setItem(LOCAL_STORAGE_QUIZ_VALUES, JSON.stringify({ ...prev, [nodeName]: val }));
   };
 
   return (

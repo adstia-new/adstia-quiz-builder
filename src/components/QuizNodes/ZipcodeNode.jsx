@@ -29,6 +29,12 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) =>
       setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
     } else {
       (async () => {
+        const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
+        localStorage.setItem(
+          LOCAL_STORAGE_QUIZ_VALUES,
+          JSON.stringify({ ...prev, [nodeName]: value })
+        );
+
         await saveLocationWithZipcode(value);
         setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
@@ -72,9 +78,6 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) =>
     setFormData((prev) => {
       return { ...prev, [nodeName]: val };
     });
-
-    const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
-    localStorage.setItem(LOCAL_STORAGE_QUIZ_VALUES, JSON.stringify({ ...prev, [nodeName]: val }));
   };
 
   const handleChange = (e) => {
