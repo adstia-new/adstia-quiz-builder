@@ -37,12 +37,15 @@ const PhoneNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
   }, [quizConfig.prefillValues, nodeName]);
 
   useEffect(() => {
-    if (error || (required && !value.trim()) || !consentChecked) {
+    if (error || (required && !value.trim()) || !consentChecked || validatePhone(value)) {
       setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
     } else {
       setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
       handleJitsuData(nodeName, value?.replace(/\D/g, ''));
+
+      setFormData &&
+        setFormData((prev) => ({ ...prev, [nodeName]: value?.replace(/\D/g, '').slice(-10) }));
 
       const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
       localStorage.setItem(

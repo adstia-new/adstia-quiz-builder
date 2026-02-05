@@ -25,10 +25,14 @@ const ZipcodeNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) =>
 
   // Update Next button state whenever error or value changes
   useEffect(() => {
-    if (error || (required && !value.trim()) || value.trim().length < 5) {
+    if (error || (required && !value.trim()) || value.trim().length < 5 || !validateInput(value)) {
       setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
     } else {
       (async () => {
+        setFormData((prev) => {
+          return { ...prev, [nodeName]: value };
+        });
+
         const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
         localStorage.setItem(
           LOCAL_STORAGE_QUIZ_VALUES,

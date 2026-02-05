@@ -23,12 +23,14 @@ const InputNode = ({ data, setNextDisabled, setFormData, handleJitsuData }) => {
 
   useEffect(() => {
     if (setNextDisabled) {
-      if (error || (required && !value.trim())) {
+      if (error || (required && !value.trim()) || validate(value)) {
         setNextDisabled((prev) => ({ ...prev, [nodeName]: true }));
       } else {
         setNextDisabled((prev) => ({ ...prev, [nodeName]: false }));
 
         handleJitsuData(nodeName, value);
+
+        setFormData && setFormData((prev) => ({ ...prev, [nodeName]: value }));
 
         const prev = JSON.parse(localStorage.getItem(LOCAL_STORAGE_QUIZ_VALUES)) || {};
         localStorage.setItem(
