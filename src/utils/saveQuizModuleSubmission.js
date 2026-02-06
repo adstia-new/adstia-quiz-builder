@@ -1,5 +1,7 @@
 import {
   COOKIE_ANONYMOUS_ID,
+  COOKIE_FBC,
+  COOKIE_FBP,
   LOCAL_STORAGE_QUIZ_VALUES,
   QUIZ_MODULE_SUBMISSION_URL,
   SESSION_STORAGE_SESSION_ID_KEY,
@@ -30,6 +32,8 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
     const connectionType = getConnectionType();
     const sessionId = sessionStorage.getItem(SESSION_STORAGE_SESSION_ID_KEY);
     const anonymousId = getCookie(COOKIE_ANONYMOUS_ID);
+    const fbp = getCookie(COOKIE_FBP);
+    const fbc = getCookie(COOKIE_FBC);
 
     let dataJSON = {
       ...Object.fromEntries(searchParams.entries()),
@@ -44,6 +48,8 @@ export async function saveQuizModuleSubmission(pabblyUrl, data) {
       connectionType,
       sessionId,
       anonymousId,
+      _fbp: fbp || '',
+      _fbc: fbc || '',
     };
 
     const response = await fetch(QUIZ_MODULE_SUBMISSION_URL, {
