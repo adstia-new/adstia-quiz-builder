@@ -31,6 +31,7 @@ export async function sendDataToJitsuEvent(data) {
       user_id,
       session_id: sessionId,
       question_key: EVENT_DATA.questionKey,
+      question_type: EVENT_DATA.questionType,
       answer_value: answerValue,
       current_step: EVENT_DATA.currentStep,
       previous_step: EVENT_DATA.previousStep,

@@ -122,6 +122,7 @@ const QuizBuilder = ({ json, setQuizData }) => {
         answer: endNode.redirectUrl,
         currentStep: findNextSlideId, // The end node becomes current_step
         questionKey: endNode.nodeName || 'redirect',
+        questionType: 'redirect',
         nextStep: '-',
       };
 

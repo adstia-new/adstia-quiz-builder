@@ -151,10 +151,14 @@ const RenderNodes = ({
       // Check if jitsuEventData already has data for the current slide
       if (prev.length > 0) {
         newEventData = prev.map((eventData) => {
+          const node = currentSlideNodes.nodes.find((n) => n.nodeName === eventData.nodeName);
           return {
             ...eventData,
             currentStep: currentSlide,
             questionKey: eventData.nodeName,
+            questionType: node
+              ? QUIZ_NODE_TYPES[node.nodeType] || node.nodeType
+              : QUIZ_NODE_TYPES[currentNodeType] || currentNodeType,
             nextStep: findNextSlideId,
           };
         });
@@ -168,6 +172,7 @@ const RenderNodes = ({
             nodeName: node?.nodeName,
             currentStep: currentSlide,
             questionKey: node?.nodeName,
+            questionType: QUIZ_NODE_TYPES[node?.nodeType] || node?.nodeType,
             nextStep: findNextSlideId,
           });
         });
@@ -210,6 +215,7 @@ const RenderNodes = ({
         answer,
         currentStep: currentSlide,
         questionKey: prev.nodeName || nodeName,
+        questionType: QUIZ_NODE_TYPES.OPTIONS,
         nextStep: next,
       };
 
