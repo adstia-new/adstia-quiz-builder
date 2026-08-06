@@ -283,7 +283,10 @@ const RenderNodes = ({
 
   return (
     <div className="render-nodes" ref={containerRef}>
-      <p className="render-nodes__question">{findCurrentSlideNodes.question}</p>
+      <p
+        className="render-nodes__question"
+        dangerouslySetInnerHTML={{ __html: findCurrentSlideNodes.question }}
+      ></p>
       <p className="render-nodes__subtext">{findCurrentSlideNodes.subText}</p>
       {findCurrentSlideNodes.nodes.map((quizElement, index) => {
         if (quizElement.nodeType === QUIZ_NODE_TYPES.INPUT) {
