@@ -1,7 +1,16 @@
 import { getCookie } from '../../../utils/getCookie';
 
 export async function trackPhoneButtonClick(phone) {
+  const quizValues = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('quizValues') || '{}');
+    } catch {
+      return {};
+    }
+  })();
+
   window?.jitsu?.track('phone_number_click', {
+    ...quizValues,
     phone,
     session_id: sessionStorage.getItem('session_id') || '',
     userId: localStorage.getItem('user_id') || '',
@@ -12,6 +21,7 @@ export async function trackPhoneButtonClick(phone) {
   window?.dataLayer?.push({
     event: 'phoneNumberClick',
     data: {
+      ...quizValues,
       phone,
       session_id: sessionStorage.getItem('session_id') || '',
       user_id: localStorage.getItem('user_id') || '',
