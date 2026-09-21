@@ -8,6 +8,7 @@ import {
   getDomainName,
   getScreenResolution,
 } from './windowUtils';
+import { clarityEvent } from './clarity';
 
 export async function sendDataToJitsuEvent(data) {
   if (typeof window === 'undefined') return null;
@@ -103,6 +104,8 @@ export const sendJitsuLeadSubmitEvent = async (jitsuEventData) => {
     userId: localStorage.getItem('user_id') || '',
     session_id: sessionStorage.getItem('session_id') || '',
   });
+
+  clarityEvent('quiz_submit');
 
   try {
     const { user_id: userId, session_id: sessionId, ...data } = jsonData;

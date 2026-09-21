@@ -15,7 +15,7 @@ const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
 const { trackCtaButtonClick } = require('./trackCtaButtonClick');
 const { injectRingbaScript } = require('./ringbaUtils');
 const { pushDataToRingbaTags } = require('./pushDataToRgbaTags');
-const { clarityStepView } = require('../../../utils/clarity');
+const { clarityEvent, clarityStepView } = require('../../../utils/clarity');
 
 const handlePhoneClick = async (e) => {
   const phoneText = e.currentTarget.href || '';
@@ -53,6 +53,10 @@ const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCal
   button.addEventListener('click', (e) => {
     if (chat.button.onClick) {
       chat.button.onClick();
+    }
+
+    if (chat.button.callRingba === true || chat.button.callCallgrid === true) {
+      clarityEvent('quiz_started');
     }
 
     if (chat.button.callRingba === true) {

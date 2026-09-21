@@ -1,4 +1,5 @@
 import { getCookie } from '../../../utils/getCookie';
+import { clarityEvent } from '../../../utils/clarity';
 
 export async function trackCtaButtonClick(text) {
   window?.jitsu?.track('cta_click', {
@@ -6,6 +7,8 @@ export async function trackCtaButtonClick(text) {
     session_id: sessionStorage.getItem('session_id') || '',
     userId: localStorage.getItem('user_id') || '',
   });
+
+  clarityEvent('cta_click');
 
   window?.dataLayer?.push({ data: null });
 
