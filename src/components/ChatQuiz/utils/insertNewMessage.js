@@ -15,6 +15,7 @@ const { trackPhoneButtonClick } = require('./trackPhoneButtonClick');
 const { trackCtaButtonClick } = require('./trackCtaButtonClick');
 const { injectRingbaScript } = require('./ringbaUtils');
 const { pushDataToRingbaTags } = require('./pushDataToRgbaTags');
+const { clarityStepView } = require('../../../utils/clarity');
 
 const handlePhoneClick = async (e) => {
   const phoneText = e.currentTarget.href || '';
@@ -76,6 +77,8 @@ const handleButtonMessage = (chat, agentChatDiv, chatSectionElement, continueCal
 };
 
 const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
+  clarityStepView('chat_quiz', chat.input && chat.input.id);
+
   const inputContainer = createElement('div', CSS_CLASSES.INPUT_CONTAINER);
   const inputField = createElement('input', CSS_CLASSES.CHAT_INPUT);
 
@@ -241,6 +244,8 @@ const handleInputMessage = (chat, agentChatDiv, chatSectionElement, continueCall
 };
 
 const handleOptionsMessage = (chat, agentChatDiv, chatSectionElement, continueCallback, config) => {
+  clarityStepView('chat_quiz', chat.optionsData && chat.optionsData.id);
+
   const optionsContainer = createElement('div', CSS_CLASSES.OPTIONS_CONTAINER);
 
   const optionsData = chat.optionsData;

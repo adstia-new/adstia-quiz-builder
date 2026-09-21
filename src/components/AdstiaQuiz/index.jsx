@@ -9,6 +9,7 @@ import { pushLocalDataToDataLayer } from '../../utils/gtmUtils';
 import LoadingScreen from '../ui/LoadingScreen/LoadingScreen';
 import { saveQuizModuleSubmission } from '../../utils/saveQuizModuleSubmission';
 import { getLeadIdTokenValue } from '../../utils/getLeadIdTokenValue';
+import { clarityStepView } from '../../utils/clarity';
 
 export const QuizConfigContext = createContext();
 
@@ -21,6 +22,10 @@ const QuizBuilder = ({ json, setQuizData }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchParams, setSearchParams] = useState(null);
   const leadId = getLeadIdTokenValue();
+
+  useEffect(() => {
+    clarityStepView('quiz', currentSlide);
+  }, [currentSlide]);
 
   useEffect(() => {
     // Add LeadiD script to head only if leadId is present in config
